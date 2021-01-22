@@ -1,0 +1,37 @@
+<section class="inRequests inRequests__step1 hidden">
+  <form class="inRequests__form flex" action="/" method="post">
+    <h2 class="title">Informations du demandeur</h2>
+    <span class="inRequests__form__applicantInfo flex">
+      <select class="inRequests__form__applicantInfo__location input" required="true">
+        <option value="cm">Château Massart</option>
+        <option value="constru">Construform</option>
+        <option value="sg">Saint-Gilles</option>
+        <option value="sb">Sainte-Beuve</option>
+        <option value="vvest">Verviers Est</option>
+        <option value="vvlb">Verviers Limbourg</option>
+        <option value="vlb">Villers-le-Bouillet</option>
+      </select>
+      <input class="inRequests__form__applicantInfo__name input" type="text" placeholder="Nom du demandeur..." required="true">
+      <input class="inRequests__form__applicantInfo__firstname input" type="text" placeholder="Prénom du demandeur..." required="true">
+    </span>
+    <span class="inRequests__form__requestInfo flex">
+      <select class="inRequests__form__requestInfo__status input hidden" type="text" placeholder="Statut..." required="true">
+        <option value="waiting">Non attribué</option>
+        <option value="wip">En cours</option>
+        <option value="done">Terminé</option>
+      </select>
+      <input class="inRequests__form__requestInfo__requestDate input" type="date" required="true">
+      <label>
+        Envoyer un mail de notification ?
+        <input class="inRequests__form__requestInfo__sendMail input" type="checkbox">
+      </label>
+      <h2 class="title">Contenu de la demande</h2>
+      <textarea class="inRequests__form__requestInfo__comment flex" rows="8" cols="80"></textarea>
+    </span>
+    <span class="inRequests__form__btnContainer flex">
+      <button class="inRequests__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
+      <button class="inRequests__form__btnContainer__submit inRequests__step1__btn btn btn--submit" type="submit">Valider</button>
+      <button class="inRequests__form__btnContainer__hide inRequests__step1__btn btn home-btn hidden" type="button">Annuler</button>
+    </span>
+  </form>
+</section>

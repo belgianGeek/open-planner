@@ -1,0 +1,78 @@
+.settings__container {
+  width: 100%;
+  height: 100%;
+  @include align(center, center);
+  position: absolute;
+  top: 0;
+  font-size: 1em;
+  z-index: 3;
+
+  .settings__child {
+    @include align;
+    flex-direction: column;
+    width: 60%;
+    height: 85%;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    @include box-shadow;
+    overflow-y: auto;
+    overflow-x: hidden;
+    @media(max-width: 720px) {
+      overflow-y: auto;
+      width: 90%;
+    }
+
+    &__textarea {
+      width: 100%;
+      justify-content: center;
+
+      &__content {
+        min-width: 90%;
+        max-width: 90%;
+        min-height: 15em;
+        max-height: 15em;
+        padding: 0.5em;
+        border: 2px solid grey;
+        border-radius: 0.5em;
+        background-color: $translucent-black;
+      }
+    }
+
+    &__header {
+      flex-direction: row;
+      width: 100%;
+
+      h1 {
+        font-size: 1.5em;
+        width: 100%;
+        text-align: center;
+        font-family: 'Lobster Two Bold Italic';
+        margin-bottom: 0;
+      }
+    }
+
+    &__heading {
+      font-family: 'Lobster Two Bold Italic';
+      margin: 0;
+    }
+
+    &__heading2 {
+      font-size: 1.3em;
+      margin: 0.7em 0;
+    }
+
+    .backgroundImageUploadForm {
+      margin: 2em 0 0 1em;
+      justify-content: space-between;
+      width: 90%;
+      align-items: center;
+      @media(max-width: 720px) {
+        flex-direction: column;
+      }
+
+      & * {
+        font-size: 1.05em;
+      }
+    }
+  }
+}

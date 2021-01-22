@@ -1,0 +1,62 @@
+@mixin align($justify: start, $align: start) {
+  justify-content: $justify;
+  align-items: $align;
+}
+@mixin autocomplete {
+  flex-direction: column;
+  @include input;
+  margin: 0 0 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  max-height: 10em;
+  overflow: auto;
+
+  p {
+    margin: 0;
+    padding: 0.5em;
+    text-overflow: ellipsis;
+    min-width: 0;
+    white-space: nowrap;
+
+    &:hover {
+      color: black;
+      background-color: $input-border;
+      cursor: pointer;
+    }
+  }
+}
+@mixin background-image {
+  background-image: url("../wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+@mixin box-shadow {
+  box-shadow: 10px 10px 12px 2px $translucent-black;
+}
+@mixin input {
+  border: 2px solid $input-border;
+  background-color: rgba(0,0,0,.4);
+  border-radius: 0.2em;
+  padding: 0.5em;
+  margin: 1em 0;
+}
+@mixin simple-step {
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1em;
+  width: 100%;
+  flex-direction: column;
+  height: 60vh;
+}
+@mixin warning {
+  color: red;
+  font-style: italic;
+  align-self: center;
+  margin-top: 1.5em;
+  font-size: 1.05em;
+  padding: 1em;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+}

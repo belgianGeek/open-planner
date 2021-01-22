@@ -1,0 +1,28 @@
+.addReader__step1 {
+  flex-direction: column;
+  width: 35%;
+  margin-left: 3em;
+  font-size: 1em;
+
+  &__form {
+    flex-direction: column;
+
+    &__btnContainer {
+      justify-content: space-evenly;
+      padding-top: 1.5em;
+    }
+
+    &__nameContainer {
+      justify-content: space-between;
+    }
+
+    &__female,
+    &__male {
+      align-items: center;
+
+      &__input {
+        margin-right: 1em;
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr-BE" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="src/scss/prefixed/index.css">
+  <link rel="icon" type="image/png" href="src/scss/icons/favicon.png">
+  <title>Node Planner</title>
+</head>
+
+<body>
+  <div class="backgroundColor"></div>
+  <header class="header">
+    <%- include('sidebar'); %>
+  </header>
+  <main class="wrapper flex">
+    <section class="search">
+      <h1 class="search__title title">Module de recherche</h1>
+      <form class="search__container flex" method="GET" action="/">
+        <label for="search__container__select">Effectuer une recherche</label>
+        <select class="search__container__select" name="search__select">
+          <option value="default">Choisissez une catégorie</option>
+          <option value="out_requests">Prêts</option>
+          <option value="in_requests">Emprunts</option>
+          <option value="drafts">Requêtes express</option>
+        </select>
+        <input class="search__container__readerInput input" type="text" placeholder="Nom du lecteur">
+        <input class="search__container__titleInput input" type="text" placeholder="Titre du document">
+        <button class="search__container__submit" type="submit">
+          <svg class="search__container__submit__svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="arcs">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </form>
+      <h2 class="search__title search__title__h2 title">Résultats de recherche</h2>
+      <section class="search__results flex">
+        <span class="search__results__container flex"></span>
+      </section>
+    </section>
+  </main>
+  <%- include('notification'); %>
+  <%- include('contextMenu'); %>
+  <%- include('drafts'); %>
+  <%- include('about'); %>
+  <%- include('in_requests01'); %>
+  <%- include('confirmation'); %>
+  <%- include('leave'); %>
+  <%- include('settings'); %>
+  <%- include('scripts'); %>
+</body>
+
+</html>
