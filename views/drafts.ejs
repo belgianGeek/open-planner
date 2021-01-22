@@ -1,0 +1,31 @@
+<span class="draft hidden">
+  <span class="draft__child flex">
+    <h2 class="draft__child__title title">Requête express</h2>
+    <section class="draft__child__container flex">
+      <form class="draft__child__container__reader flex" action="/" method="post">
+        <h3 class="draft__child__container__reader__title title">Informations du lecteur</h3>
+        <label class="draft__child__container__reader__label draft__child__container__reader__name flex">
+          Nom du lecteur
+          <input class="input" type="text" placeholder="Nom du lecteur...">
+          <span class="draft__child__container__reader__label__autocomplete hidden"></span>
+        </label>
+        <label class="draft__child__container__reader__label draft__child__container__reader__date flex">
+          Date de la demande
+          <input class="input" type="date">
+        </label>
+        <label class="draft__child__container__reader__label draft__child__container__reader__bookTitle flex">
+          Titre du document
+          <input class="input" type="text" placeholder="Titre du document...">
+        </label>
+        <span class="draft__child__container__reader__btnContainer flex">
+          <button class="draft__child__container__reader__btnContainer__submit btn btn--submit" type="submit">Valider</button>
+          <button class="draft__child__container__reader__btnContainer__reset btn btn--reset" type="button">Annuler</button>
+        </span>
+      </form>
+      <span class="draft__child__container__comment flex">
+        <h3 class="draft__child__container__comment__title title">Commentaires</h3>
+        <textarea class="draft__child__container__comment__textarea" name="name" rows="8" cols="80"></textarea>
+      </span>
+    </section>
+  </span>
+</span>

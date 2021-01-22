@@ -1,0 +1,17 @@
+.requestTypeChoice {
+  @include simple-step();
+
+  &__btnContainer {
+    flex-direction: row;
+    width: 30%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 1em;
+
+    &__borrowing,
+    &__loan {
+      width: 6em;
+      margin: 0;
+    }
+  }
+}

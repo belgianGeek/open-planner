@@ -1,0 +1,92 @@
+.inRequests {
+  margin-left: 3em;
+  width: 100%;
+
+  &__step1 {
+    @include simple-step();
+
+    &__container {
+      & textarea {
+        width: 100%;
+        max-width: 100%;
+        height: 90%;
+        max-height: 90%;
+        padding: 0.5em;
+        border: 2px solid grey;
+        border-radius: 0.5em;
+        background-color: $translucent-black;
+      }
+    }
+  }
+
+  &__title {
+    text-decoration: underline;
+    font-size: 1.3em;
+    width: 100vw;
+    text-align: center;
+  }
+
+  &__form {
+    font-size: 1.05em;
+    flex-direction: column;
+    width: 50%;
+
+    label {
+      align-self: center;
+    }
+
+    h2 {
+      margin: 0;
+    }
+
+    &__requestInfo,
+    &__applicantInfo,
+    &_btnContainer {
+      justify-content: space-between;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    &__btnContainer {
+      margin-top: 3em;
+      width: 100%;
+      align-self: center;
+      justify-content: space-evenly;
+
+      &__hide {
+        position: relative;
+        top: 0;
+        left: 100%;
+        margin: 0;
+        z-index: 2;
+      }
+    }
+
+    &__applicantInfo {
+      align-items: center;
+
+      &__container {
+        flex-direction: column;
+
+        &__autocomplete {
+          @include autocomplete;
+        }
+      }
+    }
+
+    &__requestInfo,
+    &__applicantInfo {
+      &__container,
+      &__mail {
+        width: 45%;
+      }
+
+      // &__container {
+      //   &__autocomplete,
+      //   .input {
+      //     width: 100%;
+      //   }
+      // }
+    }
+  }
+}
