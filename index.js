@@ -55,15 +55,15 @@ const createDB = (config, DBname = process.env.DB) => {
         console.log('Reconnexion effectuée !');
         createTasksTables(client, process.env.LOCATIONS.split(','));
         createUsersTable(client);
-          // .then(() => {
-          //   client.query({
-          //       text: 'SELECT * FROM settings'
-          //     })
-          //     .then(res => {
-          //       settings = res.rows[0];
-          //     });
-          // })
-          // .catch(err => console.error(err));
+        // .then(() => {
+        //   client.query({
+        //       text: 'SELECT * FROM settings'
+        //     })
+        //     .then(res => {
+        //       settings = res.rows[0];
+        //     });
+        // })
+        // .catch(err => console.error(err));
       })
       .catch(err => {
         console.log(err);
@@ -165,7 +165,7 @@ existPath('./exports/');
 // Exporter une sauvegarde de la DB toutes les douze heures
 setInterval(() => {
   console.log('DB backup on ' + Date.now());
-  exportDB(`./backups/pib_${Date.now()}.pgsql`);
+  exportDB(`./backups/${process.env.DB}_${Date.now()}.pgsql`);
 }, 12 * 60 * 60 * 1000);
 
 
@@ -175,7 +175,7 @@ let file2download = {};
 initClient.connect()
   .then(() => {
     if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
-      console.log(`Tu peux te connecter à Node Planner ici : http://${ip.address()}:8000.`);
+      console.log(`Tu peux te connecter à ${process.env.PROGRAM_NAME} ici : http://${ip.address()}:8000.`);
       createDB(config, process.env.DB);
     } else {
       console.log(`Désolé, il semble que tu n'aies pas accès à Internet... Rétablis ta connexion et réessaie :-)`);
@@ -216,66 +216,14 @@ app.get('/', (req, res) => {
       // }
       // updateBarcode();
 
+      io.emit('locations', process.env.LOCATIONS.split(','));
+
       io.on('append data', data => {
         console.log(JSON.stringify(data, null, 2));
-        if (data.table === 'out_requests') {
-          // Si le nom de l'auteur ne contient pas de prénom
-          if (!data.authorFirstName) {
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(pib_number, borrowing_library, request_date, loan_library, book_title, book_author_name, cdu, out_province) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
-              values: data.values
-            });
-          } else {
-            // Si le nom de l'auteur contient un prénom
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(pib_number, borrowing_library, request_date, loan_library, book_title, book_author_name, book_author_firstname, cdu, out_province) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-              values: data.values
-            });
-          }
-        } else if (data.table === 'in_requests') {
-          // Si le nom de l'auteur ne contient pas de prénom
-          if (!data.authorFirstName) {
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(pib_number, borrowing_library, request_date, loan_library, reader_name, book_title, book_author_name, cdu, out_province, barcode) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-              values: data.values
-            });
-          } else {
-            // Si le nom de l'auteur contient un prénom
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(pib_number, borrowing_library, request_date, loan_library, reader_name, book_title, book_author_name, book_author_firstname, cdu, out_province, barcode) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-              values: data.values
-            });
-          }
-
-          // Mark the used barcode unavailable
-          DBquery(io, 'UPDATE', 'barcodes', {
-              text: `UPDATE barcodes SET available = false WHERE barcode ILIKE '${data.values[data.values.length - 1]}'`
-            })
-            .then(() => {
-              updateBarcode();
-            })
-            .catch(err => {
-              console.error(`Erreur lors de la mise à jour de la table barcodes : ${err}`);
-            });
-        } else if (data.table === 'readers') {
-          // S'il n'y a pas d'email
-          if (data.values.length === 2) {
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(name, gender) VALUES($1, $2)`,
-              values: data.values
-            });
-          } else if (data.values.length === 3) {
-            DBquery(io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(name, email, gender) VALUES($1, $2, $3)`,
-              values: data.values
-            });
-          }
-        } else if (data.table === 'drafts') {
-          DBquery(io, 'INSERT INTO', data.table, {
-            text: `INSERT INTO ${data.table}(reader_name, request_date, book_title, comment) VALUES($1, $2, $3, $4)`,
-            values: data.values
-          });
-        }
+        DBquery(io, 'INSERT INTO', data.table, {
+          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
+          values: data.values
+        });
       });
 
       check4updates(io, tag);
