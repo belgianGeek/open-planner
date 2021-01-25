@@ -8,14 +8,13 @@ const inRequests = () => {
   // let dataset = '.inRequests__form__readerInfo__container__autocomplete';
   let applicantName = $('.inRequests__form__applicantInfo__name');
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
-  let applicantLocation = $('.inRequests__form__applicantInfo__location');
-  let requestDate = $('.inRequests__form__requestInfo__requestDate');
-  let sendMail = $('.inRequests__form__requestInfo__sendMail');
+  let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
+  let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');
   let requestContent = $('.inRequests__form__requestInfo__comment');
 
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
-    data2send.table = 'in_requests';
+    data2send.table = `${applicantLocation.val()}_tasks`;
 
     // Applicant name
     if (applicantName.val() === '') {
@@ -55,8 +54,6 @@ const inRequests = () => {
       //     .addClass('flex');
       // }
 
-      let sendMail = $('.inRequests__form__requestInfo__sendMail').is(':checked');
-
       // Escape apostrophes
       applicantName.val(applicantName.val().replace(/'/g, "''"));
       applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
@@ -69,17 +66,20 @@ const inRequests = () => {
 
         // Store the date as timestamp
         data2send.values.push(new Date(requestDate.val()).toUTCString());
-        data2send.values.push(applicantLocation.val());
+        data2send.values.push(applicantLocation.text());
         data2send.values.push(requestContent.val());
 
-        data2send.values.push(sendMail);
+        // Default task status
+        data2send.values.push('waiting');
+
+        data2send.sendMail = $('.inRequests__form__requestInfo__row1__sendMail').is(':checked');
 
         // Send data to the server
         // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
         if (!$('.inRequests').hasClass('absolute')) {
           socket.emit('append data', data2send);
 
-          $('.inRequests__form .input').not('.inRequests__form__requestInfo__requestDate, .inRequests__form__requestInfo__loanLibrary, .inRequests__form__docInfo__inv').val('');
+          $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');
 
           $('.home').toggleClass('hidden flex');
           $('.header__container__icon, .header__container__msg').toggleClass('hidden');
