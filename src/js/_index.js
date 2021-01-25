@@ -3,8 +3,7 @@ const socket = io();
 
 let data2send = {
   table: '',
-  values: [],
-  authorFirstName: true
+  values: []
 };
 
 let inRequestsReaderGender;
@@ -14,26 +13,26 @@ const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.
 // Check if all the fomr fields are fullfilled before submit
 let validationErr = false;
 
-const handleSimpleStep = (element, step1, step2, btn) => {
-  $(`${element}__${step1}__${btn}`).click(() => {
-    if (!validationErr) {
-      $(`${element}__${step1}`).toggleClass('translateXbackwards hidden flex');
-
-      // Empty all inpout fields to prevent errors while sending the notification email
-      // if no change is made to the list (if so, the reader's gender is undefined)
-      if (`${element}__${step1}` === '.inRequests__step3') {
-        $('.inRequests__step4 input').val('');
-      }
-
-      $(`${element}__${step2}`)
-        .removeClass('translateXonwards hidden')
-        .toggleClass('fixed flex');
-
-    }
-  });
-}
-
-handleSimpleStep('.inRequests', 'step1', 'step2', 'confirmation');
+// const handleSimpleStep = (element, step1, step2, btn) => {
+//   $(`${element}__${step1}__${btn}`).click(() => {
+//     if (!validationErr) {
+//       $(`${element}__${step1}`).toggleClass('translateXbackwards hidden flex');
+//
+//       // Empty all inpout fields to prevent errors while sending the notification email
+//       // if no change is made to the list (if so, the reader's gender is undefined)
+//       if (`${element}__${step1}` === '.inRequests__step3') {
+//         $('.inRequests__step4 input').val('');
+//       }
+//
+//       $(`${element}__${step2}`)
+//         .removeClass('translateXonwards hidden')
+//         .toggleClass('fixed flex');
+//
+//     }
+//   });
+// }
+//
+// handleSimpleStep('.inRequests', 'step1', 'step2', 'confirmation');
 
 $('.returnIcon').click(() => {
   const backHome = step => {
@@ -48,26 +47,23 @@ $('.returnIcon').click(() => {
     setTimeout(() => {
       $(step).toggleClass('translateXonwards flex');
     }, 500);
-
-    // Remove the 'followRequest' and 'newRequest' class to show the right step to the user
-    $('.requestTypeChoice').removeClass('newRequest');
   }
 
   const goBack = (elt1, elt2) => {
     if (elt1.match(/(step1)/gi)) {
-      if ($(elt1).is(':visible') && !elt1.match(/inRequests__step1/gi)) {
+      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1/gi)) {
         backHome(elt1);
-      } else if ($(elt1).is(':visible') && elt1.match(/inRequests/gi)) {
+      } /* else if ($(elt1).is(':visible') && elt1.match(/inRequests/gi)) {
         $(elt1)
           .removeClass('translateXbackwards translateXonwards flex')
-          .addClass('hidden');
+          .addClass('hidden'); */
 
         // if ($('.requestTypeChoice').hasClass('newRequest')) {
         //   $('.requestTypeChoice')
         //     .addClass('flex')
         //     .removeClass('hidden')
         // }
-      }
+      // }
     } else {
       if ($(elt1).is(':visible')) {
         $(elt1)
