@@ -29,18 +29,14 @@
   &__form {
     font-size: 1.05em;
     flex-direction: column;
-    width: 50%;
+    width: 60%;
 
     label {
       align-self: center;
     }
 
-    h2 {
-      margin: 0;
-    }
-
-    &__requestInfo,
     &__applicantInfo,
+    &__requestInfo,
     &_btnContainer {
       justify-content: space-between;
       width: 100%;
@@ -74,19 +70,28 @@
       }
     }
 
-    &__requestInfo,
-    &__applicantInfo {
+    &__requestInfo {
+      flex-direction: column;
+
+      &__row1 {
+        justify-content: space-between;
+      }
+
+      &__comment {
+        max-width: 100%;
+        padding: 0.5em;
+        border: 2px solid grey;
+        border-radius: 0.5em;
+        background-color: $translucent-black;
+      }
+    }
+
+    &__applicantInfo,
+    &__requestInfo {
       &__container,
       &__mail {
         width: 45%;
       }
-
-      // &__container {
-      //   &__autocomplete,
-      //   .input {
-      //     width: 100%;
-      //   }
-      // }
     }
   }
 }

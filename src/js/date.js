@@ -1,9 +1,5 @@
 const setDate = () => {
-  $(
-    '.inRequests__form__pibInfo__requestDate,' +
-    '.draft__child__container__reader__date input,' +
-    '.outRequests__form__pibInfo__requestDate'
-  ).val(`${new Date().getFullYear()}-${setMonth(new Date())}-${setDay(new Date())}`);
+  $('.inRequests__form__requestInfo__row1__requestDate').val(`${new Date().getFullYear()}-${setMonth(new Date())}-${setDay(new Date())}`);
 }
 
 const setDay = date => {

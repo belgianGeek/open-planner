@@ -41,7 +41,7 @@ const emptyDir = require('./modules/emptyDir');
 const notify = require('./modules/notify');
 const existPath = require('./modules/existPath');
 
-const createLgTasksTable = require('./modules/createLgTasksTable');
+const createTasksTables = require('./modules/createTasksTables');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
 
@@ -53,7 +53,7 @@ const createDB = (config, DBname = process.env.DB) => {
     client.connect()
       .then(() => {
         console.log('Reconnexion effectuée !');
-        createLgTasksTable(client);
+        createTasksTables(client, process.env.LOCATIONS.split(','));
         createUsersTable(client);
           // .then(() => {
           //   client.query({
@@ -195,7 +195,8 @@ app.use("/src", express.static(__dirname + "/src"));
 app.get('/', (req, res) => {
     res.render('index.ejs', {
       currentVersion: tag,
-      isSearchPage: false
+      isSearchPage: false,
+      locations: process.env.LOCATIONS
     });
 
     io.once('connection', io => {
