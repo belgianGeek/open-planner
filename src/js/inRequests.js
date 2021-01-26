@@ -8,12 +8,13 @@ const inRequests = () => {
   // let dataset = '.inRequests__form__readerInfo__container__autocomplete';
   let applicantName = $('.inRequests__form__applicantInfo__name');
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
-  let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
   let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');
   let requestContent = $('.inRequests__form__requestInfo__comment');
+  let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker');
 
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
+    let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
     data2send.table = `${applicantLocation.val()}_tasks`;
 
     // Applicant name
@@ -41,6 +42,12 @@ const inRequests = () => {
       invalid(requestContent);
     }
 
+    if ($('.inRequests').hasClass('absolute')) {
+      if (assignedWorker.val() === '') {
+        invalid(assignedWorker);
+      }
+    }
+
     if (!validationErr) {
       $('.input').removeClass('invalid');
       $('form .warning').hide();
@@ -59,6 +66,7 @@ const inRequests = () => {
       applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
       applicantLocation.val(applicantLocation.val().replace(/'/g, "''"));
       requestContent.val(requestContent.val().replace(/'/g, "''"));
+      assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
 
       inRequestsTimeOut = setTimeout(() => {
         data2send.values.push(applicantName.val());
@@ -69,10 +77,20 @@ const inRequests = () => {
         data2send.values.push(applicantLocation.text());
         data2send.values.push(requestContent.val());
 
-        // Default task status
-        data2send.values.push('waiting');
+        // Set the notification status if a new record is created
+        // Else, set the assigned worker
+        if (!$('.inRequests').hasClass('absolute')) {
+          data2send.sendMail = $('.inRequests__form__requestInfo__row1__sendMail').is(':checked');
 
-        data2send.sendMail = $('.inRequests__form__requestInfo__row1__sendMail').is(':checked');
+          // Default task status
+          data2send.values.push('waiting');
+
+          // The task is not yet assigned when it is created
+          data2send.values.push('Non attribué');
+        } else {
+          data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
+          data2send.values.push(assignedWorker.val());
+        }
 
         // Send data to the server
         // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
@@ -86,12 +104,7 @@ const inRequests = () => {
         } else {
           // Else, update the existing record and hide the update form
 
-          // TODO: Prévoir un champ ID pour servir de clé lors de la mise à jour d'enregistrements
-
-          // Append the initial pib number to the array to send to the server as it'll be the key to update the specified record
-          data2send.key = initialPibNb;
-
-          data2send.barcode = initialBarcode;
+          data2send.id = $('.inRequests.absolute .inRequests__id').text();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
           $('.wrapper').toggleClass('backgroundColor blur');
@@ -126,28 +139,6 @@ const inRequests = () => {
     $('form .warning').hide();
     validationErr = false;
     data2send.values = [];
-  });
-
-  $('.inRequests__step4__btn').click(() => {
-    confirmation();
-
-    inRequestsTimeOut = setTimeout(() => {
-      confirmation();
-
-      $('.inRequests__step4').toggleClass('hidden flex');
-      $('.home').toggleClass('hidden flex');
-      $('.header__container__icon, .header__container__msg').toggleClass('hidden');
-
-      setTimeout(() => {
-        // Send the notification email to the reader when the user is back to the homescreen
-        socket.emit('send mail', {
-          name: $('.inRequests__step4__container__reader').val(),
-          mail: $('.inRequests__step4__container__mail').val(),
-          gender: inRequestsReaderGender,
-          request: $('.inRequests__step4__container__title').val()
-        });
-      }, 1000);
-    }, 5000);
   });
 
   $('.confirmation__body__cancel').click(() => {

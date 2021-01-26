@@ -1,4 +1,5 @@
 <section class="inRequests inRequests__step1 hidden">
+  <span class="inRequests__id hidden"></span>
   <form class="inRequests__form flex" action="/" method="post">
     <h2 class="title">Informations du demandeur</h2>
     <span class="inRequests__form__applicantInfo flex">
@@ -18,6 +19,7 @@
           <option value="wip">En cours</option>
           <option value="done">Terminé</option>
         </select>
+        <input class="inRequests__form__requestInfo__row1__assignedWorker input hidden" type="text" placeholder="Travailleur assigné..." equired="true">
         <input class="inRequests__form__requestInfo__row1__requestDate input" type="date" required="true">
         <label>
           Envoyer un mail de notification ?
