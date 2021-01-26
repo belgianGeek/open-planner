@@ -76,15 +76,19 @@
           padding: 1em;
           min-width: 0;
 
-          &--op {
+          &--status {
             justify-content: center;
           }
 
-          &--op.checked circle {
+          &--status.done circle {
             fill: $green;
           }
 
-          &--op.unchecked circle {
+          &--status.wip circle {
+            fill: $orange;
+          }
+
+          &--status.waiting circle {
             fill: $red;
           }
         }

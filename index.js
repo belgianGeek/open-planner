@@ -221,7 +221,7 @@ app.get('/', (req, res) => {
       io.on('append data', data => {
         console.log(JSON.stringify(data, null, 2));
         DBquery(io, 'INSERT INTO', data.table, {
-          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
+          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location, comment, assigned_worker, status) VALUES($1, $2, $3, $4, $5, $6, $7)`,
           values: data.values
         });
       });
@@ -360,37 +360,15 @@ app.get('/', (req, res) => {
   .get('/search', (req, res) => {
     res.render('search.ejs', {
       currentVersion: tag,
+      locations: process.env.LOCATIONS.split(','),
       isSearchPage: true
     });
     let query = '';
 
     io.once('connection', io => {
       io.on('search', data => {
-        if (data.table === 'in_requests') {
-          if (data.getTitle && !data.getReader) {
-            query = `SELECT * FROM ${data.table} WHERE book_title ILIKE '%${data.title}%'`;
-          } else if (data.getReader && !data.title) {
-            query = `SELECT * FROM ${data.table} WHERE reader_name ILIKE '%${data.reader}%'`;
-          } else if (data.getReader && data.title) {
-            query = `SELECT * FROM ${data.table} WHERE (book_title ILIKE '%${data.title}%') AND (reader_name ILIKE '%${data.reader}%')`;
-          } else {
-            query = `SELECT * FROM ${data.table}`;
-          }
-        } else if (data.table === 'out_requests') {
-          if (data.getTitle) {
-            query = `SELECT * FROM ${data.table} WHERE book_title ILIKE '%${data.title}%'`;
-          } else {
-            query = `SELECT * FROM ${data.table}`;
-          }
-        } else if (data.table === 'drafts') {
-          if (data.getTitle && !data.getReader) {
-            query = `SELECT * FROM ${data.table} WHERE book_title ILIKE '%${data.title}%'`;
-          } else if (!data.getTitle && data.getReader) {
-            query = `SELECT * FROM ${data.table} WHERE reader_name ILIKE '%${data.reader}%'`;
-          } else {
-            query = `SELECT * FROM ${data.table}`;
-          }
-        }
+        if (!data.getApplicant) query = `SELECT * FROM ${data.table}`;
+        else query = `SELECT * FROM ${data.table} WHERE applicant_name ILIKE '%${data.applicant_name}%'`;
 
         DBquery(io, 'SELECT', data.table, {
             text: query
@@ -402,8 +380,6 @@ app.get('/', (req, res) => {
           });
       });
 
-      barcodeVerification(io);
-
       check4updates(io, tag);
 
       restart(io);
@@ -411,59 +387,20 @@ app.get('/', (req, res) => {
       shutdown(io);
 
       io.on('update', record => {
-        if (record.table === 'drafts') {
-          query = `UPDATE ${record.table} SET request_date = '${record.date}', reader_name = '${record.reader}', book_title = '${record.title}', comment = '${record.comment}' WHERE id = ${record.id}`;
-        } else if (record.table === 'in_requests') {
-          if (record.authorFirstName) {
-            query = `UPDATE ${record.table} SET pib_number = '${record.values[0]}', borrowing_library = '${record.values[1]}', request_date = '${record.values[2]}', reader_name = '${record.values[4]}', book_title = '${record.values[5]}', book_author_name = '${record.values[6]}', book_author_firstname = '${record.values[7]}', cdu = '${record.values[8]}', out_province = ${record.values[9]}, barcode = '${record.values[10]}' WHERE pib_number = '${record.key}'`;
-          } else {
-            query = `UPDATE ${record.table} SET pib_number = '${record.values[0]}', borrowing_library = '${record.values[1]}', request_date = '${record.values[2]}', reader_name = '${record.values[4]}', book_title = '${record.values[5]}', book_author_name = '${record.values[6]}', cdu = '${record.values[7]}', out_province = ${record.values[8]}, barcode = '${record.values[9]}' WHERE pib_number = '${record.key}'`;
-          }
-        }
+        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', request_date = '${record.values[2]}', comment = '${record.values[4]}', status = '${record.values[5]}', assigned_worker = '${record.values[6]}' WHERE id = ${record.id}`;
 
         console.log(`\n${query}`);
         DBquery(io, 'UPDATE', record.table, {
-            text: query
-          }).then(() => {
-            // Update the barcodes table only if it was modified
-            if (record.barcode !== undefined) {
-              DBquery(io, 'UPDATE', 'barcodes', {
-                  text: `UPDATE barcodes SET available = false WHERE barcode ILIKE (SELECT barcode FROM ${record.table} WHERE pib_number = '${record.values[0]}')`
-                })
-                .catch(err => console.error(err));
-
-              DBquery(io, 'UPDATE', 'barcodes', {
-                  text: `UPDATE barcodes SET available = true WHERE barcode ILIKE '${record.barcode}'`
-                })
-                .catch(err => console.error(err));
-            }
-          })
-          .catch(err => console.error(`Une erreur est survenue lors de la mise à jour des code-barres : ${err}`));
+          text: query
+        });
       });
 
       io.on('delete data', data => {
-        if (data.table === 'drafts') {
-          query = `DELETE FROM ${data.table} WHERE id = '${data.key}'`;
-        } else if (data.table === 'in_requests' || data.table === 'out_requests') {
-          query = `DELETE FROM ${data.table} WHERE pib_number = '${data.key}'`;
-        }
+        query = `DELETE FROM ${data.table}_tasks WHERE id = '${data.key}'`;
 
         DBquery(io, 'DELETE FROM', data.table, {
-            text: query
-          })
-          .then(() => {
-            if (data.table === 'in_requests') {
-              DBquery(io, 'UPDATE', 'barcodes', {
-                  text: `UPDATE barcodes SET available = true WHERE barcode ILIKE '${data.code}'`
-                })
-                .catch(err => {
-                  console.error(`Une erreur est survenue lors de la mise à jour du statut du code-barres ${data.code} :\n${err}`);
-                });
-            }
-          })
-          .catch(err => {
-            console.error(err);
-          });
+          text: query
+        });
       });
     });
   })

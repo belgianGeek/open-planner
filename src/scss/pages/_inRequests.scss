@@ -2,6 +2,17 @@
   margin-left: 3em;
   width: 100%;
 
+  &.absolute {
+    .inRequests__form {
+      font-size: 0.9em;
+
+      &__applicantInfo,
+      &__requestInfo__row1 {
+        justify-content: space-around;
+      }
+    }
+  }
+
   &__step1 {
     @include simple-step();
 
@@ -52,7 +63,7 @@
       &__hide {
         position: relative;
         top: 0;
-        left: 100%;
+        left: 30%;
         margin: 0;
         z-index: 2;
       }
