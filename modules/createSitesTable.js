@@ -1,14 +1,10 @@
 const path = require('path');
 
-const createUsersTable = client => {
-  let table = 'users';
+const createSitesTable = client => {
+  let table = 'sites';
   client.query(`CREATE TABLE IF NOT EXISTS ${table} (
-    id SERIAL,
-    name TEXT,
-    firstname TEXT,
-    email TEXT,
-    site TEXT,
-    gender TEXT)`, (err, res) => {
+    id SERIAL PRIMARY KEY,
+    site TEXT)`, (err, res) => {
       if (err) {
         console.error(`Une erreur est survenue lors de la création de la table ${table} : ${JSON.stringify(err, null, 2)}`);
       } else {
@@ -16,7 +12,7 @@ const createUsersTable = client => {
         client.query(`SELECT * FROM ${table}`)
           .then(res => {
             if (res.rowCount === 0 || res.rowCount === undefined || res.rowCount === null) {
-              client.query(`COPY ${table}(name, firstname, email, site, gender) FROM '/${table}.csv' DELIMITER ',' CSV HEADER`)
+              client.query(`INSERT INTO ${table} VALUES(${process.env.LOCATIONS.split(',')})`)
                 .then(res => {
                   if (res.rowCount > 0) {
                     console.log(`${res.rowCount} enregistrements ont été ajoutés à la table ${table} ;-)`);

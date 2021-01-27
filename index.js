@@ -55,6 +55,7 @@ const createDB = (config, DBname = process.env.DB) => {
         console.log('Reconnexion effectuée !');
         createTasksTables(client, process.env.LOCATIONS.split(','));
         createUsersTable(client);
+        createSitesTable(client);
         // .then(() => {
         //   client.query({
         //       text: 'SELECT * FROM settings'
