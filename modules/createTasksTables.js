@@ -2,7 +2,7 @@ module.exports = function createTasksTables(client, locations) {
   for (const [i, site] of locations.entries()) {
     let table = `site${i + 1}_tasks`;
     client.query(`CREATE TABLE IF NOT EXISTS ${table} (` +
-      'id SERIAL,' +
+      'id SERIAL PRIMARY KEY,' +
       'applicant_name TEXT,' +
       'applicant_firstname TEXT,' +
       'request_date TIMESTAMPTZ,' +
