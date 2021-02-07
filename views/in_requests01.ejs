@@ -4,8 +4,8 @@
     <h2 class="title">Informations du demandeur</h2>
     <span class="inRequests__form__applicantInfo flex">
       <select class="inRequests__form__applicantInfo__location input" required="true">
-        <% for(let i = 0; i < locations.length; i++) { %>
-          <option value="site<%= i + 1 %>"><%= locations[i] %></option>
+        <% for(let location of locations) { %>
+          <option value="<%= location %>"><%= location %></option>
         <% } %>
       </select>
       <input class="inRequests__form__applicantInfo__name input" type="text" placeholder="Nom du demandeur..." required="true">

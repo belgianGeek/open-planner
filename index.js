@@ -41,7 +41,9 @@ const emptyDir = require('./modules/emptyDir');
 const notify = require('./modules/notify');
 const existPath = require('./modules/existPath');
 
-const createTasksTables = require('./modules/createTasksTables');
+const createAssignmentsTable = require('./modules/createAssignmentsTable');
+const createLocationsTable = require('./modules/createLocationsTable');
+const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
 
@@ -53,9 +55,11 @@ const createDB = (config, DBname = process.env.DB) => {
     client.connect()
       .then(() => {
         console.log('Reconnexion effectuée !');
-        createTasksTables(client, process.env.LOCATIONS.split(','));
+        // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
+        createLocationsTable(client);
         createUsersTable(client);
-        createSitesTable(client);
+        createAssignmentsTable(client);
+        createTasksTable(client);
         // .then(() => {
         //   client.query({
         //       text: 'SELECT * FROM settings'
@@ -217,12 +221,10 @@ app.get('/', (req, res) => {
       // }
       // updateBarcode();
 
-      io.emit('locations', process.env.LOCATIONS.split(','));
-
       io.on('append data', data => {
         console.log(JSON.stringify(data, null, 2));
         DBquery(io, 'INSERT INTO', data.table, {
-          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location, comment, assigned_worker, status) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, comment, status) VALUES($1, $2, $3, $4, $5)`,
           values: data.values
         });
       });
@@ -397,7 +399,7 @@ app.get('/', (req, res) => {
       });
 
       io.on('delete data', data => {
-        query = `DELETE FROM ${data.table}_tasks WHERE id = '${data.key}'`;
+        query = `DELETE FROM tasks WHERE id = '${data.key}'`;
 
         DBquery(io, 'DELETE FROM', data.table, {
           text: query

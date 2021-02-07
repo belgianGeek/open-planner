@@ -1,10 +1,10 @@
 const path = require('path');
 
-const createSitesTable = client => {
-  let table = 'sites';
+const createLocationsTable = client => {
+  let table = 'locations';
   client.query(`CREATE TABLE IF NOT EXISTS ${table} (
     id SERIAL PRIMARY KEY,
-    site TEXT)`, (err, res) => {
+    name TEXT)`, (err, res) => {
       if (err) {
         console.error(`Une erreur est survenue lors de la création de la table ${table} : ${JSON.stringify(err, null, 2)}`);
       } else {
@@ -31,4 +31,4 @@ const createSitesTable = client => {
     });
 }
 
-module.exports = createUsersTable;
+module.exports = createLocationsTable;
