@@ -3,7 +3,7 @@ const path = require('path');
 const createUsersTable = client => {
   let table = 'users';
   client.query(`CREATE TABLE IF NOT EXISTS ${table} (
-    id SERIAL,
+    id SERIAL PRIMARY KEY,
     name TEXT,
     firstname TEXT,
     email TEXT,
