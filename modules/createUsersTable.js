@@ -7,16 +7,21 @@ const createUsersTable = client => {
     name TEXT,
     firstname TEXT,
     email TEXT,
-    site TEXT,
-    gender TEXT)`, (err, res) => {
+    location INT,
+    gender TEXT,
+    CONSTRAINT location
+      FOREIGN KEY(location)
+       REFERENCES locations(id)
+        ON DELETE CASCADE
+  )`, (err, res) => {
       if (err) {
-        console.error(`Une erreur est survenue lors de la création de la table ${table} : ${JSON.stringify(err, null, 2)}`);
+        console.error(`Une erreur est survenue lors de la création de la table ${table} : ${err}`);
       } else {
         console.log(`La table ${table} existe déjà...`);
         client.query(`SELECT * FROM ${table}`)
           .then(res => {
             if (res.rowCount === 0 || res.rowCount === undefined || res.rowCount === null) {
-              client.query(`COPY ${table}(name, firstname, email, site, gender) FROM '/${table}.csv' DELIMITER ',' CSV HEADER`)
+              client.query(`COPY ${table}(name, firstname, email, location, gender) FROM '/${table}.csv' DELIMITER ',' CSV HEADER`)
                 .then(res => {
                   if (res.rowCount > 0) {
                     console.log(`${res.rowCount} enregistrements ont été ajoutés à la table ${table} ;-)`);
