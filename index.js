@@ -56,7 +56,7 @@ const createDB = (config, DBname = process.env.DB) => {
       .then(() => {
         console.log('Reconnexion effectuée !');
         // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
-        createLocationsTable(client);
+        createLocationsTable(client, process.env.LOCATIONS.split(','));
         createUsersTable(client);
         createAssignmentsTable(client);
         createTasksTable(client);
