@@ -17,6 +17,19 @@ module.exports = function createAssignmentsTable(client, locations) {
       console.error(`Une erreur est survenue lors de la création de la table ${table} : ${err}`);
     } else {
       console.log(`La table ${table} existe déjà...`);
+      client.query(`SELECT * FROM ${table}`)
+        .then(res => {
+          if (res.rowCount === 0 || res.rowCount === undefined || res.rowCount === null) {
+            client.query(`INSERT INTO ${table}(id_user, id_location) SELECT id, location FROM users`)
+              .then(res => {
+                if (res.rowCount > 1) {
+                  console.log(`${res.rowCount} enregistrements ont été ajoutés à la table ${table} ;-)`);
+                } else {
+                  console.log(`${res.rowCount} enregistrement a été ajouté à la table ${table} ;-)`);
+                }
+              });
+          }
+        });
     }
   });
 }

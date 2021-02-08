@@ -20,7 +20,7 @@ const createLocationsTable = (client, locations) => {
 
               client.query(`INSERT INTO ${table}(name) VALUES${locations2add.split('  ').join(',').replace(/,$/, '')}`)
                 .then(res => {
-                  if (res.rowCount > 0) {
+                  if (res.rowCount > 1) {
                     console.log(`${res.rowCount} enregistrements ont été ajoutés à la table ${table} ;-)`);
                   } else {
                     console.log(`${res.rowCount} enregistrement a été ajouté à la table ${table} ;-)`);
