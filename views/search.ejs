@@ -20,8 +20,8 @@
         <label for="search__container__select">Effectuer une recherche</label>
         <select class="search__container__select" name="search__select">
           <option value="default">Choisissez un site</option>
-          <% for(let i = 0; i < locations.length; i++) { %>
-          <option value="site<%= i + 1 %>"><%= locations[i] %></option>
+          <% for(const [i, location] of locations.entries()) { %>
+          <option value="<%= i + 1 %>"><%= location %></option>
           <% } %>
         </select>
         <input class="search__container__readerInput input" type="text" placeholder="Nom de famille du demandeur">

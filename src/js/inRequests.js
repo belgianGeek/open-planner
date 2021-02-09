@@ -15,7 +15,7 @@ const inRequests = () => {
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
     let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
-    data2send.table = `${applicantLocation.val()}_tasks`;
+    data2send.table = 'tasks';
 
     // Applicant name
     if (applicantName.val() === '') {
@@ -74,7 +74,7 @@ const inRequests = () => {
 
         // Store the date as timestamp
         data2send.values.push(new Date(requestDate.val()).toUTCString());
-        data2send.values.push(applicantLocation.text());
+        data2send.values.push(applicantLocation.val());
         data2send.values.push(requestContent.val());
 
         // Set the notification status if a new record is created
@@ -85,8 +85,7 @@ const inRequests = () => {
           // Default task status
           data2send.values.push('waiting');
 
-          // The task is not yet assigned when it is created
-          data2send.values.push('Non attribué');
+          // Do not send an assigned worker ID because the task is not yet assigned
         } else {
           data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
           data2send.values.push(assignedWorker.val());

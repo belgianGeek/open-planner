@@ -25,7 +25,7 @@ const search = () => {
     searchData.getApplicant = false;
 
     if ($('.search__container__select').val() !== 'default') {
-      searchData.table = `${$('.search__container__select').val()}_tasks`;
+      searchData.location = $('.search__container__select').val();
 
       if ($('.search__container__readerInput').val() !== '') {
         searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
@@ -33,7 +33,7 @@ const search = () => {
 
       socket.emit('search', searchData);
 
-      searchData.table = searchData.applicant_name = '';
+      searchData.location = searchData.applicant_name = '';
       searchData.getApplicant = false;
     }
   });
@@ -67,26 +67,25 @@ const search = () => {
           case 'request_date':
             columnTitle = 'Date';
             break;
-          case 'location':
-            columnTitle = 'Site';
-            break;
           case 'comment':
             columnTitle = 'Contenu de la demande';
             break;
           case 'status':
             columnTitle = 'Statut';
             break;
-          case 'assigned_worker':
+          case 'user_fk':
             columnTitle = 'Attribution';
             break;
           default:
-            columnTitle;
+            columnTitle = '';
         }
 
-        let title = $('<span></span>')
-          .addClass('search__results__container__header__item')
-          .text(columnTitle)
-          .appendTo(header);
+        if (columnTitle !== '') {
+          let title = $('<span></span>')
+            .addClass('search__results__container__header__item')
+            .text(columnTitle)
+            .appendTo(header);
+        }
       }
 
       // Ajout des résultats, ligne par ligne
@@ -123,11 +122,6 @@ const search = () => {
         timestamp.appendTo(row);
         date.appendTo(row);
 
-        let location = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--location')
-          .append(data.location)
-          .appendTo(row);
-
         if (data.barcode !== undefined) {
           let barcode = $('<input>')
             .addClass('search__results__container__row__item search__results__container__row__item--code noInput')
@@ -135,15 +129,21 @@ const search = () => {
             .appendTo(row);
         }
 
+        let assignedWorker = $('<span></span>')
+          .addClass('search__results__container__row__item search__results__container__row__item--aw')
+          .appendTo(row);
+
         let comment = $('<span></span>')
           .addClass('search__results__container__row__item search__results__container__row__item--body')
           .append(data.comment.replace(/\n/gi, '<br>'))
           .appendTo(row);
 
-        let assignedWorker = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--aw')
-          .append(data.assigned_worker)
-          .appendTo(row);
+        if (data.user_fk !== undefined && data.user_fk !== null) assignedWorker.append(data.user_fk);
+        else if (data.user_fk === null) assignedWorker.append('Non attribué');
+        else {
+          assignedWorker.append('Problème d\'affichage :((');
+          console.log(`Assigned worker for task n°${data.id} : ${data.user_fk}`);
+        }
 
         let status = $('\
       <svg xmlns="http://www.w3.org/2000/svg">\
