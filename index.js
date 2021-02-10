@@ -196,174 +196,179 @@ initClient.connect()
 app.use("/src", express.static(__dirname + "/src"));
 
 app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    currentVersion: tag,
-    isSearchPage: false,
-    locations: process.env.LOCATIONS
-  });
-
-  io.once('connection', io => {
-    // const updateBarcode = () => {
-    //   DBquery(io, 'SELECT', 'barcodes', {
-    //       text: `SELECT barcode, available FROM barcodes WHERE available = true LIMIT 1`
-    //     })
-    //     .then(res => {
-    //       let code = res.rows[0].barcode;
-    //
-    //       io.emit('barcode', code);
-    //     })
-    //     .catch(err => {
-    //       notify(io, 'barcode');
-    //       console.error(`Une erreur est survenue lors de l'attribution d'un numéro d'exemplaire : ${err}`);
-    //     });
-    // }
-    // updateBarcode();
-
-    io.on('append data', data => {
-      console.log(JSON.stringify(data, null, 2));
-      DBquery(io, 'INSERT INTO', data.table, {
-        text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
-        values: data.values
-      });
-    });
-  });
-
-  check4updates(io, tag);
-
-  restart(io);
-
-  shutdown(io);
-
-  io.on('delete data', data => {
-    if (data.table === 'in_requests') {
-      let barcode = '';
-
-      DBquery(io, 'SELECT', data.table, {
-          text: `SELECT barcode from ${data.table} WHERE pib_number = ${data.data}`
-        })
-        .then(res => {
-          barcode = res.rows[0].barcode;
-
-          DBquery(io, 'UPDATE', 'barcodes', {
-              text: `UPDATE barcodes SET available = true WHERE barcode ILIKE '${barcode}'`
-            })
-            .catch(err => console.error(`Erreur lors de la mise à jour de la table barcodes : ${err}`));
-        })
-        .then(() => {
-          DBquery(io, 'DELETE FROM', data.table, {
-              text: `DELETE FROM ${data.table} WHERE pib_number = '${data.data}'`
-            })
-            .catch(err => console.error(`L'emprunt ${data.data} n'a pas pu être supprimé : ${err}`));
-        })
-        .then(() => {
-          updateBarcode();
-        })
-        .catch(err => console.error(`Une erreur est survenue lors du processus de suppression de la demande ${data.data} : ${err}`))
-    } else if (data.table === 'out_requests') {
-      DBquery(io, 'DELETE FROM', data.table, {
-          text: `DELETE FROM ${data.table} WHERE pib_number = '${data.data}'`
-        })
-        .catch(err => console.error(`Une erreur est survenue lors de la suppression du prêt ${data.data} : ${err}`));
-    }
-  });
-
-  io.on('export db', format => {
-    emptyDir('exports');
-
-    if (format === 'csv') {
-      DBquery(io, 'COPY', 'in_requests', {
-          text: `COPY in_requests TO '${path.join(__dirname + '/exports/loans.csv')}' DELIMITER ',' CSV HEADER`
-        })
-        .then(() => {
-          DBquery(io, 'COPY', 'out_requests', {
-              text: `COPY out_requests TO '${path.join(__dirname + '/exports/borrowings.csv')}' DELIMITER ',' CSV HEADER`
-            })
-            .then(() => {
-              DBquery(io, 'COPY', 'drafts', {
-                  text: `COPY drafts TO '${path.join(__dirname + '/exports/drafts.csv')}' DELIMITER ',' CSV HEADER`
-                })
-                .then(() => {
-                  // Zip the received files before sending them to the client
-                  let zip = new admZip();
-
-                  zip.addLocalFolder('exports', 'pib-manager-export.zip');
-
-                  file2download.path = 'exports/pib-manager-export.zip';
-                  file2download.name = 'pib-manager-export.zip';
-
-                  zip.writeZip(file2download.path);
-                  io.emit('export successfull');
-                })
-                .catch(err => {
-                  console.error(`Une erreur est survenue lors de l'export de la table des requêtes express : ${err}`);
-                });
-            })
-            .catch(err => {
-              console.error(`Une erreur est survenue lors de l'export de la table des prêts : ${err}`);
-            });
-        })
-        .catch(err => {
-          console.error(`Une erreur est survenue lors de l'export de la table des emprunts : ${err}`);
-        });
-    } else if (format === 'pgsql') {
-      file2download.path = 'exports/pib.pgsql';
-      file2download.name = 'pib.pgsql';
-      exportDB(file2download.path);
-
-      io.emit('export successfull');
-    }
-  });
-
-  io.on('mail request', reader => {
-    DBquery(io, 'SELECT', 'readers', {
-        text: `SELECT email, gender FROM readers WHERE name ILIKE '${reader}'`
-      })
-      .then(res => {
-        io.emit('mail retrieved', {
-          mail: res.rows[0].email.substring(7, 100),
-          gender: res.rows[0].gender
-        });
-      })
-      .catch(err => {
-        console.log(JSON.stringify(err, null, 2));
-      });
-  });
-
-  io.on('send mail', receiver => {
-    mail(receiver, client);
-    notify(io, 'mail');
-  });
-
-  io.on('retrieve readers', name => {
-    if (name.length >= 3) {
-      client.query(`SELECT name FROM readers WHERE name ILIKE '${name}%' LIMIT 5`)
-        .then(res => {
-          io.emit('readers retrieved', res.rows);
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
-  });
-
-  io.on('settings', settings => {
-    if (settings.mail_content !== undefined) {
-      query = `UPDATE settings SET mail_content = '${settings.mail_content}'`;
-      console.log(query);
-    }
-
-    DBquery(io, 'UPDATE', 'settings', {
-      text: query
-    });
-  });
-})
-
-.get('/search', (req, res) => {
-    res.render('search.ejs', {
+    res.render('index.ejs', {
       currentVersion: tag,
-      locations: process.env.LOCATIONS.split(','),
-      isSearchPage: true
+      isSearchPage: false,
+      locations: process.env.LOCATIONS.split(',')
     });
+
+    io.once('connection', io => {
+      // const updateBarcode = () => {
+      //   DBquery(io, 'SELECT', 'barcodes', {
+      //       text: `SELECT barcode, available FROM barcodes WHERE available = true LIMIT 1`
+      //     })
+      //     .then(res => {
+      //       let code = res.rows[0].barcode;
+      //
+      //       io.emit('barcode', code);
+      //     })
+      //     .catch(err => {
+      //       notify(io, 'barcode');
+      //       console.error(`Une erreur est survenue lors de l'attribution d'un numéro d'exemplaire : ${err}`);
+      //     });
+      // }
+      // updateBarcode();
+
+      io.on('append data', data => {
+        console.log(JSON.stringify(data, null, 2));
+        DBquery(io, 'INSERT INTO', data.table, {
+          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
+          values: data.values
+        });
+      });
+    });
+
+    check4updates(io, tag);
+
+    restart(io);
+
+    shutdown(io);
+
+    io.on('delete data', data => {
+      if (data.table === 'in_requests') {
+        let barcode = '';
+
+        DBquery(io, 'SELECT', data.table, {
+            text: `SELECT barcode from ${data.table} WHERE pib_number = ${data.data}`
+          })
+          .then(res => {
+            barcode = res.rows[0].barcode;
+
+            DBquery(io, 'UPDATE', 'barcodes', {
+                text: `UPDATE barcodes SET available = true WHERE barcode ILIKE '${barcode}'`
+              })
+              .catch(err => console.error(`Erreur lors de la mise à jour de la table barcodes : ${err}`));
+          })
+          .then(() => {
+            DBquery(io, 'DELETE FROM', data.table, {
+                text: `DELETE FROM ${data.table} WHERE pib_number = '${data.data}'`
+              })
+              .catch(err => console.error(`L'emprunt ${data.data} n'a pas pu être supprimé : ${err}`));
+          })
+          .then(() => {
+            updateBarcode();
+          })
+          .catch(err => console.error(`Une erreur est survenue lors du processus de suppression de la demande ${data.data} : ${err}`))
+      } else if (data.table === 'out_requests') {
+        DBquery(io, 'DELETE FROM', data.table, {
+            text: `DELETE FROM ${data.table} WHERE pib_number = '${data.data}'`
+          })
+          .catch(err => console.error(`Une erreur est survenue lors de la suppression du prêt ${data.data} : ${err}`));
+      }
+    });
+
+    io.on('export db', format => {
+      emptyDir('exports');
+
+      if (format === 'csv') {
+        DBquery(io, 'COPY', 'in_requests', {
+            text: `COPY in_requests TO '${path.join(__dirname + '/exports/loans.csv')}' DELIMITER ',' CSV HEADER`
+          })
+          .then(() => {
+            DBquery(io, 'COPY', 'out_requests', {
+                text: `COPY out_requests TO '${path.join(__dirname + '/exports/borrowings.csv')}' DELIMITER ',' CSV HEADER`
+              })
+              .then(() => {
+                DBquery(io, 'COPY', 'drafts', {
+                    text: `COPY drafts TO '${path.join(__dirname + '/exports/drafts.csv')}' DELIMITER ',' CSV HEADER`
+                  })
+                  .then(() => {
+                    // Zip the received files before sending them to the client
+                    let zip = new admZip();
+
+                    zip.addLocalFolder('exports', 'pib-manager-export.zip');
+
+                    file2download.path = 'exports/pib-manager-export.zip';
+                    file2download.name = 'pib-manager-export.zip';
+
+                    zip.writeZip(file2download.path);
+                    io.emit('export successfull');
+                  })
+                  .catch(err => {
+                    console.error(`Une erreur est survenue lors de l'export de la table des requêtes express : ${err}`);
+                  });
+              })
+              .catch(err => {
+                console.error(`Une erreur est survenue lors de l'export de la table des prêts : ${err}`);
+              });
+          })
+          .catch(err => {
+            console.error(`Une erreur est survenue lors de l'export de la table des emprunts : ${err}`);
+          });
+      } else if (format === 'pgsql') {
+        file2download.path = 'exports/pib.pgsql';
+        file2download.name = 'pib.pgsql';
+        exportDB(file2download.path);
+
+        io.emit('export successfull');
+      }
+    });
+
+    io.on('mail request', reader => {
+      DBquery(io, 'SELECT', 'readers', {
+          text: `SELECT email, gender FROM readers WHERE name ILIKE '${reader}'`
+        })
+        .then(res => {
+          io.emit('mail retrieved', {
+            mail: res.rows[0].email.substring(7, 100),
+            gender: res.rows[0].gender
+          });
+        })
+        .catch(err => {
+          console.log(JSON.stringify(err, null, 2));
+        });
+    });
+
+    io.on('send mail', receiver => {
+      mail(receiver, client);
+      notify(io, 'mail');
+    });
+
+    io.on('retrieve readers', name => {
+      if (name.length >= 3) {
+        client.query(`SELECT name FROM readers WHERE name ILIKE '${name}%' LIMIT 5`)
+          .then(res => {
+            io.emit('readers retrieved', res.rows);
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
+    });
+
+    io.on('settings', settings => {
+      if (settings.mail_content !== undefined) {
+        query = `UPDATE settings SET mail_content = '${settings.mail_content}'`;
+        console.log(query);
+      }
+
+      DBquery(io, 'UPDATE', 'settings', {
+        text: query
+      });
+    });
+  })
+
+  .get('/search', (req, res) => {
+    client.query(`SELECT id, name, firstname FROM users`)
+      .then(data => {
+        res.render('search.ejs', {
+          currentVersion: tag,
+          locations: process.env.LOCATIONS.split(','),
+          isSearchPage: true,
+          users: data.rows
+        });
+      });
+
     let query = '';
 
     io.once('connection', io => {
@@ -376,7 +381,6 @@ app.get('/', (req, res) => {
           })
           .then(res => {
             if (res.rowCount !== 0 || res.rowCount !== null) {
-              console.log(JSON.stringify(res.rows, null, 2));
               io.emit('search results', res.rows);
             }
           });
@@ -389,7 +393,8 @@ app.get('/', (req, res) => {
       shutdown(io);
 
       io.on('update', record => {
-        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', request_date = '${record.values[2]}', comment = '${record.values[4]}', status = '${record.values[5]}', assigned_worker = '${record.values[6]}' WHERE id = ${record.id}`;
+        console.log(JSON.stringify(record, null, 2));
+        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', request_date = '${record.values[2]}', comment = '${record.values[4]}', status = '${record.values[5]}', user_fk = ${record.values[6]} WHERE id = ${record.id}`;
 
         console.log(`\n${query}`);
         DBquery(io, 'UPDATE', record.table, {

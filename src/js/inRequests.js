@@ -66,7 +66,10 @@ const inRequests = () => {
       applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
       applicantLocation.val(applicantLocation.val().replace(/'/g, "''"));
       requestContent.val(requestContent.val().replace(/'/g, "''"));
-      assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
+
+      if ($('.inRequests').hasClass('absolute')) {
+        assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
+      }
 
       inRequestsTimeOut = setTimeout(() => {
         data2send.values.push(applicantName.val());
