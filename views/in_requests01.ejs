@@ -19,7 +19,13 @@
           <option value="wip">En cours</option>
           <option value="done">Terminé</option>
         </select>
-        <input class="inRequests__form__requestInfo__row1__assignedWorker input hidden" type="text" placeholder="Travailleur assigné..." equired="true">
+        <select class="inRequests__form__requestInfo__row1__assignedWorker input <% if (!isSearchPage) { %>hidden<% } %>" required="true">
+          <% if (isSearchPage) { %>
+            <% for(const user of users) { %>
+              <option value="<%= user.id %>"><%= user.name.toUpperCase() %>, <%= user.firstname %></option>
+            <% } %>
+          <% }%>
+        </select>
         <input class="inRequests__form__requestInfo__row1__requestDate input" type="date" required="true">
         <label>
           Envoyer un mail de notification ?

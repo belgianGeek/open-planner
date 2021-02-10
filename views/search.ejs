@@ -25,7 +25,6 @@
           <% } %>
         </select>
         <input class="search__container__readerInput input" type="text" placeholder="Nom de famille du demandeur">
-        <!-- <input class="search__container__titleInput input" type="text" placeholder="Titre du document"> -->
         <button class="search__container__submit" type="submit">
           <svg class="search__container__submit__svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="arcs">
             <circle cx="11" cy="11" r="8"></circle>
@@ -42,7 +41,10 @@
   <%- include('notification'); %>
   <%- include('contextMenu'); %>
   <%- include('about'); %>
-  <%- include('in_requests01'); %>
+  <%- include('in_requests01', {
+    locations: locations,
+    users: users
+  }); %>
   <%- include('confirmation'); %>
   <%- include('leave'); %>
   <%- include('scripts'); %>
