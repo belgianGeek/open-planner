@@ -222,7 +222,9 @@ const search = () => {
           .removeClass('hidden');
 
         // Show all the fields that can be modified for the request to be updated and assigned
-        $('.inRequests.absolute .inRequests__form__btnContainer__hide, .inRequests__form__requestInfo__row1__assignedWorker, .inRequests.absolute .inRequests__form__requestInfo__row1__status').toggleClass('hidden flex');
+        $('.inRequests.absolute .inRequests__form__btnContainer__hide, .inRequests__form__requestInfo__row1__assignedWorker, .inRequests.absolute .inRequests__form__requestInfo__row1__status')
+          .removeClass('hidden')
+          .addClass('flex');
 
         $('.inRequests__form__applicantInfo__location, .inRequests__form__requestInfo__row1 label')
           .addClass('hidden')
@@ -238,18 +240,18 @@ const search = () => {
 
         // Request status
         if ($(`.${parent} .search__results__container__row__item--status`).hasClass('wip')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('wip');
-        else if ($(`.${parent} .search__results__container__row__item--status`).hasClass('waiting')) $('.inRequests.absolute .inRequests__form__pibInfo__outProvince').val('waiting');
+        else if ($(`.${parent} .search__results__container__row__item--status`).hasClass('waiting')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('waiting');
         else $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('done');
 
         // The form submit is handled in the inRequests function !
         $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(() => {
           // Update the web interface with the changes
-          $(`.${parent} .search__results__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val());
-          $(`.${parent} .search__results__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val());
+          $(`.${parent} .search__results__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val().replace(/\'\'/g, "'"));
+          $(`.${parent} .search__results__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
           $(`.${parent} .search__results__container__row__item--date`).text(new Date($('.inRequests__form__requestInfo__row1__requestDate').val()).toLocaleDateString());
-          $(`.${parent} .search__results__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text());
+          $(`.${parent} .search__results__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text().replace(/\'\'/g, "'"));
           $(`.${parent} .search__results__container__row__item--body`).text($('.inRequests__form__requestInfo__comment').val().replace('\n', '<br>'));
-          $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text());
+          $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
 
           $(`.${parent} .search__results__container__row__item--status`)
             .removeClass('waiting wip done')
