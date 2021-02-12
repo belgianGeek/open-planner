@@ -1,7 +1,7 @@
 module.exports = function createTasksTable(client) {
   let table = `tasks`;
   client.query(`CREATE TABLE IF NOT EXISTS ${table} (
-      id SERIAL PRIMARY KEY,
+      task_id SERIAL PRIMARY KEY,
       applicant_name TEXT,
       applicant_firstname TEXT,
       request_date TIMESTAMPTZ,
@@ -11,11 +11,11 @@ module.exports = function createTasksTable(client) {
       status TEXT,
       CONSTRAINT location_fk
         FOREIGN KEY(location_fk)
-	       REFERENCES locations(id)
+	       REFERENCES locations(location_id)
 	        ON DELETE CASCADE,
       CONSTRAINT user_fk
         FOREIGN KEY(user_fk)
-    	   REFERENCES users(id)
+    	   REFERENCES users(user_id)
     	    ON DELETE CASCADE
   )`, (err, res) => {
     if (err) {
