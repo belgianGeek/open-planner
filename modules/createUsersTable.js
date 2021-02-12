@@ -9,6 +9,7 @@ const createUsersTable = client => {
     email TEXT,
     location INT,
     gender TEXT,
+    password VARCHAR(50),
     CONSTRAINT location
       FOREIGN KEY(location)
        REFERENCES locations(location_id)

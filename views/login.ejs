@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>S'identifier</h1>
+    <% if (messages.error) { %>
+      <p><%=messages.error %></p>
+    <% } %>
+    <form action="/login" method="post">
+      <label>
+        user
+        <input type="text" id="name" name="name" placeholder="Nom d'utilisateur">
+      </label>
+      <label>
+        password
+        <input type="text" id="password" name="poassword" placeholder="Insérez le mot magique">
+      </label>
+      <button type="submit">Valider</button>
+    </form>
+  </body>
+</html>
