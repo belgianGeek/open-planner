@@ -3,7 +3,7 @@ const path = require('path');
 const createUsersTable = client => {
   let table = 'users';
   client.query(`CREATE TABLE IF NOT EXISTS ${table} (
-    id SERIAL PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     name TEXT,
     firstname TEXT,
     email TEXT,
@@ -11,7 +11,7 @@ const createUsersTable = client => {
     gender TEXT,
     CONSTRAINT location
       FOREIGN KEY(location)
-       REFERENCES locations(id)
+       REFERENCES locations(location_id)
         ON DELETE CASCADE
   )`, (err, res) => {
       if (err) {

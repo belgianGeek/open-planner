@@ -55,7 +55,7 @@ const search = () => {
         let columnTitle = column;
 
         switch (column) {
-          case 'id':
+          case 'task_id':
             columnTitle = 'N° de demande';
             break;
           case 'applicant_name':
@@ -96,7 +96,7 @@ const search = () => {
 
         let id = $('<span></span>')
           .addClass('search__results__container__row__item search__results__container__row__item--id')
-          .append(data.id)
+          .append(data.task_id)
           .appendTo(row);
 
         let applicantName = $('<span></span>')
@@ -122,13 +122,6 @@ const search = () => {
         timestamp.appendTo(row);
         date.appendTo(row);
 
-        if (data.barcode !== undefined) {
-          let barcode = $('<input>')
-            .addClass('search__results__container__row__item search__results__container__row__item--code noInput')
-            .val(data.barcode)
-            .appendTo(row);
-        }
-
         let assignedWorker = $('<span></span>')
           .addClass('search__results__container__row__item search__results__container__row__item--aw')
           .appendTo(row);
@@ -138,11 +131,18 @@ const search = () => {
           .append(data.comment.replace(/\n/gi, '<br>'))
           .appendTo(row);
 
-        if (data.user_fk !== undefined && data.user_fk !== null) assignedWorker.append(data.user_fk);
-        else if (data.user_fk === null) assignedWorker.append('Non attribué');
+        if (data.user_fk !== undefined && data.user_fk !== null) {
+          assignedWorker.append(`${data.name.toUpperCase()}, ${data.firstname}`);
+
+          let assignedWorkerID = $('<span></span>')
+            .addClass('search__results__container__row__item--awid hidden')
+            .append(data.user_fk)
+            .appendTo(row);
+
+        } else if (data.user_fk === null) assignedWorker.append('Non attribué');
         else {
           assignedWorker.append('Problème d\'affichage :((');
-          console.log(`Assigned worker for task n°${data.id} : ${data.user_fk}`);
+          console.log(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
         }
 
         let status = $('\
@@ -237,6 +237,7 @@ const search = () => {
         $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val($(`.${parent} .search__results__container__row__item--firstname`).text());
         $('.inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').val(date);
         $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} .search__results__container__row__item--body`).text().replace('<br>', '\n'));
+        $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker').val($(`.${parent} .search__results__container__row__item--awid`).text());
 
         // Request status
         if ($(`.${parent} .search__results__container__row__item--status`).hasClass('wip')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('wip');

@@ -1,16 +1,15 @@
 const process = require('process');
 
-const createSettingsTable = (client, settings) => {
+const createSettingsTable = client => {
   let msg;
   return new Promise(function(resolve, reject) {
     client.query(`CREATE TABLE IF NOT EXISTS settings (
-      library TEXT,
+      sender TEXT,
       mail_address TEXT,
       mail_content TEXT,
       smtp_user TEXT,
       smtp_host TEXT,
       smtp_passwd TEXT,
-      pg_passwd TEXT,
       wallpaper TEXT
   )`, (err, res) => {
       if (err) {
@@ -26,8 +25,8 @@ const createSettingsTable = (client, settings) => {
               console.log('Remplissage initial de la table \'settings\'...');
               let mailContent;
               client.query({
-                  text: `INSERT INTO settings(library, mail_address, mail_content, smtp_user, smtp_host, smtp_passwd, pg_passwd, wallpaper) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
-                  values: [process.env.LIBRARY, process.env.MAIL_SENDER, `Le livre %TITLE%, que vous aviez demandé est à votre disposition à la bibliothèque pendant 10 jours. Une fois ce délai écoulé, nous nous réservons le droit de le renvoyer dans sa bibliothèque d'origine.\n\nBonne journée,\nBien à vous,\n%LIBRARY%`, process.env.MAIL_SENDER, process.env.SMTP_HOST, process.env.SMTP_PASSWD, process.env.PG_PASSWD, '../src/scss/wallpaper.jpg']
+                  text: `INSERT INTO settings(sender, mail_address, mail_content, smtp_user, smtp_host, smtp_passwd, wallpaper) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+                  values: [process.env.SENDER, process.env.MAIL_SENDER, `%APPLICANT% a introduit une nouvelle demande dans le tableau d'intervention sur le site %LOCATION%.\n\nVoici le détail de la demande :\n\n%REQUEST%\n\nBonne journée,\nBien à vous,\n%SENDER%`, process.env.MAIL_SENDER, process.env.SMTP_HOST, process.env.SMTP_PASSWD, '../src/scss/wallpaper.jpg']
                 })
                 .then(res => {
                   msg = 'Remplissage de la table \'settings\' effectué avec succès !';

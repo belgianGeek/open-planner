@@ -61,17 +61,17 @@ const inRequests = () => {
       //     .addClass('flex');
       // }
 
-      // Escape apostrophes
-      applicantName.val(applicantName.val().replace(/'/g, "''"));
-      applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
-      applicantLocation.val(applicantLocation.val().replace(/'/g, "''"));
-      requestContent.val(requestContent.val().replace(/'/g, "''"));
-
-      if ($('.inRequests').hasClass('absolute')) {
-        assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
-      }
-
       inRequestsTimeOut = setTimeout(() => {
+        // Escape apostrophes
+        applicantName.val(applicantName.val().replace(/'/g, "''"));
+        applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
+        applicantLocation.val(applicantLocation.val().replace(/'/g, "''"));
+        requestContent.val(requestContent.val().replace(/'/g, "''"));
+
+        if ($('.inRequests').hasClass('absolute')) {
+          assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
+        }
+
         data2send.values.push(applicantName.val());
         data2send.values.push(applicantFirstname.val());
 
@@ -99,10 +99,20 @@ const inRequests = () => {
         if (!$('.inRequests').hasClass('absolute')) {
           socket.emit('append data', data2send);
 
-          $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');
-
           $('.home').toggleClass('hidden flex');
           $('.header__container__icon, .header__container__msg').toggleClass('hidden');
+
+          // If the user want to send a notification email to the workers team
+          if (data2send.sendMail) {
+            socket.emit('send mail', {
+              request: requestContent.val(),
+              applicant: {
+                name: applicantName.val(),
+                firstname: applicantFirstname.val(),
+                location: applicantLocation.text()
+              }
+            });
+          }
         } else {
           // Else, update the existing record and hide the update form
 
@@ -116,6 +126,8 @@ const inRequests = () => {
           // Hide the button to hide the form
           $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden');
         }
+
+        $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');
 
         confirmation();
 
