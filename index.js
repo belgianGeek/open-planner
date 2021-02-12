@@ -15,6 +15,11 @@ const io = require('socket.io')(server);
 const mail = require('./modules/mail');
 const pibUpdate = require('./modules/update');
 
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+const flash = require('express-flash');
+const session = require('express-session');
+
 server.listen(8000);
 
 const {
@@ -33,6 +38,8 @@ let client;
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
 
+let users = [];
+
 let tag = '0.1.0';
 
 const exportDB = require('./modules/exportDB');
@@ -44,6 +51,11 @@ const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
+
+const passportInit = require('./modules/passport');
+passportInit(passport, name => {
+  users.find(user => user.name === name);
+});
 
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
@@ -58,19 +70,6 @@ const createDB = (config, DBname = process.env.DB) => {
         createUsersTable(client);
         createTasksTable(client);
         createSettingsTable(client);
-
-        client.query('SELECT * FROM tasks INNER JOIN users ON tasks.user_fk = users.user_id')
-          .then(res => console.log(res.rows))
-          .catch(err => console.error(err));
-        // .then(() => {
-        //   client.query({
-        //       text: 'SELECT * FROM settings'
-        //     })
-        //     .then(res => {
-        //       settings = res.rows[0];
-        //     });
-        // })
-        // .catch(err => console.error(err));
       })
       .catch(err => {
         console.log(err);
@@ -197,7 +196,18 @@ initClient.connect()
     return;
   });
 
+app.set('view engine', 'ejs');
 app.use("/src", express.static(__dirname + "/src"));
+app.use(express.urlencoded({extended: false}));
+app.use(flash());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  savedUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', (req, res) => {
     res.render('index.ejs', {
@@ -329,6 +339,37 @@ app.get('/', (req, res) => {
         });
       });
     });
+  })
+
+  .get('/login', (req, res) => {
+    res.render('login.ejs');
+  })
+
+  .post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+  }))
+
+  .get('/register', (req, res) => {
+    res.render('register.ejs');
+  })
+
+  .post('/register', async (req, res) => {
+    try {
+      const hash = await bcrypt.hash(req.body.password, 10);
+      users.push({
+        name: req.body.name,
+        password: hash
+      });
+
+      res.redirect('/login');
+    } catch (e) {
+      res.redirect('/register');
+      console.error(e);
+    }
+
+    console.log(users);
   })
 
   .get('/search', (req, res) => {
