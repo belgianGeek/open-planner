@@ -38,7 +38,7 @@ let client;
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
 
-let users = [];
+const users = [];
 
 let tag = '0.1.0';
 
@@ -53,9 +53,11 @@ const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
 
 const passportInit = require('./modules/passport');
-passportInit(passport, name => {
-  users.find(user => user.name === name);
-});
+passportInit(
+  passport,
+  name => users.find(user => user.name === name),
+  id => users.find(user => user.id === id)
+);
 
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
@@ -359,6 +361,7 @@ app.get('/', (req, res) => {
     try {
       const hash = await bcrypt.hash(req.body.password, 10);
       users.push({
+        id: Date.now().toString(),
         name: req.body.name,
         password: hash
       });
