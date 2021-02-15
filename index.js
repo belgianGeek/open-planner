@@ -19,6 +19,7 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const flash = require('express-flash');
 const session = require('express-session');
+const methodOverride = require('method-override');
 
 server.listen(8000);
 
@@ -51,6 +52,9 @@ const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
+
+const checkAuth = require('./modules/checkAuth');
+const checkNotAuth = require('./modules/checkNotAuth');
 
 const passportInit = require('./modules/passport');
 passportInit(
@@ -211,7 +215,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req, res) => {
+app.use(methodOverride('_method'));
+
+app.get('/', checkAuth, (req, res) => {
     res.render('index.ejs', {
       currentVersion: tag,
       isSearchPage: false,
@@ -343,21 +349,21 @@ app.get('/', (req, res) => {
     });
   })
 
-  .get('/login', (req, res) => {
+  .get('/login', checkNotAuth, (req, res) => {
     res.render('login.ejs');
   })
 
-  .post('/login', passport.authenticate('local', {
+  .post('/login', checkNotAuth, passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
   }))
 
-  .get('/register', (req, res) => {
+  .get('/register', checkNotAuth, (req, res) => {
     res.render('register.ejs');
   })
 
-  .post('/register', async (req, res) => {
+  .post('/register', checkNotAuth, async (req, res) => {
     try {
       const hash = await bcrypt.hash(req.body.password, 10);
       users.push({
@@ -375,7 +381,7 @@ app.get('/', (req, res) => {
     console.log(users);
   })
 
-  .get('/search', (req, res) => {
+  .get('/search', checkAuth, (req, res) => {
     client.query(`SELECT user_id, name, firstname FROM users`)
       .then(data => {
         res.render('search.ejs', {
@@ -448,4 +454,9 @@ app.get('/', (req, res) => {
     res.download(file2download.path, file2download.name, err => {
       if (err) console.log(JSON.stringify(err, null, 2));
     });
+  })
+
+  .delete('/logout', (req, res) => {
+    req.logOut();
+    res.redirect('/login');
   });
