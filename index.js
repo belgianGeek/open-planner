@@ -204,7 +204,9 @@ initClient.connect()
 
 app.set('view engine', 'ejs');
 app.use("/src", express.static(__dirname + "/src"));
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(flash());
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -360,25 +362,40 @@ app.get('/', checkAuth, (req, res) => {
   }))
 
   .get('/register', checkNotAuth, (req, res) => {
-    res.render('register.ejs');
+    res.render('register.ejs', {
+      locations: process.env.LOCATIONS.split(',')
+    });
   })
 
   .post('/register', checkNotAuth, async (req, res) => {
-    try {
-      const hash = await bcrypt.hash(req.body.password, 10);
-      users.push({
-        id: Date.now().toString(),
-        name: req.body.name,
-        password: hash
-      });
 
-      res.redirect('/login');
+    try {
+      let failure;
+      const hash = await bcrypt.hash(req.body.password, 10);
+      const result = await client.query(`SELECT * FROM users`);
+      if (result.rows !== null) {
+        // Check if the given username is not already in use
+        let regex = new RegExp(req.body.name, 'i');
+        if (result.rows.find(user => user.name.match(regex)) === null && result.rows.find(user => user.name.match(regex)) === undefined) {
+          failure = false;
+
+          DBquery(io, 'INSERT INTO', 'users', {
+            text: `INSERT INTO users(firstname, name, email, location, gender, password) VALUES('${req.body.firstname}', '${req.body.name}', '${req.body.email}', ${req.body.location}, '${req.body.gender}', '${req.body.password}')`
+          }, false);
+        } else {
+          failure = true;
+        }
+      }
+
+      if (failure) {
+        res.redirect('/register');
+      } else {
+        res.redirect('/login');
+      }
     } catch (e) {
       res.redirect('/register');
       console.error(e);
     }
-
-    console.log(users);
   })
 
   .get('/search', checkAuth, (req, res) => {
