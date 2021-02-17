@@ -10,18 +10,15 @@ const register = () => {
   $('.register__form__btnContainer__submit').click(event => {
     event.preventDefault();
     data2send.table = 'users';
-
     // Déterminer le genre du lecteur
     $('.register__form input.radio').each(function() {
       if ($(this).is(':checked')) {
         gender = $(this).val();
       }
     });
-
     if (username.val() === '') {
       invalid(username);
     }
-
     if (userFirstname.val() === '') {
       invalid(userFirstname);
     }
@@ -37,7 +34,6 @@ const register = () => {
     if (!validationErr) {
       $('.input').removeClass('invalid');
       $('form .warning').hide();
-
       confirmation();
 
       registerTimeout = setTimeout(function() {
@@ -54,16 +50,12 @@ const register = () => {
 
         socket.emit('append data', data2send);
         data2send.values = [];
-
         $('.register')
           .removeAttr('style')
           .toggleClass('hidden flex');
-
         confirmation();
-
         $('.home').toggleClass('hidden flex');
         $('.header__container__icon, .header__container__msg').toggleClass('hidden');
-
         $('.register input').not('.radio').val('');
       }, 5000);
     } else {
@@ -73,7 +65,6 @@ const register = () => {
           .text('Certains champs sont incorrects...')
           .appendTo('.register__form');
       };
-
       validationErr = false;
       data2send.values = [];
     }
