@@ -1,27 +1,27 @@
-const addReader = () => {
-  let addReaderTimeout;
-  let readerName = $('.addReader__step1__form__nameContainer__readerName');
-  let readerFirstname = $('.addReader__step1__form__nameContainer__readerFirstName');
-  let mail = $('.addReader__step1__form__email__input');
+const register = () => {
+  let registerTimeout;
+  let username = $('.register__form__nameContainer__username');
+  let userFirstname = $('.register__form__nameContainer__userFirstName');
+  let mail = $('.register__form__email__input');
   let gender = '';
 
-  $('.addReader__step1__form__btnContainer__submit').click(event => {
+  $('.register__form__btnContainer__submit').click(event => {
     event.preventDefault();
-    data2send.table = 'readers';
+    data2send.table = 'users';
 
     // Déterminer le genre du lecteur
-    $('.addReader__step1__form input.radio').each(function() {
+    $('.register__form input.radio').each(function() {
       if ($(this).is(':checked')) {
         gender = $(this).val();
       }
     });
 
-    if (readerName.val() === '') {
-      invalid(readerName);
+    if (username.val() === '') {
+      invalid(username);
     }
 
-    if (readerFirstname.val() === '') {
-      invalid(readerFirstname);
+    if (userFirstname.val() === '') {
+      invalid(userFirstname);
     }
 
     if (mail.is(':invalid')) {
@@ -34,11 +34,11 @@ const addReader = () => {
 
       confirmation();
 
-      addReaderTimeout = setTimeout(function() {
-        data2send.values.push(`${capitalizeFirstLetter(readerName.val())}, ${capitalizeFirstLetter(readerFirstname.val())}`);
+      registerTimeout = setTimeout(function() {
+        data2send.values.push(`${capitalizeFirstLetter(username.val())}, ${capitalizeFirstLetter(userFirstname.val())}`);
 
         if (mail.val() !== '') {
-          data2send.values.push(`mailto:${mail.val()}`);
+          data2send.values.push(mail.val());
         }
 
         data2send.values.push(gender);
@@ -46,7 +46,7 @@ const addReader = () => {
         socket.emit('append data', data2send);
         data2send.values = [];
 
-        $('.addReader__step1')
+        $('.register')
           .removeAttr('style')
           .toggleClass('hidden flex');
 
@@ -55,14 +55,14 @@ const addReader = () => {
         $('.home').toggleClass('hidden flex');
         $('.header__container__icon, .header__container__msg').toggleClass('hidden');
 
-        $('.addReader__step1 input').not('.radio').val('');
+        $('.register input').not('.radio').val('');
       }, 5000);
     } else {
       if (!$('form .warning').length) {
         let warning = $('<span></span>')
           .addClass('warning')
           .text('Certains champs sont incorrects...')
-          .appendTo('.addReader__step1__form');
+          .appendTo('.register__form');
       };
 
       validationErr = false;
@@ -70,7 +70,7 @@ const addReader = () => {
     }
   });
 
-  $('.addReader__form__btnContainer__reset').click(() => {
+  $('.register__form__btnContainer__reset').click(() => {
     $('.input').removeClass('invalid');
     $('form .warning').hide();
     validationErr = false;
@@ -78,11 +78,11 @@ const addReader = () => {
   });
 
   $('.confirmation__body__cancel').click(() => {
-    clearTimeout(addReaderTimeout);
+    clearTimeout(registerTimeout);
   });
 }
 
-$('.addReaderLink').click(() => {
-  $('.home, .returnIcon, .header__container__msg, .addReader__step1').toggleClass('hidden flex');
-  addReader();
+$('.registerLink').click(() => {
+  $('.home, .returnIcon, .header__container__msg, .register').toggleClass('hidden flex');
+  register();
 });
