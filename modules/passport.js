@@ -5,22 +5,22 @@ function passportInit(passport, getUserByName, getUserById) {
   const authenticatedUser = async (name, password, done) => {
     const user = getUserByName(name);
 
-    if (user === null) {
+    if (user === null || user === undefined) {
       return done(null, false, {
         message: 'No user found'
       });
-    }
-
-    try {
-      if (await bcrypt.compare(password, user.password)) {
-        return done(null, user);
-      } else {
-        return done(null, false, {
-          message: 'Incorrect password'
-        });
+    } else {
+      try {
+        if (await bcrypt.compare(password, user.password)) {
+          return done(null, user);
+        } else {
+          return done(null, false, {
+            message: 'Incorrect password'
+          });
+        }
+      } catch (e) {
+        return done(e);
       }
-    } catch (e) {
-      return done(e);
     }
   }
 
