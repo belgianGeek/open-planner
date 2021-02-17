@@ -232,12 +232,48 @@ app.get('/', checkAuth, (req, res) => {
     });
 
     io.once('connection', io => {
-      io.on('append data', data => {
-        console.log(JSON.stringify(data, null, 2));
-        DBquery(io, 'INSERT INTO', data.table, {
-          text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
-          values: data.values
-        });
+      io.on('append data', async data => {
+        if (data.table === 'tasks') {
+          DBquery(io, 'INSERT INTO', data.table, {
+            text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
+            values: data.values
+          });
+        } else if (data.table === 'users') {
+          try {
+            let failure;
+            const hash = await bcrypt.hash(data.values[5], 10);
+            data.values.pop();
+            const result = await client.query(`SELECT * FROM users`);
+
+            const addUser = () => {
+              DBquery(io, 'INSERT INTO', data.table, {
+                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password) VALUES($1, $2, $3, $4, $5, '${hash}')`,
+                values: data.values
+              });
+            }
+
+            if (result.rows !== null) {
+              // Check if the given username is not already in use
+              if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
+                failure = false;
+
+                addUser();
+              } else {
+                failure = true;
+              }
+            } else {
+              addUser();
+            }
+
+            if (failure) {
+              notify(io, 'failure');
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          console.error(`Unable to append data : ${data.table} is not supported or does not exist`);
+        }
       });
 
       check4updates(io, tag);
@@ -365,42 +401,6 @@ app.get('/', checkAuth, (req, res) => {
     failureRedirect: '/login',
     failureFlash: true
   }))
-
-  .get('/register', checkNotAuth, (req, res) => {
-    res.render('register.ejs', {
-      locations: process.env.LOCATIONS.split(',')
-    });
-  })
-
-  .post('/register', checkNotAuth, async (req, res) => {
-
-    try {
-      let failure;
-      const hash = await bcrypt.hash(req.body.password, 10);
-      const result = await client.query(`SELECT * FROM users`);
-      if (result.rows !== null) {
-        // Check if the given username is not already in use
-        if (result.rows.find(user => user.name.toLowerCase().match(req.body.name.toLowerCase())) === undefined) {
-          failure = false;
-
-          DBquery(io, 'INSERT INTO', 'users', {
-            text: `INSERT INTO users(firstname, name, email, location, gender, password) VALUES('${req.body.firstname}', '${req.body.name}', '${req.body.email}', ${req.body.location}, '${req.body.gender}', '${hash}')`
-          }, false);
-        } else {
-          failure = true;
-        }
-      }
-
-      if (failure) {
-        res.redirect('/register');
-      } else {
-        res.redirect('/login');
-      }
-    } catch (e) {
-      res.redirect('/register');
-      console.error(e);
-    }
-  })
 
   .get('/search', checkAuth, (req, res) => {
     client.query(`SELECT user_id, name, firstname FROM users`)
