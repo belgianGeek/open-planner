@@ -50,8 +50,8 @@ $('.returnIcon').click(() => {
   }
 
   const goBack = (elt1, elt2) => {
-    if (elt1.match(/(step1)/gi)) {
-      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1/gi)) {
+    if (elt1.match(/(step1|register)/gi)) {
+      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|register/gi)) {
         backHome(elt1);
       } /* else if ($(elt1).is(':visible') && elt1.match(/inRequests/gi)) {
         $(elt1)
@@ -78,7 +78,7 @@ $('.returnIcon').click(() => {
   }
 
   goBack('.inReturns__step1');
-  goBack('.addReader__step1');
+  goBack('.register');
   goBack('.inRequests__step1');
 
   // goBack('.outRequests__step1', '.requestTypeChoice');
