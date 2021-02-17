@@ -39,8 +39,6 @@ let client;
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
 
-const users = [];
-
 let tag = '0.1.0';
 
 const exportDB = require('./modules/exportDB');
@@ -57,11 +55,6 @@ const checkAuth = require('./modules/checkAuth');
 const checkNotAuth = require('./modules/checkNotAuth');
 
 const passportInit = require('./modules/passport');
-passportInit(
-  passport,
-  name => users.find(user => user.name === name),
-  id => users.find(user => user.id === id)
-);
 
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
@@ -76,6 +69,18 @@ const createDB = (config, DBname = process.env.DB) => {
         createUsersTable(client);
         createTasksTable(client);
         createSettingsTable(client);
+
+        const getUsers = async () => {
+          const users = await client.query('SELECT * FROM users');
+
+          passportInit(
+            passport,
+            name => users.rows.find(user => user.name === name),
+            id => users.rows.find(user => user.user_id === id)
+          );
+        }
+
+        getUsers();
       })
       .catch(err => {
         console.log(err);
@@ -375,12 +380,11 @@ app.get('/', checkAuth, (req, res) => {
       const result = await client.query(`SELECT * FROM users`);
       if (result.rows !== null) {
         // Check if the given username is not already in use
-        let regex = new RegExp(req.body.name, 'i');
-        if (result.rows.find(user => user.name.match(regex)) === null && result.rows.find(user => user.name.match(regex)) === undefined) {
+        if (result.rows.find(user => user.name.toLowerCase().match(req.body.name.toLowerCase())) === undefined) {
           failure = false;
 
           DBquery(io, 'INSERT INTO', 'users', {
-            text: `INSERT INTO users(firstname, name, email, location, gender, password) VALUES('${req.body.firstname}', '${req.body.name}', '${req.body.email}', ${req.body.location}, '${req.body.gender}', '${req.body.password}')`
+            text: `INSERT INTO users(firstname, name, email, location, gender, password) VALUES('${req.body.firstname}', '${req.body.name}', '${req.body.email}', ${req.body.location}, '${req.body.gender}', '${hash}')`
           }, false);
         } else {
           failure = true;
