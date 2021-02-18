@@ -247,7 +247,7 @@ app.get('/', checkAuth, (req, res) => {
 
             const addUser = () => {
               DBquery(io, 'INSERT INTO', data.table, {
-                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password) VALUES($1, $2, $3, $4, $5, '${hash}')`,
+                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
                 values: data.values
               });
             }

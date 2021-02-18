@@ -10,6 +10,7 @@ const createUsersTable = client => {
     location INT,
     gender TEXT,
     password VARCHAR(100),
+    type VARCHAR(20),
     CONSTRAINT location
       FOREIGN KEY(location)
        REFERENCES locations(location_id)
@@ -22,7 +23,7 @@ const createUsersTable = client => {
         client.query(`SELECT * FROM ${table}`)
           .then(res => {
             if (res.rowCount === 0 || res.rowCount === undefined || res.rowCount === null) {
-              client.query(`COPY ${table}(name, firstname, email, location, gender) FROM '/${table}.csv' DELIMITER ',' CSV HEADER`)
+              client.query(`COPY ${table}(name, firstname, email, location, gender, password, type) FROM '/${table}.csv' DELIMITER ',' CSV HEADER`)
                 .then(res => {
                   if (res.rowCount > 0) {
                     console.log(`${res.rowCount} enregistrements ont été ajoutés à la table ${table} ;-)`);

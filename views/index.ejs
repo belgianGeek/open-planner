@@ -44,6 +44,7 @@
         <label class="register__form__location flex">
           Implantation
           <select class="input">
+            <option value="default">Choisissez une implantation...</option>
             <% for(const [i, location] of locations.entries()) { %>
             <option value="<%= i + 1 %>"><%= location %></option>
             <% } %>
@@ -56,6 +57,14 @@
         <label class="register__form__email flex">
           Adresse email
           <input class="input" type="email" placeholder="Adresse email" required>
+        </label>
+        <label class="register__form__type flex">
+          Type de compte
+          <select class="input">
+            <option value="default">Choisissez un type de compte...</option>
+            <option value="admin">Administrateur</option>
+            <option value="guest">Visiteur</option>
+          </select>
         </label>
         <h3 class="register__form__title title">Sexe</h3>
         <span class="register__form__gender flex">
@@ -102,7 +111,6 @@
   <%- include('confirmation'); %>
   <%- include('leave'); %>
   <%- include('settings'); %>
-  <%- include('register'); %>
   <%- include('scripts'); %>
 </body>
 
