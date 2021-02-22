@@ -135,6 +135,10 @@
       left: -60vw;
     }
 
+    form {
+      width: 100%;
+    }
+
     &__item {
       padding: 0.5em 0;
       margin: 0.5em;
@@ -155,6 +159,12 @@
 
       &__legend {
         width: 70%;
+
+        &.btn {
+          padding: 0;
+          background: none;
+          width: auto;
+        }
       }
     }
 
