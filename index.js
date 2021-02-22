@@ -338,21 +338,6 @@ app.get('/', checkAuth, async (req, res) => {
         }
       });
 
-      // io.on('mail request', user => {
-      //   DBquery(io, 'SELECT', 'users', {
-      //       text: `SELECT email, gender FROM users WHERE applicant_name ILIKE '${user.name}' AND applicant_firstname = '${user.firstname}'`
-      //     })
-      //     .then(res => {
-      //       io.emit('mail retrieved', {
-      //         mail: res.rows[0].email,
-      //         gender: res.rows[0].gender
-      //       });
-      //     })
-      //     .catch(err => {
-      //       console.log(JSON.stringify(err, null, 2));
-      //     });
-      // });
-
       io.on('send mail', data => {
         let receiver = {
           mail: '',
@@ -373,18 +358,6 @@ app.get('/', checkAuth, async (req, res) => {
           .catch(err => {
             console.log(JSON.stringify(err, null, 2));
           });
-      });
-
-      io.on('retrieve readers', name => {
-        if (name.length >= 3) {
-          client.query(`SELECT name FROM readers WHERE name ILIKE '${name}%' LIMIT 5`)
-            .then(res => {
-              io.emit('readers retrieved', res.rows);
-            })
-            .catch(err => {
-              console.error(err);
-            });
-        }
       });
 
       io.on('settings', settings => {
@@ -419,7 +392,6 @@ app.get('/', checkAuth, async (req, res) => {
         try {
           let failure;
           const hash = await bcrypt.hash(data.values[6], 10);
-          console.log(data.values);
           data.values.pop();
           const result = await client.query(`SELECT * FROM users`);
 
