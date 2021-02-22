@@ -1,0 +1,63 @@
+<section class="register <%= registerClass %>">
+  <% let title = ''; %>
+  <% let postURL = ''; %>
+
+  <% if (firstUser) { %>
+    <% postURL = '/login'; %>
+    <% title = 'Créer un compte'; %>
+  <% } else { %>
+    <% postURL = '/'; %>
+    <% title = 'Ajouter un utilisateur'; %>
+  <% } %>
+  <h2 class="register__title title"><%= title %></h2>
+  <form class="register__form flex" action="<%= postURL %>" method="post">
+    <label class="register__form__username flex">
+      Nom
+      <input class="input" type="text" placeholder="Nom" required>
+    </label>
+    <label class="register__form__userFirstName flex">
+      Prénom
+      <input class="input" type="text" placeholder="Prénom" required>
+    </label>
+    <label class="register__form__location flex">
+      Implantation
+      <select class="input">
+        <option value="default">Choisissez une implantation...</option>
+        <% for(const [i, location] of locations.entries()) { %>
+        <option value="<%= i + 1 %>"><%= location %></option>
+        <% } %>
+      </select>
+    </label>
+    <label class="register__form__password flex">
+      Mot de passe
+      <input class="input" type="password" placeholder="Insérez le mot magique">
+    </label>
+    <label class="register__form__email flex">
+      Adresse email
+      <input class="input" type="email" placeholder="Adresse email" required>
+    </label>
+    <label class="register__form__type flex">
+      Type de compte
+      <select class="input">
+        <option value="default">Choisissez un type de compte...</option>
+        <option value="admin">Administrateur</option>
+        <option value="guest">Visiteur</option>
+      </select>
+    </label>
+    <h3 class="register__form__title title">Sexe</h3>
+    <span class="register__form__gender flex">
+      <label class"register__form__male">
+        <input class="input radio" name="gender" type="radio" value="m">
+        Masculin
+      </label>
+      <label class"register__form__female__label">
+        <input class="input radio" name="gender" type="radio" value="f">
+        Féminin
+      </label>
+    </span>
+    <span class="register__form__btnContainer flex">
+      <button class="register__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
+      <button class="register__form__btnContainer__submit btn btn--submit" type="submit">Valider</button>
+    </span>
+  </form>
+</section>

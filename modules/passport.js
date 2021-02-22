@@ -7,15 +7,16 @@ function passportInit(passport, getUserByName, getUserById) {
 
     if (user === null || user === undefined) {
       return done(null, false, {
-        message: 'No user found'
+        message: 'Aucune correspondance trouvée... Vérifie ton nom d\'utilisateur et ton mot de passe'
       });
     } else {
       try {
+        console.log(password, user.password);
         if (await bcrypt.compare(password, user.password)) {
           return done(null, user);
         } else {
           return done(null, false, {
-            message: 'Incorrect password'
+            message: 'Mot de passe incorrect'
           });
         }
       } catch (e) {

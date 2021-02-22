@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="src/scss/prefixed/index.css">
+  <link rel="icon" type="image/png" href="src/scss/icons/favicon.png">
+  <title></title>
+</head>
+
+<body>
+  <% if (!firstUser) { %>
     <h1>S'identifier</h1>
     <% if (messages.error) { %>
       <p><%=messages.error %></p>
@@ -12,13 +17,18 @@
     <form action="/login" method="post">
       <label>
         user
-        <input type="text" name="name" placeholder="Nom d'utilisateur">
+        <input class="input" type="text" name="name" placeholder="Nom d'utilisateur">
       </label>
       <label>
         password
-        <input type="text" name="password" placeholder="Insérez le mot magique">
+        <input class="input" type="text" name="password" placeholder="Insérez le mot magique">
       </label>
       <button type="submit">Valider</button>
     </form>
-  </body>
+  <% } else { %>
+    <%- include('register',  {registerClass: 'flex', locations: locations}); %>
+  <% } %>
+  <%- include('scripts'); %>
+</body>
+
 </html>
