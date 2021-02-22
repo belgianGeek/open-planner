@@ -30,9 +30,12 @@
       </span>
     </section>
     <%- include('in_requests01', {locations: locations}); %>
+    <% if (userType === 'admin') { %>
     <%- include('register', {registerClass: 'hidden', locations: locations}); %>
+    <% } %>
   </main>
   <%- include('notification'); %>
+  <% if (userType === 'admin') { %>
   <span class="export hidden">
     <span class="export__child flex">
       <h2 class="export__child__title title">Exporter la base de données</h2>
@@ -55,10 +58,11 @@
       </section>
     </span>
   </span>
-  <%- include('about'); %>
-  <%- include('confirmation'); %>
   <%- include('leave'); %>
   <%- include('settings'); %>
+  <% } %>
+  <%- include('about'); %>
+  <%- include('confirmation'); %>
   <%- include('scripts'); %>
 </body>
 
