@@ -235,7 +235,8 @@ app.get('/', checkAuth, async (req, res) => {
       currentVersion: tag,
       firstUser: firstUser,
       isSearchPage: false,
-      locations: process.env.LOCATIONS.split(',')
+      locations: process.env.LOCATIONS.split(','),
+      userType: req.user.type
     });
 
     io.once('connection', io => {
@@ -246,9 +247,10 @@ app.get('/', checkAuth, async (req, res) => {
             values: data.values
           });
         } else if (data.table === 'users') {
+          console.log(data);
           try {
             let failure;
-            const hash = await bcrypt.hash(data.values[5], 10);
+            const hash = await bcrypt.hash(data.values[6], 10);
             data.values.pop();
             const result = await client.query(`SELECT * FROM users`);
 
@@ -417,7 +419,7 @@ app.get('/', checkAuth, async (req, res) => {
         try {
           let failure;
           const hash = await bcrypt.hash(data.values[6], 10);
-          console.log(data.values[6], hash);
+          console.log(data.values);
           data.values.pop();
           const result = await client.query(`SELECT * FROM users`);
 

@@ -11,7 +11,6 @@ function passportInit(passport, getUserByName, getUserById) {
       });
     } else {
       try {
-        console.log(password, user.password);
         if (await bcrypt.compare(password, user.password)) {
           return done(null, user);
         } else {

@@ -8,7 +8,9 @@
           <u>Version</u>
           <p> :</p>
           <p class="currentVersion"><%= currentVersion %></p>
+          <% if (userType === 'admin') { %>
           <button class="updateBtn btn home-btn" type="button">Mettre à jour</button>
+          <% } %>
         </span>
         <span class="about__container__child__section__right__item dev flex">
           <u>Développeur</u>
