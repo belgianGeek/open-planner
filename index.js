@@ -254,9 +254,9 @@ app.get('/', checkAuth, async (req, res) => {
 
             const addUser = () => {
               DBquery(io, 'INSERT INTO', data.table, {
-                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
-                values: data.values
-              });
+                  text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
+                  values: data.values
+                });
             }
 
             if (result.rows !== null) {
@@ -417,6 +417,7 @@ app.get('/', checkAuth, async (req, res) => {
         try {
           let failure;
           const hash = await bcrypt.hash(data.values[6], 10);
+          console.log(data.values[6], hash);
           data.values.pop();
           const result = await client.query(`SELECT * FROM users`);
 
