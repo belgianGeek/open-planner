@@ -224,9 +224,16 @@ app.use(passport.session());
 
 app.use(methodOverride('_method'));
 
-app.get('/', checkAuth, (req, res) => {
+app.get('/', checkAuth, async (req, res) => {
+    const response = await client.query(`SELECT * FROM users`);
+    let firstUser = false;
+    if (!response.rowCount) {
+      firstUser = true;
+    }
+
     res.render('index.ejs', {
       currentVersion: tag,
+      firstUser: firstUser,
       isSearchPage: false,
       locations: process.env.LOCATIONS.split(',')
     });
@@ -351,7 +358,6 @@ app.get('/', checkAuth, (req, res) => {
         };
 
         let applicant = data.applicant;
-        console.log(applicant);
 
         DBquery(io, 'SELECT', 'users', {
             text: `SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id`
@@ -392,8 +398,57 @@ app.get('/', checkAuth, (req, res) => {
     });
   })
 
-  .get('/login', checkNotAuth, (req, res) => {
-    res.render('login.ejs');
+  .get('/login', checkNotAuth, async (req, res) => {
+    const response = await client.query(`SELECT * FROM users`);
+    if (response.rowCount) {
+      res.render('login.ejs', {
+        firstUser: false,
+        locations: process.env.LOCATIONS.split(',')
+      });
+    } else {
+      res.render('login.ejs', {
+        firstUser: true,
+        locations: process.env.LOCATIONS.split(',')
+      });
+    }
+
+    io.on('connection', io => {
+      io.on('append data', async data => {
+        try {
+          let failure;
+          const hash = await bcrypt.hash(data.values[6], 10);
+          data.values.pop();
+          const result = await client.query(`SELECT * FROM users`);
+
+          const addUser = () => {
+            DBquery(io, 'INSERT INTO', data.table, {
+                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
+                values: data.values
+              })
+              .then(() => io.emit('user added'));
+          }
+
+          if (result.rows !== null) {
+            // Check if the given username is not already in use
+            if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
+              failure = false;
+
+              addUser();
+            } else {
+              failure = true;
+            }
+          } else {
+            addUser();
+          }
+
+          if (failure) {
+            notify(io, 'failure');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    });
   })
 
   .post('/login', checkNotAuth, passport.authenticate('local', {
