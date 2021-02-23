@@ -56,6 +56,16 @@ const checkNotAuth = require('./modules/checkNotAuth');
 
 const passportInit = require('./modules/passport');
 
+const getUsers = async () => {
+  const users = await client.query('SELECT * FROM users');
+
+  passportInit(
+    passport,
+    name => users.rows.find(user => user.name === name),
+    id => users.rows.find(user => user.user_id === id)
+  );
+}
+
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
     console.log(`Base de données ${DBname} créée avec succès, création des tables en cours...`);
@@ -69,16 +79,6 @@ const createDB = (config, DBname = process.env.DB) => {
         createUsersTable(client);
         createTasksTable(client);
         createSettingsTable(client);
-
-        const getUsers = async () => {
-          const users = await client.query('SELECT * FROM users');
-
-          passportInit(
-            passport,
-            name => users.rows.find(user => user.name === name),
-            id => users.rows.find(user => user.user_id === id)
-          );
-        }
 
         getUsers();
       })
@@ -251,15 +251,14 @@ app.get('/', checkAuth, async (req, res) => {
           console.log(data);
           try {
             let failure;
-            const hash = await bcrypt.hash(data.values[6], 10);
-            data.values.pop();
+            data.values[6] = await bcrypt.hash(data.values[6], 10);
             const result = await client.query(`SELECT * FROM users`);
 
             const addUser = () => {
               DBquery(io, 'INSERT INTO', data.table, {
-                  text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
-                  values: data.values
-                });
+                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+                values: data.values
+              }).then(() => getUsers());
             }
 
             if (result.rows !== null) {
@@ -394,16 +393,16 @@ app.get('/', checkAuth, async (req, res) => {
       io.on('append data', async data => {
         try {
           let failure;
-          const hash = await bcrypt.hash(data.values[6], 10);
-          data.values.pop();
+          data.values[6] = await bcrypt.hash(data.values[6], 10);
           const result = await client.query(`SELECT * FROM users`);
 
           const addUser = () => {
             DBquery(io, 'INSERT INTO', data.table, {
-                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, password, type) VALUES($1, $2, $3, $4, $5, '${hash}', $6)`,
+                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7)`,
                 values: data.values
               })
-              .then(() => io.emit('user added'));
+              .then(() => io.emit('user added'))
+              .then(() => getUsers());
           }
 
           if (result.rows !== null) {
