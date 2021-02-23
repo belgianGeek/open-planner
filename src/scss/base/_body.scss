@@ -77,6 +77,11 @@ body {
     @media(max-width: 1000px) {
       height: 100vh;
     }
+
+    &.loginWrapper {
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 
   .blur {
