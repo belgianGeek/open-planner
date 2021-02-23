@@ -236,6 +236,7 @@ app.get('/', checkAuth, async (req, res) => {
       firstUser: firstUser,
       isSearchPage: false,
       locations: process.env.LOCATIONS.split(','),
+      programName: process.env.PROGRAM_NAME,
       userType: req.user.type
     });
 
@@ -378,12 +379,14 @@ app.get('/', checkAuth, async (req, res) => {
     if (response.rowCount) {
       res.render('login.ejs', {
         firstUser: false,
-        locations: process.env.LOCATIONS.split(',')
+        locations: process.env.LOCATIONS.split(','),
+        programName: process.env.PROGRAM_NAME
       });
     } else {
       res.render('login.ejs', {
         firstUser: true,
-        locations: process.env.LOCATIONS.split(',')
+        locations: process.env.LOCATIONS.split(','),
+        programName: process.env.PROGRAM_NAME
       });
     }
 
@@ -439,6 +442,7 @@ app.get('/', checkAuth, async (req, res) => {
           currentVersion: tag,
           locations: process.env.LOCATIONS.split(','),
           isSearchPage: true,
+          programName: process.env.PROGRAM_NAME,
           users: data.rows,
           userType: req.user.type
         });

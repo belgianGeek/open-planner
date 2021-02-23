@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr-BE" dir="ltr">
 
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="src/scss/prefixed/index.css">
-  <link rel="icon" type="image/png" href="src/scss/icons/favicon.png">
-  <title>Node Planner</title>
-</head>
+<%- include('head'); %>
 
 <body>
   <div class="backgroundColor"></div>
@@ -20,7 +15,7 @@
   </header>
   <main class="wrapper flex">
     <section class="home flex">
-      <h1 class="home__mainTitle">Bienvenue dans Node Planner</h1>
+      <h1 class="home__mainTitle"><%= programName %></h1>
       <h2 class="home__title title">Que veux-tu faire ?</h2>
       <span class="home__btnContainer flex">
         <button class="home__btnContainer__newRequest btn home-btn" type="button">Rentrer une nouvelle demande</button>
