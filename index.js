@@ -439,7 +439,8 @@ app.get('/', checkAuth, async (req, res) => {
           currentVersion: tag,
           locations: process.env.LOCATIONS.split(','),
           isSearchPage: true,
-          users: data.rows
+          users: data.rows,
+          userType: req.user.type
         });
       });
 
