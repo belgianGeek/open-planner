@@ -39,7 +39,9 @@
     </section>
   </main>
   <%- include('notification'); %>
-  <%- include('contextMenu'); %>
+  <% if (userType === 'admin') { %>
+    <%- include('contextMenu'); %>
+  <% } %>
   <%- include('about'); %>
   <%- include('in_requests01', {
     locations: locations,
