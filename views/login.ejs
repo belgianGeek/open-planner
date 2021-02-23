@@ -4,25 +4,28 @@
 <%- include('head'); %>
 
 <body>
-  <% if (!firstUser) { %>
-    <h1>S'identifier</h1>
-    <% if (messages.error) { %>
-      <p><%=messages.error %></p>
+  <main class="wrapper loginWrapper flex">
+    <h1 class="title home__mainTitle"><%= programName %></h1>
+    <% if (!firstUser) { %>
+      <form class="login flex" action="/login" method="post">
+        <h1 class="title home__mainTitle">S'identifier</h1>
+        <label  class="flex">
+          Adresse email
+          <input class="input" type="text" name="name" placeholder="Adresse email">
+        </label>
+        <label  class="flex">
+          Mot de passe
+          <input class="input" type="password" name="password" placeholder="Insérez le mot magique">
+        </label>
+        <button class="btn home-btn" type="submit">Se connecter</button>
+        <% if (messages.error) { %>
+          <p class="warning"><%= messages.error %></p>
+        <% } %>
+      </form>
+    <% } else { %>
+      <%- include('register',  {registerClass: 'flex', locations: locations}); %>
     <% } %>
-    <form action="/login" method="post">
-      <label>
-        user
-        <input class="input" type="text" name="name" placeholder="Nom d'utilisateur">
-      </label>
-      <label>
-        password
-        <input class="input" type="text" name="password" placeholder="Insérez le mot magique">
-      </label>
-      <button type="submit">Valider</button>
-    </form>
-  <% } else { %>
-    <%- include('register',  {registerClass: 'flex', locations: locations}); %>
-  <% } %>
+  </main>
   <%- include('scripts'); %>
 </body>
 
