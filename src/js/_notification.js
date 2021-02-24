@@ -22,17 +22,7 @@ socket.on('notification', notification => {
     $('.notification')
       .removeClass('notificationInfo notificationSuccess notificationFailure')
       .addClass('notificationMail');
-    $('.notification__msg').text('Mail envoyé au lecteur 😎');
-  } else if (notification.type === 'barcode') {
-    $('.notification__icon').attr('src', './src/scss/icons/error.svg');
-    $('.notification')
-      .removeClass('notificationInfo notificationSuccess notificationFailure')
-      .addClass('notificationFailure');
-    $('.notification__msg').text('Plus aucun code-barres n\'est disponible... 😶');
-
-    // Empty all the barcode-related fields to prevent duplicate addings
-    $('.inRequests__barcode__svg').remove();
-    $('.inRequests__form__docInfo__inv').val('');
+    $('.notification__msg').text('Mail envoyé 😎');
   }
 
   $('.notification')
