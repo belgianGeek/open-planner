@@ -26,8 +26,8 @@
     </section>
     <%- include('in_requests01', {locations: locations}); %>
     <% if (userType === 'admin') { %>
-    <%- include('register', {registerClass: 'hidden', locations: locations}); %>
-    <%- include('users'); %>
+      <%- include('users'); %>
+      <%- include('register', {registerClass: 'hidden', locations: locations}); %>
     <% } %>
   </main>
   <%- include('notification'); %>
@@ -58,6 +58,7 @@
   <%- include('settings'); %>
   <% } %>
   <%- include('about'); %>
+  <%- include('contextMenu'); %>
   <%- include('confirmation'); %>
   <%- include('scripts'); %>
 </body>
