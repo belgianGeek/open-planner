@@ -148,6 +148,7 @@ const search = () => {
         let status = $('\
       <svg xmlns="http://www.w3.org/2000/svg">\
         <circle cx="50%" cy="50%" r="5"/>\
+        <title class="status__title"></title>\
       </svg>\
       ').addClass('search__results__container__row__item search__results__container__row__item--status')
           .attr('viewBox', '0 0 75 10')
@@ -157,14 +158,20 @@ const search = () => {
           status
             .removeClass('done wip')
             .addClass('waiting');
+
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En attente d\'attribution');
         } else if (data.status === 'done') {
           status
             .removeClass('waiting wip')
             .addClass('done');
+
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('Terminée');
         } else {
           status
             .removeClass('done waiting')
             .addClass('wip');
+
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En cours de traitement');
         }
       }
 
@@ -173,29 +180,17 @@ const search = () => {
       // Only show the customized context menu is the user is admin
       if ($('.context').length) {
         $('.search__results__container__row').contextmenu(function(e) {
-          const setMenuPosition = height => {
-            $('.context')
-              .css({
-                left: `${e.pageX}px`,
-                top: `${height}px`
-              })
-              .toggleClass('hidden flex');
-          }
-
-          // get the current mouse position
-          getMousePosition();
+          $('.context')
+            .css({
+              left: `${e.pageX}px`,
+              top: `${e.pageY}px`
+            })
+            .toggleClass('hidden flex');
 
           // Store the selected row in a variable
           parent = $(this).attr('class').split(' ')[1];
 
           e.preventDefault();
-
-          if ($('.search__container__select').val() !== 'out_requests') {
-            setMenuPosition(mousePosition.y);
-          } else {
-            setMenuPosition(e.pageY);
-          }
-
 
           // Hide the context menu on left-click to prevent displaying it indefinitely
           $('.search__results, .search__results *').click(function(e) {
