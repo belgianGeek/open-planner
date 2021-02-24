@@ -13,27 +13,6 @@ const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.
 // Check if all the fomr fields are fullfilled before submit
 let validationErr = false;
 
-// const handleSimpleStep = (element, step1, step2, btn) => {
-//   $(`${element}__${step1}__${btn}`).click(() => {
-//     if (!validationErr) {
-//       $(`${element}__${step1}`).toggleClass('translateXbackwards hidden flex');
-//
-//       // Empty all inpout fields to prevent errors while sending the notification email
-//       // if no change is made to the list (if so, the reader's gender is undefined)
-//       if (`${element}__${step1}` === '.inRequests__step3') {
-//         $('.inRequests__step4 input').val('');
-//       }
-//
-//       $(`${element}__${step2}`)
-//         .removeClass('translateXonwards hidden')
-//         .toggleClass('fixed flex');
-//
-//     }
-//   });
-// }
-//
-// handleSimpleStep('.inRequests', 'step1', 'step2', 'confirmation');
-
 $('.returnIcon').click(() => {
   const backHome = step => {
     $(step)
@@ -50,20 +29,10 @@ $('.returnIcon').click(() => {
   }
 
   const goBack = (elt1, elt2) => {
-    if (elt1.match(/(step1|register)/gi)) {
-      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|register/gi)) {
+    if (elt1.match(/(step1|users)/gi)) {
+      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|users/gi)) {
         backHome(elt1);
-      } /* else if ($(elt1).is(':visible') && elt1.match(/inRequests/gi)) {
-        $(elt1)
-          .removeClass('translateXbackwards translateXonwards flex')
-          .addClass('hidden'); */
-
-        // if ($('.requestTypeChoice').hasClass('newRequest')) {
-        //   $('.requestTypeChoice')
-        //     .addClass('flex')
-        //     .removeClass('hidden')
-        // }
-      // }
+      }
     } else {
       if ($(elt1).is(':visible')) {
         $(elt1)
@@ -77,21 +46,8 @@ $('.returnIcon').click(() => {
     }
   }
 
-  goBack('.inReturns__step1');
-  goBack('.register');
+  goBack('.users');
   goBack('.inRequests__step1');
-
-  // goBack('.outRequests__step1', '.requestTypeChoice');
-  // goBack('.inRequests__step1', '.requestTypeChoice');
-  // goBack('.outRequests__step2', '.outRequests__step1');
-  // goBack('.outRequests__step3', '.outRequests__step2');
-  // goBack('.outRequests__step4', '.outRequests__step3');
-  // goBack('.inRequests__step2', '.inRequests__step1');
-  // goBack('.inRequests__step4', '.inRequests__step3');
-  // goBack('.inReturns__step2', '.inReturns__step1');
-  // goBack('.inReturns__step3', '.inReturns__step2');
-  // goBack('.outReturns__step2', '.outReturns__step1');
-  // goBack('.outReturns__step3', '.outReturns__step2');
 });
 
 $('.menu__item').click(() => {
