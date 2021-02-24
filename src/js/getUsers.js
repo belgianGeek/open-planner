@@ -1,4 +1,4 @@
-const getUsers = () => {
+const manageUsers = () => {
   $('.usersLink').click(() => {
     $('.home, .returnIcon, .header__container__msg, .users').toggleClass('hidden flex');
     socket.emit('get users');
@@ -75,6 +75,11 @@ const getUsers = () => {
           .append(data.location_name)
           .appendTo(row);
 
+        let locationID = $('<span></span>')
+          .addClass('users__container__row__item users__container__row__item--location_id hidden')
+          .append(data.location_id)
+          .appendTo(row);
+
         let password = $('<input>')
           .attr('type', 'password')
           .addClass('users__container__row__item users__container__row__item--pwd input noInput')
@@ -121,61 +126,43 @@ const getUsers = () => {
         });
 
         $('.context__list__item--modify').click(function() {
-          // Format the date to be year, Month (0-indexed) and the day
-          let date = $(`.${parent} .search__results__container__row__item--timestamp`).text();
+          $('.users').addClass('blur');
 
-          $('.wrapper').addClass('blur');
-
-          $('.inRequests')
-            .addClass('absolute flex')
+          $('.register')
+            .addClass('absolute zero flex')
             .removeClass('hidden');
 
-          // Show all the fields that can be modified for the request to be updated and assigned
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide, .inRequests__form__requestInfo__row1__assignedWorker, .inRequests.absolute .inRequests__form__requestInfo__row1__status')
-            .removeClass('hidden')
-            .addClass('flex');
+          // Modify the title to mention the user
+          $('.register__title').text(`Modification de l'utilisateur ${$(`.${parent} .users__container__row__item--firstname`).text()}
+            ${$(`.${parent} .users__container__row__item--name`).text()}`);
 
-          $('.inRequests__form__applicantInfo__location, .inRequests__form__requestInfo__row1 label')
-            .addClass('hidden')
-            .removeClass('flex');
+          // Hide the gender option
+          $('.register.absolute .register__form__gender').addClass('hidden');
 
           // Fill in all the fields with the selected record data
-          $('.inRequests.absolute .inRequests__id').text($(`.${parent} .search__results__container__row__item--id`).text());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__location').val($(`.search__container__select`).val());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__name').val($(`.${parent} .search__results__container__row__item--name`).text());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val($(`.${parent} .search__results__container__row__item--firstname`).text());
-          $('.inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').val(date);
-          $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} .search__results__container__row__item--body`).text().replace('<br>', '\n'));
-          $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker').val($(`.${parent} .search__results__container__row__item--awid`).text());
+          $('.register.absolute .register__form__username input').val($(`.${parent} .users__container__row__item--name`).text());
+          $('.register.absolute .register__form__userFirstName input').val($(`.${parent} .users__container__row__item--firstname`).text());
+          $('.register.absolute .register__form__email input').val($(`.${parent} .users__container__row__item--email`).text());
+          $('.register.absolute .register__form__location select').val($(`.${parent} .users__container__row__item--location_id`).text());
+          $('.register.absolute .register__form__type select').val($(`.${parent} .users__container__row__item--type`).text());
 
-          // Request status
-          if ($(`.${parent} .search__results__container__row__item--status`).hasClass('wip')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('wip');
-          else if ($(`.${parent} .search__results__container__row__item--status`).hasClass('waiting')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('waiting');
-          else $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('done');
-
-          // The form submit is handled in the inRequests function !
-          $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(() => {
+          // The form submit is handled in the register function !
+          $('.register.absolute .register__form__btnContainer__submit').click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .search__results__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--date`).text(new Date($('.inRequests__form__requestInfo__row1__requestDate').val()).toLocaleDateString());
-            $(`.${parent} .search__results__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--body`).text($('.inRequests__form__requestInfo__comment').val().replace('\n', '<br>'));
-            $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
-
-            $(`.${parent} .search__results__container__row__item--status`)
-              .removeClass('waiting wip done')
-              .addClass($('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val());
-
+            $(`.${parent} .users__container__row__item--name`).text($('.register__form__username').val().replace(/\'\'/g, "'"));
+            $(`.${parent} .users__container__row__item--firstname`).text($('.register__form__userFirstname').val().replace(/\'\'/g, "'"));
+            $(`.${parent} .users__container__row__item--email`).text($('.register__form__email').val());
+            $(`.${parent} .users__container__row__item--location`).text($('.register__form__location option:selected').text().replace(/\'\'/g, "'"));
+            $(`.${parent} .users__container__row__item--type`).text($('.register__form__type option:selected').val());
           });
 
           // Hide the form on btn click
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide').click(function() {
-            $('.inRequests')
+          $('.register.absolute .register__form__btnContainer__hide').click(function() {
+            $('.register')
               .removeClass('absolute flex')
               .addClass('hidden');
 
-            $('.wrapper').removeClass('blur backgroundColor');
+            $('.users').removeClass('blur backgroundColor');
 
             // Hide the button to hide the form
             $(this).addClass('hidden');
@@ -184,7 +171,7 @@ const getUsers = () => {
 
         $('.context__list__item--del').click(function() {
           let record2delete = {
-            key: $(`.${parent} .search__results__container__row__item--id`).text(),
+            key: $(`.${parent} .users__container__row__item--id`).text(),
             table: $('.search__container__select').val()
           };
 
@@ -221,4 +208,4 @@ const getUsers = () => {
   });
 }
 
-getUsers();
+manageUsers();
