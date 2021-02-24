@@ -60,7 +60,7 @@ const getUsers = async () => {
 
   passportInit(
     passport,
-    name => users.rows.find(user => user.name === name),
+    email => users.rows.find(user => user.email === email),
     id => users.rows.find(user => user.user_id === id)
   );
 }
