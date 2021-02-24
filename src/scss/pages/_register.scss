@@ -8,6 +8,10 @@
     background-color: $translucent-black;
     padding: 1em;
     border-radius: 0.5em;
+
+    .home-btn {
+      display: block;
+    }
   }
 
   &__form {
@@ -39,6 +43,10 @@
     &__btnContainer {
       justify-content: space-evenly;
       padding-top: 1.5em;
+
+      .home-btn {
+        display: none;
+      }
     }
 
     &__nameContainer {

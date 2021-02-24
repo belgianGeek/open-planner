@@ -61,7 +61,13 @@ const register = () => {
         // Push the password last because it will be extracted on the server
         data2send.values.push(password.val());
 
-        socket.emit('append data', data2send);
+        if (!$('.register').hasClass('absolute')) {
+          socket.emit('append data', data2send);
+        } else {
+          data2send.id = $('.register.absolute .register__form__userID').val();
+          socket.emit('update', data2send);
+        }
+
         data2send.values = [];
 
         $('.register')

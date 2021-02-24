@@ -11,6 +11,7 @@
   <% } %>
   <h2 class="register__title title"><%= title %></h2>
   <form class="register__form flex" action="<%= postURL %>" method="post">
+    <input class="hidden register__form__userID" type="text">
     <label class="register__form__username flex">
       Nom
       <input class="input" type="text" placeholder="Nom" required>
@@ -46,11 +47,11 @@
     </label>
     <h3 class="register__form__title title">Sexe</h3>
     <span class="register__form__gender flex">
-      <label class"register__form__male">
+      <label class="register__form__male">
         <input class="input radio" name="gender" type="radio" value="m">
         Masculin
       </label>
-      <label class"register__form__female__label">
+      <label class="register__form__female">
         <input class="input radio" name="gender" type="radio" value="f">
         Féminin
       </label>
@@ -58,6 +59,7 @@
     <span class="register__form__btnContainer flex">
       <button class="register__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
       <button class="register__form__btnContainer__submit btn btn--submit" type="submit">Valider</button>
+      <button class="register__form__btnContainer__hide btn home-btn" type="button">Annuler</button>
     </span>
   </form>
 </section>
