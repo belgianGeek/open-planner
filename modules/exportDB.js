@@ -7,7 +7,7 @@ const exportDB = name => {
       console.error(`Erreur lors de l'export de la DB: ${err}`);
       return;
     } else {
-      console.log(`La base de données a été exportée avec succès !`);
+      console.log(`La base de données '${process.env.DB}' a été exportée avec succès !`);
       return;
     }
   });

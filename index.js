@@ -6,7 +6,6 @@ const ip = require('ip');
 const cp = require('child_process').exec;
 const path = require('path');
 const process = require('process');
-const admZip = require('adm-zip');
 const os = require('os');
 
 const server = require('http').Server(app);
@@ -295,43 +294,23 @@ app.get('/', checkAuth, async (req, res) => {
         emptyDir('exports');
 
         if (format === 'csv') {
-          DBquery(io, 'COPY', 'in_requests', {
-              text: `COPY in_requests TO '${path.join(__dirname + '/exports/loans.csv')}' DELIMITER ',' CSV HEADER`
+          const table = 'tasks';
+          const filename = table + '-' + new Date().toUTCString().replace(/\s/g, '-') + '.csv';
+          DBquery(io, 'COPY', table, {
+              text: `COPY ${table} TO '${path.join(__dirname + '/exports/' + filename)}' DELIMITER ',' CSV HEADER`
             })
             .then(() => {
-              DBquery(io, 'COPY', 'out_requests', {
-                  text: `COPY out_requests TO '${path.join(__dirname + '/exports/borrowings.csv')}' DELIMITER ',' CSV HEADER`
-                })
-                .then(() => {
-                  DBquery(io, 'COPY', 'drafts', {
-                      text: `COPY drafts TO '${path.join(__dirname + '/exports/drafts.csv')}' DELIMITER ',' CSV HEADER`
-                    })
-                    .then(() => {
-                      // Zip the received files before sending them to the client
-                      let zip = new admZip();
+              file2download.path = `exports/${filename}`;
+              file2download.name = filename;
 
-                      zip.addLocalFolder('exports', 'pib-manager-export.zip');
-
-                      file2download.path = 'exports/pib-manager-export.zip';
-                      file2download.name = 'pib-manager-export.zip';
-
-                      zip.writeZip(file2download.path);
-                      io.emit('export successfull');
-                    })
-                    .catch(err => {
-                      console.error(`Une erreur est survenue lors de l'export de la table des requêtes express : ${err}`);
-                    });
-                })
-                .catch(err => {
-                  console.error(`Une erreur est survenue lors de l'export de la table des prêts : ${err}`);
-                });
+              io.emit('export successfull');
             })
             .catch(err => {
-              console.error(`Une erreur est survenue lors de l'export de la table des emprunts : ${err}`);
+              console.error(`Une erreur est survenue lors de l'export de la table ${table} : ${err}`);
             });
         } else if (format === 'pgsql') {
-          file2download.path = 'exports/pib.pgsql';
-          file2download.name = 'pib.pgsql';
+          file2download.path = `exports/${process.env.DB}-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
+          file2download.name = `${process.env.DB}-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
           exportDB(file2download.path);
 
           io.emit('export successfull');
