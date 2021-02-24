@@ -247,7 +247,6 @@ app.get('/', checkAuth, async (req, res) => {
             values: data.values
           });
         } else if (data.table === 'users') {
-          console.log(data);
           try {
             let failure;
             data.values[6] = await bcrypt.hash(data.values[6], 10);
@@ -282,6 +281,11 @@ app.get('/', checkAuth, async (req, res) => {
         } else {
           console.error(`Unable to append data : ${data.table} is not supported or does not exist`);
         }
+      });
+
+      io.on('get users', async () => {
+        const users = await client.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+        io.emit('users retrieved', users.rows);
       });
 
       check4updates(io, tag);

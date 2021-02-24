@@ -27,6 +27,7 @@
     <%- include('in_requests01', {locations: locations}); %>
     <% if (userType === 'admin') { %>
     <%- include('register', {registerClass: 'hidden', locations: locations}); %>
+    <%- include('users'); %>
     <% } %>
   </main>
   <%- include('notification'); %>

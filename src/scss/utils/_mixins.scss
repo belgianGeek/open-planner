@@ -50,6 +50,60 @@
   flex-direction: column;
   height: 60vh;
 }
+@mixin tabContainer($width: 100%) {
+  width: $width;
+  height: 100%;
+  font-size: 1.05em;
+  align-self: center;
+  overflow: auto;
+  flex-direction: column;
+  background-color: $translucent-black;
+
+  &__header {
+    background-color: $translucent-black;
+    height: max-content;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    &__item {
+      text-align: center;
+      flex: 1;
+      padding: 1em;
+      border: 2px solid $electric-blue;
+    }
+  }
+
+  &__row {
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+
+    &__item {
+      text-align: center;
+      flex: 1;
+      padding: 1em;
+      min-width: 0;
+
+      &--status {
+        justify-content: center;
+      }
+
+      &--status.done circle {
+        fill: $green;
+      }
+
+      &--status.wip circle {
+        fill: $orange;
+      }
+
+      &--status.waiting circle {
+        fill: $red;
+      }
+    }
+  }
+}
 @mixin warning {
   color: red;
   font-style: italic;

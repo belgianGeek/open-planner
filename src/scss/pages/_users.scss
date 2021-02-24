@@ -1,0 +1,25 @@
+.users {
+  flex-direction: column;
+  width: 100%;
+  height: 80%;
+  align-items: center;
+
+  &__title {
+    font-family: 'Lobster Two Bold Italic', sans-serif;
+    font-size: 2em;
+  }
+
+  &__container {
+    width: 60%;
+    height: 80%;
+    justify-content: flex-start;
+    overflow: auto;
+    @include box-shadow;
+    @include tabContainer(80%);
+
+    &__row__item--email {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
