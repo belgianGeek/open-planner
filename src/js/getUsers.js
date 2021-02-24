@@ -55,6 +55,11 @@ const manageUsers = () => {
           .addClass(`users__container__row users__container__row--${i} flex`)
           .appendTo('.users__container');
 
+        let id = $('<span></span>')
+          .addClass(`users__container__row__item users__container__row__item--id hidden`)
+          .append(data.user_id)
+          .appendTo(row);
+
         let name = $('<span></span>')
           .addClass('users__container__row__item users__container__row__item--name')
           .append(data.name.replace(/\'\'/g, "'"))
@@ -78,6 +83,11 @@ const manageUsers = () => {
         let locationID = $('<span></span>')
           .addClass('users__container__row__item users__container__row__item--location_id hidden')
           .append(data.location_id)
+          .appendTo(row);
+
+        let gender = $('<span></span>')
+          .addClass('users__container__row__item users__container__row__item--gender hidden')
+          .append(data.gender)
           .appendTo(row);
 
         let password = $('<input>')
@@ -136,15 +146,20 @@ const manageUsers = () => {
           $('.register__title').text(`Modification de l'utilisateur ${$(`.${parent} .users__container__row__item--firstname`).text()}
             ${$(`.${parent} .users__container__row__item--name`).text()}`);
 
-          // Hide the gender option
-          $('.register.absolute .register__form__gender').addClass('hidden');
-
           // Fill in all the fields with the selected record data
+          $('.register.absolute .register__form__userID').val($(`.${parent} .users__container__row__item--id`).text());
           $('.register.absolute .register__form__username input').val($(`.${parent} .users__container__row__item--name`).text());
           $('.register.absolute .register__form__userFirstName input').val($(`.${parent} .users__container__row__item--firstname`).text());
           $('.register.absolute .register__form__email input').val($(`.${parent} .users__container__row__item--email`).text());
           $('.register.absolute .register__form__location select').val($(`.${parent} .users__container__row__item--location_id`).text());
           $('.register.absolute .register__form__type select').val($(`.${parent} .users__container__row__item--type`).text());
+
+          // Fill in the user's gender
+          if ($(`.${parent} .users__container__row__item--gender`).text() === 'm') {
+            $('.register.absolute .register__form__male input').attr('checked', true);
+          } else {
+            $('.register.absolute .register__form__female input').attr('checked', true);
+          }
 
           // The form submit is handled in the register function !
           $('.register.absolute .register__form__btnContainer__submit').click(() => {
@@ -205,6 +220,23 @@ const manageUsers = () => {
         });
       }
     }
+  });
+
+  // Hide the form on btn click
+  $('.register.absolute .register__form__btnContainer__hide').click(function() {
+    $('.register')
+      .removeClass('absolute flex')
+      .addClass('hidden');
+
+    $('.users').removeClass('blur backgroundColor');
+  });
+
+  $('.register.absolute .register__form__btnContainer__submit').click(function() {
+    $('.register')
+      .removeClass('absolute flex')
+      .addClass('hidden');
+
+    $('.users').removeClass('blur backgroundColor');
   });
 }
 
