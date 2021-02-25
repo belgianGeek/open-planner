@@ -1,4 +1,21 @@
 const manageUsers = () => {
+  // Hide the header to prevent users from going back to the home page
+  const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
+
+  // Hide the form on btn click
+  const hideRegisterForm = () => {
+    $('.register.absolute .register__form__btnContainer__hide').click(function() {
+      $('.register')
+        .removeClass('absolute zero flex')
+        .addClass('hidden');
+
+      $('.users').removeClass('blur backgroundColor');
+
+      // Hide the button to hide the form
+      $(this).addClass('hidden');
+    });
+  }
+
   $('.usersLink').click(() => {
     $('.home, .returnIcon, .header__container__msg, .users').toggleClass('hidden flex');
     socket.emit('get users');
@@ -136,7 +153,11 @@ const manageUsers = () => {
         });
 
         $('.context__list__item--modify').click(function() {
-          $('.users').addClass('blur');
+          $('.users').addClass('blur backgroundColor');
+
+          toggleHeader();
+
+          hideRegisterForm();
 
           $('.register')
             .addClass('absolute zero flex')
@@ -169,18 +190,6 @@ const manageUsers = () => {
             $(`.${parent} .users__container__row__item--email`).text($('.register__form__email').val());
             $(`.${parent} .users__container__row__item--location`).text($('.register__form__location option:selected').text().replace(/\'\'/g, "'"));
             $(`.${parent} .users__container__row__item--type`).text($('.register__form__type option:selected').val());
-          });
-
-          // Hide the form on btn click
-          $('.register.absolute .register__form__btnContainer__hide').click(function() {
-            $('.register')
-              .removeClass('absolute flex')
-              .addClass('hidden');
-
-            $('.users').removeClass('blur backgroundColor');
-
-            // Hide the button to hide the form
-            $(this).addClass('hidden');
           });
         });
 
@@ -222,18 +231,31 @@ const manageUsers = () => {
     }
   });
 
-  // Hide the form on btn click
-  $('.register.absolute .register__form__btnContainer__hide').click(function() {
-    $('.register')
-      .removeClass('absolute flex')
-      .addClass('hidden');
+  // Add user
+  $('.users__header__addUserBtn').click(function() {
+    toggleHeader();
 
-    $('.users').removeClass('blur backgroundColor');
+    $('.users').addClass('blur backgroundColor');
+
+    // Set all the input fields to their default value
+    $('.register input').not('.radio').val('');
+    $('.register select').val('default');
+
+    // Make sure the title is correct
+    $('.register__title').text('Ajouter un utilisateur');
+
+    $('.register')
+      .addClass('absolute zero flex')
+      .removeClass('hidden');
+
+    hideRegisterForm();
   });
 
   $('.register.absolute .register__form__btnContainer__submit').click(function() {
+    toggleHeader();
+
     $('.register')
-      .removeClass('absolute flex')
+      .removeClass('absolute zero flex')
       .addClass('hidden');
 
     $('.users').removeClass('blur backgroundColor');

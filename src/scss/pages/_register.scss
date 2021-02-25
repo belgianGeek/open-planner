@@ -1,13 +1,27 @@
 .register {
   flex-direction: column;
-  width: 50%;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  font-size: 1em;
+  font-size: 1.1em;
+
+  &__title {
+    text-align: center;
+    font-family: 'Lobster Two Bold Italic', sans-serif;
+    font-size: 1.5em;
+    margin: 0.5em 0;
+  }
 
   &.absolute {
     background-color: $translucent-black;
     padding: 1em;
     border-radius: 0.5em;
+    top: 0;
+    align-items: center;
+
+    .register__form {
+      width: 80%;
+    }
 
     .home-btn {
       display: block;
@@ -43,6 +57,7 @@
     &__btnContainer {
       justify-content: space-evenly;
       padding-top: 1.5em;
+      align-items: baseline;
 
       .home-btn {
         display: none;

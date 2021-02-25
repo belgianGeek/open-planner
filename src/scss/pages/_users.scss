@@ -4,9 +4,21 @@
   height: 80%;
   align-items: center;
 
-  &__title {
-    font-family: 'Lobster Two Bold Italic', sans-serif;
-    font-size: 2em;
+  &__header {
+    width: 80%;
+    align-items: baseline;
+
+    &__addUserBtn {
+      margin: 0;
+      height: max-content;
+    }
+
+    &__title {
+      font-family: 'Lobster Two Bold Italic', sans-serif;
+      font-size: 2em;
+      text-align: center;
+      flex: 1;
+    }
   }
 
   &__container {

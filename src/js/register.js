@@ -61,7 +61,8 @@ const register = () => {
         // Push the password last because it will be extracted on the server
         data2send.values.push(password.val());
 
-        if (!$('.register').hasClass('absolute')) {
+        // Handle modifications and user adding differently based on the form title
+        if (!$('.register').hasClass('absolute') && !$('.register__title').text().match('Modification')) {
           socket.emit('append data', data2send);
         } else {
           data2send.id = $('.register.absolute .register__form__userID').val();
@@ -79,7 +80,8 @@ const register = () => {
         if (window.location.pathname === '/') {
           confirmation();
 
-          $('.home').toggleClass('hidden flex');
+          $('.users').removeClass('blur backgroundColor');
+
           $('.header__container__icon, .header__container__msg').toggleClass('hidden');
         }
       }
@@ -124,10 +126,6 @@ const register = () => {
     clearTimeout(registerTimeout);
   });
 }
-
-$('.registerLink').click(() => {
-  $('.home, .returnIcon, .header__container__msg, .register').toggleClass('hidden flex');
-});
 
 socket.on('user added', () => {
   // Bring the user back the login page to allow him to sign in
