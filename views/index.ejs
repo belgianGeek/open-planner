@@ -31,7 +31,7 @@
     <% } %>
   </main>
   <%- include('notification'); %>
-  <% if (userType === 'admin') { %>
+  <% if (userType !== 'guest') { %>
   <span class="export hidden">
     <span class="export__child flex">
       <h2 class="export__child__title title">Exporter la base de données</h2>
@@ -54,8 +54,10 @@
       </section>
     </span>
   </span>
-  <%- include('leave'); %>
-  <%- include('settings'); %>
+  <% if (userType === 'admin') { %>
+    <%- include('leave'); %>
+  <% } %>
+  <!-- <%- include('settings'); %> -->
   <% } %>
   <%- include('about'); %>
   <%- include('contextMenu'); %>

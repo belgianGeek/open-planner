@@ -34,7 +34,7 @@
     </section>
   </main>
   <%- include('notification'); %>
-  <% if (userType === 'admin') { %>
+  <% if (userType !== 'guest') { %>
     <%- include('contextMenu'); %>
   <% } %>
   <%- include('about'); %>
