@@ -204,7 +204,7 @@ const manageUsers = () => {
         $('.context__list__item--del').click(function() {
           let record2delete = {
             key: $(`.${parent} .users__container__row__item--id`).text(),
-            table: $('.search__container__select').val()
+            table: 'users'
           };
 
           confirmation();
