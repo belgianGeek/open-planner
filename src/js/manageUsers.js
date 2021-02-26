@@ -1,3 +1,56 @@
+let iUserRow = 0;
+const appendUserRow = (i, data) => {
+  let row = $('<span></span>')
+    .addClass(`users__container__row users__container__row--${i} flex`)
+    .appendTo('.users__container');
+
+  let id = $('<span></span>')
+    .addClass(`users__container__row__item users__container__row__item--id hidden`)
+    .append(data.user_id)
+    .appendTo(row);
+
+  let name = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--name')
+    .append(data.name.replace(/\'\'/g, "'"))
+    .appendTo(row);
+
+  let firstname = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--firstname')
+    .append(data.firstname.replace(/\'\'/g, "'"))
+    .appendTo(row);
+
+  let email = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--email')
+    .append(data.email)
+    .appendTo(row);
+
+  let location = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--location')
+    .append(data.location_name)
+    .appendTo(row);
+
+  let locationID = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--location_id hidden')
+    .append(data.location_id)
+    .appendTo(row);
+
+  let gender = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--gender hidden')
+    .append(data.gender)
+    .appendTo(row);
+
+  let password = $('<input>')
+    .attr('type', 'password')
+    .addClass('users__container__row__item users__container__row__item--pwd input noInput')
+    .val('12345678')
+    .appendTo(row);
+
+  let type = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--type')
+    .append(data.type)
+    .appendTo(row);
+}
+
 const manageUsers = () => {
   // Hide the header to prevent users from going back to the home page
   const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
@@ -68,55 +121,10 @@ const manageUsers = () => {
 
       // Ajout des résultats, ligne par ligne
       for (const [i, data] of users.entries()) {
-        let row = $('<span></span>')
-          .addClass(`users__container__row users__container__row--${i} flex`)
-          .appendTo('.users__container');
-
-        let id = $('<span></span>')
-          .addClass(`users__container__row__item users__container__row__item--id hidden`)
-          .append(data.user_id)
-          .appendTo(row);
-
-        let name = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--name')
-          .append(data.name.replace(/\'\'/g, "'"))
-          .appendTo(row);
-
-        let firstname = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--firstname')
-          .append(data.firstname.replace(/\'\'/g, "'"))
-          .appendTo(row);
-
-        let email = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--email')
-          .append(data.email)
-          .appendTo(row);
-
-        let location = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--location')
-          .append(data.location_name)
-          .appendTo(row);
-
-        let locationID = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--location_id hidden')
-          .append(data.location_id)
-          .appendTo(row);
-
-        let gender = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--gender hidden')
-          .append(data.gender)
-          .appendTo(row);
-
-        let password = $('<input>')
-          .attr('type', 'password')
-          .addClass('users__container__row__item users__container__row__item--pwd input noInput')
-          .val('12345678')
-          .appendTo(row);
-
-        let type = $('<span></span>')
-          .addClass('users__container__row__item users__container__row__item--type')
-          .append(data.type)
-          .appendTo(row);
+        appendUserRow(i, data);
+        if (i === users.length - 1) {
+          iUserRow = i + 1;
+        }
       }
 
       $('.users__container').fadeIn();
