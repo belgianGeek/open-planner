@@ -220,9 +220,9 @@ const deleteData = (io, id) => {
       query = `DELETE FROM ${data.table} WHERE ${id} = '${data.key}'`;
 
       DBquery(io, 'DELETE FROM', data.table, {
-        text: query
-      })
-      .then(() => getUsers());
+          text: query
+        })
+        .then(() => getUsers());
     }
   });
 }
@@ -274,6 +274,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(methodOverride('_method'));
+
+const notFoundmessages = [
+  'Hey, il semble que vous soyez égaré ! Par contre, tu as trouvé Scrat, félicitations !',
+  'Coucou ! Tu sembles t\'être trompé.e de chemin !',
+  'Désolé, il semble que cette page n\'existe pas ou plus...',
+  'Ceci n\'est pas une page d\'erreur (Nan, j\'déconne, c\'est une vraie)',
+  'BRAVO, t\'as tout cassé !'
+];
 
 app.get('/', checkAuth, async (req, res) => {
     const response = await client.query(`SELECT * FROM users`);
@@ -489,4 +497,11 @@ app.get('/', checkAuth, async (req, res) => {
   .delete('/logout', (req, res) => {
     req.logOut();
     res.redirect('/login');
+  })
+
+  .use((req, res, next) => {
+    res.status(404).render('404.ejs', {
+      msg: notFoundmessages[Math.floor(Math.random() * notFoundmessages.length)],
+      programName: process.env.PROGRAM_NAME
+    });
   });
