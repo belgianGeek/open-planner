@@ -214,6 +214,18 @@ const restart = io => {
   });
 }
 
+const deleteData = (io, id) => {
+  io.on('delete data', data => {
+    if (data.key !== undefined) {
+      query = `DELETE FROM ${data.table} WHERE ${id} = '${data.key}'`;
+
+      DBquery(io, 'DELETE FROM', data.table, {
+        text: query
+      });
+    }
+  });
+}
+
 existPath('./backups/');
 existPath('./exports/');
 
@@ -302,6 +314,8 @@ app.get('/', checkAuth, async (req, res) => {
       restart(io);
 
       shutdown(io);
+
+      deleteData(io, 'user_id');
 
       io.on('export db', format => {
         emptyDir('exports');
@@ -453,7 +467,6 @@ app.get('/', checkAuth, async (req, res) => {
       shutdown(io);
 
       io.on('update', record => {
-        console.log(JSON.stringify(record, null, 2));
         query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', request_date = '${record.values[2]}', comment = '${record.values[4]}', status = '${record.values[5]}', user_fk = ${record.values[6]} WHERE task_id = ${record.id}`;
 
         console.log(`\n${query}`);
@@ -462,15 +475,7 @@ app.get('/', checkAuth, async (req, res) => {
         });
       });
 
-      io.on('delete data', data => {
-        if (data.key !== undefined) {
-          query = `DELETE FROM tasks WHERE task_id = '${data.key}'`;
-
-          DBquery(io, 'DELETE FROM', data.table, {
-            text: query
-          });
-        }
-      });
+      deleteData(io, 'task_id');
     });
   })
 
