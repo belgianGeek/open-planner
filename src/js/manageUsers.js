@@ -193,9 +193,9 @@ const manageUsers = () => {
           // The form submit is handled in the register function !
           $('.register.absolute .register__form__btnContainer__submit').click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .users__container__row__item--name`).text($('.register__form__username').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--firstname`).text($('.register__form__userFirstname').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--email`).text($('.register__form__email').val());
+            $(`.${parent} .users__container__row__item--name`).text($('.register__form__username input').val().replace(/\'\'/g, "'"));
+            $(`.${parent} .users__container__row__item--firstname`).text($('.register__form__userFirstName input').val().replace(/\'\'/g, "'"));
+            $(`.${parent} .users__container__row__item--email`).text($('.register__form__email input').val());
             $(`.${parent} .users__container__row__item--location`).text($('.register__form__location option:selected').text().replace(/\'\'/g, "'"));
             $(`.${parent} .users__container__row__item--type`).text($('.register__form__type option:selected').val());
           });
