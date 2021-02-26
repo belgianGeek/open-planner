@@ -25,8 +25,8 @@
     }
   }
 }
-@mixin background-image {
-  background-image: url("../wallpaper.jpg");
+@mixin background-image($url: "../wallpaper.jpg") {
+  background-image: url($url);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
