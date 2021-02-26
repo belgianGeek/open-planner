@@ -151,6 +151,45 @@ const DBquery = (io, action, table, query, displayNotification = true) => {
   });
 }
 
+const appendUser = async data => {
+  try {
+    let failure;
+    data.values[6] = await bcrypt.hash(data.values[6], 10);
+    const result = await client.query(`SELECT * FROM users`);
+
+    const addUser = () => {
+      DBquery(io, 'INSERT INTO', data.table, {
+        text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`,
+        values: data.values
+      }).then(async res => {
+        getUsers();
+
+        const users = await client.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+        io.emit('users retrieved', users.rows);
+      });
+    }
+
+    if (result.rows !== null) {
+      // Check if the given username is not already in use
+      if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
+        failure = false;
+
+        addUser();
+      } else {
+        failure = true;
+      }
+    } else {
+      addUser();
+    }
+
+    if (failure) {
+      notify(io, 'failure');
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 const check4updates = (io, tag) => {
   io.on('update check', () => {
     pibUpdate(io, tag);
@@ -247,37 +286,7 @@ app.get('/', checkAuth, async (req, res) => {
             values: data.values
           });
         } else if (data.table === 'users') {
-          try {
-            let failure;
-            data.values[6] = await bcrypt.hash(data.values[6], 10);
-            const result = await client.query(`SELECT * FROM users`);
-
-            const addUser = () => {
-              DBquery(io, 'INSERT INTO', data.table, {
-                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-                values: data.values
-              }).then(() => getUsers());
-            }
-
-            if (result.rows !== null) {
-              // Check if the given username is not already in use
-              if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
-                failure = false;
-
-                addUser();
-              } else {
-                failure = true;
-              }
-            } else {
-              addUser();
-            }
-
-            if (failure) {
-              notify(io, 'failure');
-            }
-          } catch (e) {
-            console.error(e);
-          }
+          appendUser(data);
         } else {
           console.error(`Unable to append data : ${data.table} is not supported or does not exist`);
         }
@@ -383,39 +392,7 @@ app.get('/', checkAuth, async (req, res) => {
 
     io.on('connection', io => {
       io.on('append data', async data => {
-        try {
-          let failure;
-          data.values[6] = await bcrypt.hash(data.values[6], 10);
-          const result = await client.query(`SELECT * FROM users`);
-
-          const addUser = () => {
-            DBquery(io, 'INSERT INTO', data.table, {
-                text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-                values: data.values
-              })
-              .then(() => io.emit('user added'))
-              .then(() => getUsers());
-          }
-
-          if (result.rows !== null) {
-            // Check if the given username is not already in use
-            if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
-              failure = false;
-
-              addUser();
-            } else {
-              failure = true;
-            }
-          } else {
-            addUser();
-          }
-
-          if (failure) {
-            notify(io, 'failure');
-          }
-        } catch (e) {
-          console.error(e);
-        }
+        appendUser(data);
       });
     });
   })

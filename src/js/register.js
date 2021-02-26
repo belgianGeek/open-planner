@@ -62,7 +62,7 @@ const register = () => {
         data2send.values.push(password.val());
 
         // Handle modifications and user adding differently based on the form title
-        if (!$('.register').hasClass('absolute') && !$('.register__title').text().match('Modification')) {
+        if (!$('.register').hasClass('absolute') || !$('.register__title').text().match('Modification')) {
           socket.emit('append data', data2send);
         } else {
           data2send.id = $('.register.absolute .register__form__userID').val();
@@ -127,7 +127,7 @@ const register = () => {
   });
 }
 
-socket.on('user added', () => {
+socket.on('first user added', () => {
   // Bring the user back the login page to allow him to sign in
   window.location.reload();
 });
