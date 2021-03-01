@@ -11,11 +11,7 @@ const os = require('os');
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-const mail = require('./modules/mail');
-const plannerUpdate = require('./modules/update');
-
 const passport = require('passport');
-const bcrypt = require('bcrypt');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
@@ -41,19 +37,13 @@ let settings = {};
 app.tag = '0.1.0';
 
 const exportDB = require('./modules/exportDB');
-const emptyDir = require('./modules/emptyDir');
 const getUsers = require('./modules/getUsers');
-const notify = require('./modules/notify');
 const existPath = require('./modules/existPath');
-const shutdown = require('./modules/shutdown');
 
 const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
-
-const checkAuth = require('./modules/checkAuth');
-const checkNotAuth = require('./modules/checkNotAuth');
 
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
