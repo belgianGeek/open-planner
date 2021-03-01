@@ -12,7 +12,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 const mail = require('./modules/mail');
-const pibUpdate = require('./modules/update');
+const plannerUpdate = require('./modules/update');
 
 const passport = require('passport');
 const bcrypt = require('bcrypt');
@@ -192,7 +192,7 @@ const appendUser = async data => {
 
 const check4updates = (io, tag) => {
   io.on('update check', () => {
-    pibUpdate(io, tag);
+    plannerUpdate(io, tag);
   });
 }
 
@@ -206,7 +206,7 @@ const shutdown = io => {
 const restart = io => {
   io.on('restart', () => {
     console.log('Redémarrage en cours...');
-    cp('sudo systemctl restart pib', (err, stdout, stderr) => {
+    cp('sudo systemctl restart node-planner', (err, stdout, stderr) => {
       if (!err) {
         console.log(stdout);
       } else console.error(err);
