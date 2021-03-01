@@ -44,10 +44,11 @@
       }
 
       &__right {
-        width: 75%;
+        width: 100%;
         font-size: 1.05em;
         flex-direction: column;
         justify-content: center;
+        padding-bottom: 1em;
         @media(max-width: 720px) {
           width: 100%;
         }
