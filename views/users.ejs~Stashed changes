@@ -1,0 +1,7 @@
+<section class="<%= classname %> hidden">
+  <span class="<%= classname %>__header flex">
+    <h2 class="title <%= classname %>__header__title"><%= subject %></h2>
+    <button class="<%= classname %>__header__addBtn btn home-btn" type="button"><%= title %></button>
+  </span>
+  <span class="<%= classname %>__container"></span>
+</section>
