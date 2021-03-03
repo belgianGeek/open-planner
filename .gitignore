@@ -1,3 +1,7 @@
+# Folders
+backups/
+exports/
+
 # Logs
 logs
 *.log
