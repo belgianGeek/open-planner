@@ -1,0 +1,31 @@
+.notFound {
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__comment {
+    position: absolute;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &__img {
+    position: absolute;
+    top: 0;
+    right: 5vw;
+  }
+
+  .wrapper {
+    @include background-image();
+    align-items: center;
+    justify-content: center;
+
+    &.backgroundColor {
+      z-index: 1;
+    }
+  }
+}

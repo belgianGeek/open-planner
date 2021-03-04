@@ -78,20 +78,55 @@ const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
 const manageUsers = (parentMenuClassname, childMenuClassname) => {
   // Hide the form on btn click
   const hideForm = () => {
-    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).click(function() {
-      $(`.${parentMenuClassname}`)
-        .removeClass('absolute zero flex')
-        .addClass('hidden');
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).ready(function() {
+      $(this).click(function() {
+        $(`.${parentMenuClassname}`)
+          .removeClass('absolute zero flex')
+          .addClass('hidden');
 
-      $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
+        $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
 
-      // Hide the button to hide the form
-      $(this).addClass('hidden');
+        // Hide the button to hide the form
+        $(this).addClass('hidden');
+      });
     });
   }
 
   $(`.${childMenuClassname}Link`).click(() => {
-    $(`.home, .returnIcon, .header__container__msg, .${childMenuClassname}`).toggleClass('hidden flex');
+    if ($(`.${childMenuClassname}`).hasClass('hidden')) {
+      $(`.home`)
+        .removeClass('flex')
+        .addClass('hidden');
+    }
+
+    const hideMenu = classname => {
+      if ($(`.${classname}`).is(':visible')) {
+        $(`.${classname}`)
+          .removeClass('flex')
+          .addClass('hidden');
+      }
+    }
+
+    const showMenu = classname => {
+      if (!$(`.${classname}`).is(':visible')) {
+        $(`.${classname}`)
+          .removeClass('hidden')
+          .addClass('flex');
+      }
+    }
+
+    showMenu('returnIcon');
+    showMenu('header__container__msg');
+
+    // Show the right menu if the user click on another link of the sidebar while the other menu is visible
+    if (childMenuClassname === 'users') {
+      hideMenu('locations');
+      showMenu('users');
+    } else {
+      hideMenu('users');
+      showMenu('locations');
+    }
+
     socket.emit(`get ${childMenuClassname}`);
   });
 
@@ -212,8 +247,15 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
             .addClass('absolute zero flex')
             .removeClass('hidden');
 
-          // Modify the title to mention the user
-          $(`.${parentMenuClassname}__title`).text(`Modification de l'utilisateur ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
+          // Modify the title
+          let sectionTitle;
+          if (childMenuClassname === 'users') {
+            sectionTitle = `Modification de l'utilisateur`;
+          } else {
+            sectionTitle = `Modification de l'implantation`;
+          }
+
+          $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
             ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
 
           // Fill in all the fields with the selected record data
