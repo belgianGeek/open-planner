@@ -23,7 +23,7 @@ const manageLocations = () => {
         if (!$('.addLocation').hasClass('absolute') || !$('.addLocation__title').text().match('Modification')) {
           socket.emit('append data', data2send);
         } else {
-          data2send.id = $('.addLocation.absolute .addLocation__form__userID').val();
+          data2send.id = $('.addLocation.absolute .addLocation__form__locationID').val();
           socket.emit('update', data2send);
         }
 
