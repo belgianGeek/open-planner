@@ -1,0 +1,16 @@
+.login {
+  flex-direction: column;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+  padding: 2em;
+  width: 30%;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40vh;
+
+  label {
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: baseline;
+  }
+}
