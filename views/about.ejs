@@ -1,0 +1,37 @@
+<div class="about__container hidden">
+  <div class="about__container__child flex">
+    <h2 class="about__container__child__title"><%= programName %></h2>
+    <section class="about__container__child__section flex">
+      <img class="about__container__child__section__img" src="./src/scss/icons/apple-touch-icon-152x152.png" alt="Logo de <%= programName %>">
+      <section class="about__container__child__section__right flex">
+        <span class="about__container__child__section__right__item version flex">
+          <u>Version</u>
+          <p> :</p>
+          <p class="currentVersion"><%= currentVersion %></p>
+          <% if (userType === 'admin') { %>
+          <button class="updateBtn btn home-btn" type="button">Mettre à jour</button>
+          <% } %>
+        </span>
+        <span class="about__container__child__section__right__item dev flex">
+          <u>Développeur</u>
+          <p> :</p>
+          <p>Maxime Vanderwegen (belgianGeek)</p>
+        </span>
+        <span class="about__container__child__section__right__item license flex">
+          <u>Licence</u>
+          <p> :</p>
+          <p>GNU GPL v3</p>
+        </span>
+        <p class="about__container__child__section__right__item text">
+          Node-planner est un gestionnaire de tâches développé avec ❤️ en Belgique 🍺.
+        </p>
+        <span class="about__container__child__section__right__item links flex">
+          <a href="https://github.com/belgianGeek/node-planner" target="_blank" rel="noreferrer">Dépôt Github</a>
+          <a href="https://github.com/belgianGeek/node-planner/issues" target="_blank" rel="noreferrer">Signaler un problème</a>
+          <span>Photo de couverture par <a href="https://unsplash.com/@jackdouglass?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Jack Douglass</a> sur <a
+              href="https://unsplash.com/s/photos/screwdriver?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+        </span>
+      </section>
+    </section>
+  </div>
+</div>
