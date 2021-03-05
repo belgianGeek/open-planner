@@ -1,6 +1,6 @@
 const register = () => {
   let registerTimeout;
-  let username = $('.register__form__username input');
+  let username = $('.register__form__name input');
   let userFirstname = $('.register__form__userFirstName input');
   let password = $('.register__form__password input');
   let mail = $('.register__form__email input');
