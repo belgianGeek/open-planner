@@ -26,21 +26,8 @@
     </section>
     <%- include('in_requests01', {locations: locations}); %>
     <% if (userType === 'admin') { %>
-      <%- include('users', {
-        classname: 'users',
-        subject: 'Utilisateurs',
-        title: 'Ajouter un utilisateur'
-      }); %>
-      <%- include('users', {
-        classname: 'locations',
-        subject: 'Implantations',
-        title: 'Ajouter une implantation'
-      }); %>
-      <%- include('register', {
-        registerClass: 'hidden',
-        locations: locations
-      }); %>
-      <%- include('addLocation'); %>
+      <%- include('users'); %>
+      <%- include('register', {registerClass: 'hidden', locations: locations}); %>
     <% } %>
   </main>
   <%- include('notification'); %>
