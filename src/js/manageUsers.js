@@ -76,19 +76,19 @@ const appendLocationRow = (i, data) => {
 const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
 
 const manageUsers = (parentMenuClassname, childMenuClassname) => {
+  let parent;
   // Hide the form on btn click
   const hideForm = () => {
-    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).ready(function() {
-      $(this).click(function() {
-        $(`.${parentMenuClassname}`)
-          .removeClass('absolute zero flex')
-          .addClass('hidden');
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).click(function() {
+      console.log('ok');
+      $(`.${parentMenuClassname}`)
+        .removeClass('absolute zero flex')
+        .addClass('hidden');
 
-        $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
+      $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
 
-        // Hide the button to hide the form
-        $(this).addClass('hidden');
-      });
+      // Hide the button to hide the form
+      $(this).addClass('hidden');
     });
   }
 
@@ -229,103 +229,111 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
             }
           });
         });
-
-        $('.context__list__item').click(() => {
-          $('.context')
-            .removeClass('flex')
-            .addClass('hidden');
-        });
-
-        $('.context__list__item--modify').click(function() {
-          $(`.${childMenuClassname}`).addClass('blur backgroundColor');
-
-          toggleHeader();
-
-          hideForm();
-
-          $(`.${parentMenuClassname}`)
-            .addClass('absolute zero flex')
-            .removeClass('hidden');
-
-          // Modify the title
-          let sectionTitle;
-          if (childMenuClassname === 'users') {
-            sectionTitle = `Modification de l'utilisateur`;
-          } else {
-            sectionTitle = `Modification de l'implantation`;
-          }
-
-          $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
-            ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
-
-          // Fill in all the fields with the selected record data
-          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userID`).val($(`.${parent} .${childMenuClassname}__container__row__item--id`).text());
-          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__name input`).val($(`.${parent} .${childMenuClassname}__container__row__item--name`).text());
-          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__email input`).val($(`.${parent} .${childMenuClassname}__container__row__item--email`).text());
-
-          if (childMenuClassname === 'users') {
-            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
-            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
-            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());
-
-            // Fill in the user's gender
-            if ($(`.${parent} .${childMenuClassname}__container__row__item--gender`).text() === 'm') {
-              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__male input`).attr('checked', true);
-            } else {
-              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__female input`).attr('checked', true);
-            }
-          }
-
-          // The form submit is handled in the register function !
-          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
-            // Update the web interface with the changes
-            $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
-            $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
-
-            if (childMenuClassname === 'users') {
-              $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
-              $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
-              $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
-            }
-          });
-        });
-
-        $('.context__list__item--del').click(function() {
-          let record2delete = {
-            key: $(`.${parent} .${childMenuClassname}__container__row__item--id`).text(),
-            table: childMenuClassname
-          };
-
-          confirmation();
-
-          // Hide the record from the interface
-          $(`.${parent}`).toggleClass('hidden flex');
-
-          recordDelTimeOut = setTimeout(() => {
-            // Delete the record from the interface
-            $(`.${parent}`).remove();
-            confirmation();
-
-            socket.emit('delete data', record2delete);
-
-            // Reset the deletionKey
-            record2delete = {};
-
-          }, 5000);
-
-          $('.confirmation__body__cancel').click(() => {
-            clearTimeout(recordDelTimeOut);
-            $(`.${parent}`)
-              .removeClass('hidden')
-              .addClass('flex');
-            recordDelTimeOut = undefined;
-
-            // Reset the deletionKey
-            record2delete = {};
-          });
-        });
       }
     }
+  });
+
+  $('.context__list__item').click(() => {
+    $('.context')
+      .removeClass('flex')
+      .addClass('hidden');
+  });
+
+  $('.context__list__item--modify').click(function() {
+    if ($('.users').hasClass('flex')) {
+      $(`.register`)
+        .addClass('absolute zero flex')
+        .removeClass('hidden');
+
+      $('.users').addClass('blur backgroundColor');
+    } else if ($('.locations').hasClass('flex')) {
+      $(`.addLocation`)
+        .addClass('absolute zero flex')
+        .removeClass('hidden');
+
+      $('.locations').addClass('blur backgroundColor');
+    }
+
+    toggleHeader();
+
+    hideForm();
+
+    // Modify the title
+    let sectionTitle;
+    if (childMenuClassname === 'users') {
+      sectionTitle = `Modification de l'utilisateur`;
+    } else {
+      sectionTitle = `Modification de l'implantation`;
+    }
+
+    $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
+      ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
+
+    // Fill in all the fields with the selected record data
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userID`).val($(`.${parent} .${childMenuClassname}__container__row__item--id`).text());
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__name input`).val($(`.${parent} .${childMenuClassname}__container__row__item--name`).text());
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__email input`).val($(`.${parent} .${childMenuClassname}__container__row__item--email`).text());
+
+    if (childMenuClassname === 'users') {
+      $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
+      $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
+      $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());
+
+      // Fill in the user's gender
+      if ($(`.${parent} .${childMenuClassname}__container__row__item--gender`).text() === 'm') {
+        $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__male input`).attr('checked', true);
+      } else {
+        $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__female input`).attr('checked', true);
+      }
+    }
+
+    // The form submit is handled in the register function !
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
+      // Update the web interface with the changes
+      $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
+      $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+
+      if (childMenuClassname === 'users') {
+        $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
+        $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
+        $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
+      }
+    });
+  });
+
+  $('.context__list__item--del').click(function() {
+    let record2delete = {
+      key: $(`.${parent} .${childMenuClassname}__container__row__item--id`).text(),
+      table: childMenuClassname
+    };
+
+    confirmation();
+
+    // Hide the record from the interface
+    $(`.${parent}`).toggleClass('hidden flex');
+
+    recordDelTimeOut = setTimeout(() => {
+      // Delete the record from the interface
+      $(`.${parent}`).remove();
+      confirmation();
+
+      socket.emit('delete data', record2delete);
+
+      // Reset the deletionKey
+      record2delete = {};
+
+    }, 5000);
+
+    $('.confirmation__body__cancel').click(() => {
+      clearTimeout(recordDelTimeOut);
+      $(`.${parent}`)
+        .removeClass('hidden')
+        .addClass('flex');
+      recordDelTimeOut = undefined;
+
+      // Reset the deletionKey
+      record2delete = {};
+    });
   });
 
   // Add user
