@@ -1,4 +1,4 @@
-let iUserRow = 0;
+let iDataRow = 0;
 const appendUserRow = (i, data) => {
   let row = $('<span></span>')
     .addClass(`users__container__row users__container__row--${i} flex`)
@@ -51,87 +51,163 @@ const appendUserRow = (i, data) => {
     .appendTo(row);
 }
 
-const manageUsers = () => {
-  // Hide the header to prevent users from going back to the home page
-  const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
+const appendLocationRow = (i, data) => {
+  let row = $('<span></span>')
+    .addClass(`locations__container__row locations__container__row--${i} flex`)
+    .appendTo('.locations__container');
 
+  let id = $('<span></span>')
+    .addClass(`locations__container__row__item locations__container__row__item--id hidden`)
+    .append(data.location_id)
+    .appendTo(row);
+
+  let name = $('<span></span>')
+    .addClass('locations__container__row__item locations__container__row__item--name')
+    .append(data.location_name.replace(/\'\'/g, "'"))
+    .appendTo(row);
+
+  let email = $('<span></span>')
+    .addClass('locations__container__row__item locations__container__row__item--email')
+    .append(data.location_mail)
+    .appendTo(row);
+}
+
+// Hide the header to prevent users from going back to the home page
+const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
+
+const manageUsers = (parentMenuClassname, childMenuClassname) => {
   // Hide the form on btn click
-  const hideRegisterForm = () => {
-    $('.register.absolute .register__form__btnContainer__hide').click(function() {
-      $('.register')
-        .removeClass('absolute zero flex')
-        .addClass('hidden');
+  const hideForm = () => {
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).ready(function() {
+      $(this).click(function() {
+        $(`.${parentMenuClassname}`)
+          .removeClass('absolute zero flex')
+          .addClass('hidden');
 
-      $('.users').removeClass('blur backgroundColor');
+        $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
 
-      // Hide the button to hide the form
-      $(this).addClass('hidden');
+        // Hide the button to hide the form
+        $(this).addClass('hidden');
+      });
     });
   }
 
-  $('.usersLink').click(() => {
-    $('.home, .returnIcon, .header__container__msg, .users').toggleClass('hidden flex');
-    socket.emit('get users');
+  $(`.${childMenuClassname}Link`).click(() => {
+    if ($(`.${childMenuClassname}`).hasClass('hidden')) {
+      $(`.home`)
+        .removeClass('flex')
+        .addClass('hidden');
+    }
+
+    const hideMenu = classname => {
+      if ($(`.${classname}`).is(':visible')) {
+        $(`.${classname}`)
+          .removeClass('flex')
+          .addClass('hidden');
+      }
+    }
+
+    const showMenu = classname => {
+      if (!$(`.${classname}`).is(':visible')) {
+        $(`.${classname}`)
+          .removeClass('hidden')
+          .addClass('flex');
+      }
+    }
+
+    showMenu('returnIcon');
+    showMenu('header__container__msg');
+
+    // Show the right menu if the user click on another link of the sidebar while the other menu is visible
+    if (childMenuClassname === 'users') {
+      hideMenu('locations');
+      showMenu('users');
+    } else {
+      hideMenu('users');
+      showMenu('locations');
+    }
+
+    socket.emit(`get ${childMenuClassname}`);
   });
 
-  socket.on('users retrieved', users => {
-    $('.users__container').empty(function() {
+  socket.on(`${childMenuClassname} retrieved`, data => {
+    $(`.${childMenuClassname}__container`).empty(function() {
       $(this).fadeOut();
     });
 
-    if (users[0] !== undefined) {
+    if (data[0] !== undefined) {
       let header = $('<span></span>')
-        .addClass('users__container__header flex')
-        .appendTo('.users__container');
+        .addClass(`${childMenuClassname}__container__header flex`)
+        .appendTo(`.${childMenuClassname}__container`);
 
       // Création du titre du tableau
-      for (const [i, column] of Object.keys(users[0]).entries()) {
+      for (const [i, column] of Object.keys(data[0]).entries()) {
         let columnTitle = column;
 
-        switch (column) {
-          case 'name':
-            columnTitle = 'Nom';
-            break;
-          case 'firstname':
-            columnTitle = 'Prénom';
-            break;
-          case 'email':
-            columnTitle = 'Adresse email';
-            break;
-          case 'location':
-            columnTitle = 'Implantation';
-            break;
-          case 'password':
-            columnTitle = 'Mot de passe';
-            break;
-          case 'type':
-            columnTitle = 'Type de compte';
-            break;
-          default:
-            columnTitle = '';
+        if (childMenuClassname === 'users') {
+          switch (column) {
+            // Users rows
+            case 'name':
+              columnTitle = 'Nom';
+              break;
+            case 'firstname':
+              columnTitle = 'Prénom';
+              break;
+            case 'email':
+              columnTitle = 'Adresse email';
+              break;
+            case 'location':
+              columnTitle = 'Implantation';
+              break;
+            case 'password':
+              columnTitle = 'Mot de passe';
+              break;
+            case 'type':
+              columnTitle = 'Type de compte';
+              break;
+            default:
+              columnTitle = '';
+          }
+        } else {
+          switch (column) {
+            // Locations rows
+            case 'location_name':
+              columnTitle = 'Nom';
+              break;
+            case 'location_mail':
+              columnTitle = 'Adresse email';
+              break;
+            default:
+              columnTitle = '';
+          }
         }
 
         if (columnTitle !== '') {
           let title = $('<span></span>')
-            .addClass('users__container__header__item')
+            .addClass(`${childMenuClassname}__container__header__item`)
             .text(columnTitle)
             .appendTo(header);
         }
       }
 
       // Ajout des résultats, ligne par ligne
-      for (const [i, data] of users.entries()) {
-        appendUserRow(i, data);
-        if (i === users.length - 1) {
-          iUserRow = i + 1;
+      for (const [i, info] of data.entries()) {
+        if (childMenuClassname === 'users') {
+          appendUserRow(i, info);
+        } else {
+          appendLocationRow(i, info);
+        }
+
+        if (i === data.length - 1) {
+          iDataRow = i + 1;
         }
       }
 
-      $('.users__container').fadeIn();
+      $(`.${childMenuClassname}__container`).fadeIn();
 
       // Only show the customized context menu is the user is admin
       if ($('.context').length) {
-        $('.users__container__row').contextmenu(function(e) {
+        $(`.${childMenuClassname}__container__row`).contextmenu(function(e) {
           $('.context')
             .css({
               left: `${e.pageX}px`,
@@ -145,7 +221,7 @@ const manageUsers = () => {
           e.preventDefault();
 
           // Hide the context menu on left-click to prevent displaying it indefinitely
-          $('.users, .users *').click(function(e) {
+          $(`.${childMenuClassname}, .${childMenuClassname} *`).click(function(e) {
             if (e.target === this) {
               $('.context')
                 .removeClass('flex')
@@ -161,50 +237,63 @@ const manageUsers = () => {
         });
 
         $('.context__list__item--modify').click(function() {
-          $('.users').addClass('blur backgroundColor');
+          $(`.${childMenuClassname}`).addClass('blur backgroundColor');
 
           toggleHeader();
 
-          hideRegisterForm();
+          hideForm();
 
-          $('.register')
+          $(`.${parentMenuClassname}`)
             .addClass('absolute zero flex')
             .removeClass('hidden');
 
-          // Modify the title to mention the user
-          $('.register__title').text(`Modification de l'utilisateur ${$(`.${parent} .users__container__row__item--firstname`).text()}
-            ${$(`.${parent} .users__container__row__item--name`).text()}`);
+          // Modify the title
+          let sectionTitle;
+          if (childMenuClassname === 'users') {
+            sectionTitle = `Modification de l'utilisateur`;
+          } else {
+            sectionTitle = `Modification de l'implantation`;
+          }
+
+          $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
+            ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
 
           // Fill in all the fields with the selected record data
-          $('.register.absolute .register__form__userID').val($(`.${parent} .users__container__row__item--id`).text());
-          $('.register.absolute .register__form__username input').val($(`.${parent} .users__container__row__item--name`).text());
-          $('.register.absolute .register__form__userFirstName input').val($(`.${parent} .users__container__row__item--firstname`).text());
-          $('.register.absolute .register__form__email input').val($(`.${parent} .users__container__row__item--email`).text());
-          $('.register.absolute .register__form__location select').val($(`.${parent} .users__container__row__item--location_id`).text());
-          $('.register.absolute .register__form__type select').val($(`.${parent} .users__container__row__item--type`).text());
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userID`).val($(`.${parent} .${childMenuClassname}__container__row__item--id`).text());
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__name input`).val($(`.${parent} .${childMenuClassname}__container__row__item--name`).text());
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__email input`).val($(`.${parent} .${childMenuClassname}__container__row__item--email`).text());
 
-          // Fill in the user's gender
-          if ($(`.${parent} .users__container__row__item--gender`).text() === 'm') {
-            $('.register.absolute .register__form__male input').attr('checked', true);
-          } else {
-            $('.register.absolute .register__form__female input').attr('checked', true);
+          if (childMenuClassname === 'users') {
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());
+
+            // Fill in the user's gender
+            if ($(`.${parent} .${childMenuClassname}__container__row__item--gender`).text() === 'm') {
+              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__male input`).attr('checked', true);
+            } else {
+              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__female input`).attr('checked', true);
+            }
           }
 
           // The form submit is handled in the register function !
-          $('.register.absolute .register__form__btnContainer__submit').click(() => {
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .users__container__row__item--name`).text($('.register__form__username input').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--firstname`).text($('.register__form__userFirstName input').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--email`).text($('.register__form__email input').val());
-            $(`.${parent} .users__container__row__item--location`).text($('.register__form__location option:selected').text().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--type`).text($('.register__form__type option:selected').val());
+            $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
+            $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+
+            if (childMenuClassname === 'users') {
+              $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
+            }
           });
         });
 
         $('.context__list__item--del').click(function() {
           let record2delete = {
-            key: $(`.${parent} .users__container__row__item--id`).text(),
-            table: 'users'
+            key: $(`.${parent} .${childMenuClassname}__container__row__item--id`).text(),
+            table: childMenuClassname
           };
 
           confirmation();
@@ -240,34 +329,39 @@ const manageUsers = () => {
   });
 
   // Add user
-  $('.users__header__addUserBtn').click(function() {
+  $(`.${childMenuClassname}__header__addBtn`).click(function() {
     toggleHeader();
 
-    $('.users').addClass('blur backgroundColor');
+    $(`.${childMenuClassname}`).addClass('blur backgroundColor');
 
     // Set all the input fields to their default value
-    $('.register input').not('.radio').val('');
+    $(`.${parentMenuClassname} input`).not('.radio').val('');
     $('.register select').val('default');
 
     // Make sure the title is correct
-    $('.register__title').text('Ajouter un utilisateur');
+    if (parentMenuClassname === 'users') {
+      $('.register__title').text('Ajouter un utilisateur');
+    } else {
+      $('.addLocation__title').text('Ajouter une implantation');
+    }
 
-    $('.register')
+    $(`.${parentMenuClassname}`)
       .addClass('absolute zero flex')
       .removeClass('hidden');
 
-    hideRegisterForm();
+    hideForm();
   });
 
-  $('.register.absolute .register__form__btnContainer__submit').click(function() {
+  $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(function() {
     toggleHeader();
 
-    $('.register')
+    $(`.${parentMenuClassname}`)
       .removeClass('absolute zero flex')
       .addClass('hidden');
 
-    $('.users').removeClass('blur backgroundColor');
+    $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
   });
 }
 
-manageUsers();
+manageUsers('register', 'users');
+manageUsers('addLocation', 'locations');

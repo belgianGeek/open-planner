@@ -52,6 +52,11 @@ module.exports = function(app, io) {
         io.emit('users retrieved', users.rows);
       });
 
+      io.on('get locations', async () => {
+        const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+        io.emit('locations retrieved', locations.rows);
+      });
+
       check4updates(io, app.tag);
 
       restart(io);
@@ -121,7 +126,11 @@ module.exports = function(app, io) {
       });
 
       io.on('update', async record => {
-        query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
+        if (record.table === 'users') {
+          query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
+        } else {
+          query = `UPDATE ${record.table} SET location_name = '${record.values[0]}', location_mail = '${record.values[1]}' WHERE location_id = ${record.id}`;
+        }
 
         console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {
