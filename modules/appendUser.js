@@ -7,14 +7,12 @@ const passport = require('passport');
 const appendUser = async (app, data, io) => {
   try {
     let failure;
+    data.values[6] = await bcrypt.hash(data.values[6], 10);
     const result = await app.client.query(`SELECT * FROM users`);
 
-    const addUser = async () => {
-      data.values[6] = await bcrypt.hash(data.values[6], 10);
-      query = `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`;
-
+    const addUser = () => {
       DBquery(app, io, 'INSERT INTO', data.table, {
-        text: query,
+        text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`,
         values: data.values
       }).then(async res => {
         getUsers(app, passport);
@@ -26,7 +24,6 @@ const appendUser = async (app, data, io) => {
 
     if (result.rows !== null) {
       // Check if the given username is not already in use
-      console.log('result', result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())));
       if (result.rows.find(user => user.name.toLowerCase().match(data.values[0].toLowerCase())) === undefined) {
         failure = false;
 
