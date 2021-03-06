@@ -275,6 +275,9 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
     $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__email input`).val($(`.${parent} .${childMenuClassname}__container__row__item--email`).text());
 
     if (childMenuClassname === 'users') {
+      // Modify the password field placeholder
+      $(`.register.absolute .register__form__password input`).attr('placeholder', 'Mot de passe inchangé');
+
       $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
       $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
       $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());

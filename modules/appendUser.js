@@ -7,12 +7,18 @@ const passport = require('passport');
 const appendUser = async (app, data, io) => {
   try {
     let failure;
-    data.values[6] = await bcrypt.hash(data.values[6], 10);
     const result = await app.client.query(`SELECT * FROM users`);
 
-    const addUser = () => {
+    const addUser = async () => {
+      if (data.setPassword) {
+        data.values[6] = await bcrypt.hash(data.values[6], 10);
+        query = `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`;
+      } else {
+        query = `INSERT INTO ${data.table}(name, firstname, email, location, gender, type) VALUES($1, $2, $3, $4, $5, $6) RETURNING user_id`
+      }
+
       DBquery(app, io, 'INSERT INTO', data.table, {
-        text: `INSERT INTO ${data.table}(name, firstname, email, location, gender, type, password) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`,
+        text: query,
         values: data.values
       }).then(async res => {
         getUsers(app, passport);
