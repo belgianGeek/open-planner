@@ -31,8 +31,11 @@ const register = () => {
       invalid($('.register__form__location .input'));
     }
 
-    if (password.val() === '') {
-      invalid(password);
+    // Make the password field not required if a user is being updated
+    if (!$('.register').hasClass('absolute') || !$('.register__title').text().match('Modification')) {
+      if (password.val() === '') {
+        invalid(password);
+      }
     }
 
     if (mail.is(':invalid') || mail.val() === '') {
@@ -49,6 +52,7 @@ const register = () => {
 
     if (!validationErr) {
       const sendAccountInfo = () => {
+        data2send.setPassword = true;
         data2send.values.push(capitalizeFirstLetter(username.val()));
         data2send.values.push(capitalizeFirstLetter(userFirstname.val()));
 
@@ -59,14 +63,25 @@ const register = () => {
         data2send.values.push(type);
 
         // Push the password last because it will be extracted on the server
-        data2send.values.push(password.val());
 
         // Handle modifications and user adding differently based on the form title
         if (!$('.register').hasClass('absolute') || !$('.register__title').text().match('Modification')) {
+          data2send.values.push(password.val());
           socket.emit('append data', data2send);
         } else {
           data2send.id = $('.register.absolute .register__form__userID').val();
+
+          if (password.val() !== '') {
+            data2send.setPassword = true;
+            data2send.values.push(password.val());
+          } else {
+            data2send.setPassword = false;
+          }
+
           socket.emit('update', data2send);
+
+          // Reset the password field placeholder
+          password.attr('placeholder', 'Insérez le mot magique');
         }
 
         data2send.values = [];
