@@ -346,8 +346,12 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
     $(`.${parentMenuClassname} input`).not('.radio').val('');
     $('.register select').val('default');
 
+    // Hide warnign messages
+    $('.register .warning, .addLocation .warning').hide();
+    $('.input').removeClass('invalid');
+
     // Make sure the title is correct
-    if (parentMenuClassname === 'users') {
+    if (childMenuClassname === 'users') {
       $('.register__title').text('Ajouter un utilisateur');
     } else {
       $('.addLocation__title').text('Ajouter une implantation');
