@@ -63,7 +63,13 @@ module.exports = function(app, io) {
 
       shutdown(io);
 
-      deleteData(app, passport, io, 'user_id');
+      io.on('delete data', data => {
+        if (data.table === 'users') {
+          deleteData(app, io, 'user_id', data, passport);
+        } else if (data.table === 'locations') {
+          deleteData(app, io, 'location_id', data);
+        }
+      });
 
       io.on('export db', format => {
         emptyDir('exports');
