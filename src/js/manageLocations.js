@@ -1,6 +1,6 @@
 let addLocationTimeout;
 const manageLocations = () => {
-  $('.addLocation__form').submit(() => {
+  $('.addLocation__form__btnContainer__submit').click(() => {
     event.preventDefault();
     data2send.table = 'locations';
     let name = $('.addLocation__form__name input');

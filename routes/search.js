@@ -22,7 +22,8 @@ module.exports = function(app, io) {
           users: data.rows,
           userType: req.user.type
         });
-      });
+      })
+      .catch(err => console.trace(err));
 
     let query = '';
 
@@ -69,7 +70,9 @@ module.exports = function(app, io) {
         });
       });
 
-      deleteData(app, passport, io, 'task_id');
+      io.on('delete data', data => {
+        deleteData(app, io, 'task_id', data);
+      });
     });
   });
 };
