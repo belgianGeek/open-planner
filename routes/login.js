@@ -1,5 +1,5 @@
 module.exports = function(app, io) {
-  const appendUser = require('../modules/appendUser');
+  const appendData = require('../modules/appendData');
   const checkNotAuth = require('../modules/checkNotAuth');
   const DBquery = require('../modules/DBquery');
   const env = require('dotenv').config();
@@ -26,7 +26,15 @@ module.exports = function(app, io) {
 
       io.on('connection', io => {
         io.on('append data', async data => {
-          appendUser(app, data, io);
+          const users = await app.client.query('SELECT * FROM users');
+          try {
+            // Only append a new user if there is not any users recorded in the DB yet
+            if (users.rows.length === 0) {
+              appendData(app, data, io);
+            }
+          } catch (e) {
+            console.trace(e);
+          }
         });
       });
     })

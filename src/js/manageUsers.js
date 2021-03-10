@@ -80,7 +80,6 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
   // Hide the form on btn click
   const hideForm = () => {
     $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__hide`).click(function() {
-      console.log('ok');
       $(`.${parentMenuClassname}`)
         .removeClass('absolute zero flex')
         .addClass('hidden');
@@ -302,10 +301,15 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
   });
 
   $('.context__list__item--del').click(function() {
-    let record2delete = {
-      key: $(`.${parent} .${childMenuClassname}__container__row__item--id`).text(),
-      table: childMenuClassname
-    };
+    let record2delete = {};
+
+    if (childMenuClassname === 'users') {
+      record2delete.key = $(`.${parent} .users__container__row__item--id`).text();
+      record2delete.table = 'users';
+    } else if (childMenuClassname === 'locations') {
+      record2delete.key = $(`.${parent} .locations__container__row__item--id`).text();
+      record2delete.table = 'location =';
+    }
 
     confirmation();
 
@@ -323,17 +327,17 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
       record2delete = {};
 
     }, 5000);
+  });
 
-    $('.confirmation__body__cancel').click(() => {
-      clearTimeout(recordDelTimeOut);
-      $(`.${parent}`)
-        .removeClass('hidden')
-        .addClass('flex');
-      recordDelTimeOut = undefined;
+  $('.confirmation__body__cancel').click(() => {
+    clearTimeout(recordDelTimeOut);
+    $(`.${parent}`)
+      .removeClass('hidden')
+      .addClass('flex');
+    recordDelTimeOut = undefined;
 
-      // Reset the deletionKey
-      record2delete = {};
-    });
+    // Reset the deletionKey
+    record2delete = {};
   });
 
   // Add user
@@ -369,7 +373,7 @@ const manageUsers = (parentMenuClassname, childMenuClassname) => {
 
     $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
   });
-}
+};
 
 manageUsers('register', 'users');
 manageUsers('addLocation', 'locations');
