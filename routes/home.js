@@ -1,5 +1,5 @@
 module.exports = function(app, io) {
-  const appendUser = require('../modules/appendUser');
+  const appendData = require('../modules/appendData');
   const bcrypt = require('bcrypt');
   const check4updates = require('../modules/check4updates');
   const checkAuth = require('../modules/checkAuth');
@@ -34,14 +34,14 @@ module.exports = function(app, io) {
     });
 
     io.once('connection', io => {
-      io.on('append data', async data => {
+      io.on('append data', data => {
         if (data.table === 'tasks') {
           DBquery(app, io, 'INSERT INTO', data.table, {
             text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
             values: data.values
           });
-        } else if (data.table === 'users') {
-          appendUser(app, data, io);
+        } else if (data.table === 'users' || data.table === 'locations') {
+          appendData(app, data, io);
         } else {
           console.error(`Unable to append data : ${data.table} is not supported or does not exist`);
         }
