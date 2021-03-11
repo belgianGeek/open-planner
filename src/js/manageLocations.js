@@ -1,6 +1,6 @@
 let addLocationTimeout;
 const manageLocations = () => {
-  $('.addLocation__form').submit(() => {
+  $('.addLocation__form__btnContainer__submit').click(() => {
     event.preventDefault();
     data2send.table = 'locations';
     let name = $('.addLocation__form__name input');
@@ -20,7 +20,7 @@ const manageLocations = () => {
         data2send.values.push(mail.val());
 
         // Handle modifications and user adding differently based on the form title
-        if (!$('.addLocation').hasClass('absolute') || !$('.addLocation__title').text().match('Modification')) {
+        if (!$('.addLocation__title').text().match('Modification')) {
           socket.emit('append data', data2send);
         } else {
           data2send.id = $('.addLocation.absolute .addLocation__form__userID').val();

@@ -1,13 +1,6 @@
 const notify = require('./notify');
 
 const DBquery = (app, io, action, table, query, displayNotification = true) => {
-  if (arguments.length === 3) {
-    action = arguments[0];
-    table = arguments[1];
-    query = arguments[2];
-    io = null;
-  }
-
   return new Promise((fullfill, reject) => {
     app.client.query(query)
       .then(res => {
@@ -27,10 +20,10 @@ const DBquery = (app, io, action, table, query, displayNotification = true) => {
         return;
       })
       .catch(err => {
-        if (action !== 'SELECT' && table !== 'barcodes') {
+        if (action !== 'SELECT') {
           notify(io, 'error');
         }
-        console.error(JSON.stringify(err, null, 2));
+        console.trace(err);
         reject(`Une erreur est survenue lors de l'action '${action}' dans la table '${table}' avec la requête "${query.text}" :\n${err}`);
         return;
       });
