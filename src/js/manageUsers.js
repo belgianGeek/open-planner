@@ -1,4 +1,5 @@
-let iUserRow = 0;
+let iDataRow = 0;
+let parent;
 const appendUserRow = (i, data) => {
   let row = $('<span></span>')
     .addClass(`users__container__row users__container__row--${i} flex`)
@@ -51,87 +52,174 @@ const appendUserRow = (i, data) => {
     .appendTo(row);
 }
 
+const appendLocationRow = (i, data) => {
+  let row = $('<span></span>')
+    .addClass(`locations__container__row locations__container__row--${i} flex`)
+    .appendTo('.locations__container');
+
+  let id = $('<span></span>')
+    .addClass(`locations__container__row__item locations__container__row__item--id hidden`)
+    .append(data.location_id)
+    .appendTo(row);
+
+  let name = $('<span></span>')
+    .addClass('locations__container__row__item locations__container__row__item--name')
+    .append(data.location_name.replace(/\'\'/g, "'"))
+    .appendTo(row);
+
+  let email = $('<span></span>')
+    .addClass('locations__container__row__item locations__container__row__item--email')
+    .append(data.location_mail)
+    .appendTo(row);
+}
+
+// Hide the header to prevent users from going back to the home page
+const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
+
+const hideMenu = classname => {
+  if (!$(`.${classname}`).hasClass('hidden')) {
+    $(`.${classname}`)
+      .removeClass('flex')
+      .addClass('hidden');
+  }
+}
+
+const showMenu = classname => {
+  if ($(`.${classname}`).hasClass('hidden')) {
+    $(`.${classname}`)
+      .removeClass('hidden')
+      .addClass('flex');
+  }
+}
+
 const manageUsers = () => {
-  // Hide the header to prevent users from going back to the home page
-  const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
-
   // Hide the form on btn click
-  const hideRegisterForm = () => {
-    $('.register.absolute .register__form__btnContainer__hide').click(function() {
-      $('.register')
-        .removeClass('absolute zero flex')
-        .addClass('hidden');
+  const hideForm = (parentElt, childElt) => {
+    $(`.${parentElt}.absolute .${parentElt}__form__btnContainer__hide`).ready(function() {
+      $(`.${parentElt}.absolute .${parentElt}__form__btnContainer__hide`).click(function() {
+        $(`.${parentElt}`)
+          .removeClass('absolute zero flex')
+          .addClass('hidden');
 
-      $('.users').removeClass('blur backgroundColor');
+        $(`.${childElt}`).removeClass('blur backgroundColor');
 
-      // Hide the button to hide the form
-      $(this).addClass('hidden');
+        // Hide the button to hide the form
+        $(this).addClass('hidden');
+      });
     });
   }
 
-  $('.usersLink').click(() => {
-    $('.home, .returnIcon, .header__container__msg, .users').toggleClass('hidden flex');
-    socket.emit('get users');
-  });
+  const handleAdding = (parentMenuClassname, childMenuClassname) => {
+    $(`.${childMenuClassname}__header__addBtn`).click(function() {
+      toggleHeader();
 
-  socket.on('users retrieved', users => {
-    $('.users__container').empty(function() {
+      $(`.${childMenuClassname}`).addClass('blur backgroundColor');
+
+      // Set all the input fields to their default value
+      $(`.${parentMenuClassname} input`).not('.radio').val('');
+      $('.register select').val('default');
+
+      // Make sure the title is correct
+      if (parentMenuClassname === 'users') {
+        $('.register__title').text('Ajouter un utilisateur');
+      } else {
+        $('.addLocation__title').text('Ajouter une implantation');
+      }
+
+      $(`.${parentMenuClassname}`)
+        .addClass('absolute zero flex')
+        .removeClass('hidden');
+    });
+
+    $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(function() {
+      toggleHeader();
+
+      $(`.${parentMenuClassname}`)
+        .removeClass('absolute zero flex')
+        .addClass('hidden');
+
+      $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
+    });
+  }
+
+  const handleData = (data, parentMenuClassname, childMenuClassname) => {
+    $(`.${childMenuClassname}__container`).empty(function() {
       $(this).fadeOut();
     });
 
-    if (users[0] !== undefined) {
+    if (data[0] !== undefined) {
       let header = $('<span></span>')
-        .addClass('users__container__header flex')
-        .appendTo('.users__container');
+        .addClass(`${childMenuClassname}__container__header flex`)
+        .appendTo(`.${childMenuClassname}__container`);
 
       // Création du titre du tableau
-      for (const [i, column] of Object.keys(users[0]).entries()) {
+      for (const [i, column] of Object.keys(data[0]).entries()) {
         let columnTitle = column;
 
-        switch (column) {
-          case 'name':
-            columnTitle = 'Nom';
-            break;
-          case 'firstname':
-            columnTitle = 'Prénom';
-            break;
-          case 'email':
-            columnTitle = 'Adresse email';
-            break;
-          case 'location':
-            columnTitle = 'Implantation';
-            break;
-          case 'password':
-            columnTitle = 'Mot de passe';
-            break;
-          case 'type':
-            columnTitle = 'Type de compte';
-            break;
-          default:
-            columnTitle = '';
+        if (childMenuClassname === 'users') {
+          switch (column) {
+            // Users rows
+            case 'name':
+              columnTitle = 'Nom';
+              break;
+            case 'firstname':
+              columnTitle = 'Prénom';
+              break;
+            case 'email':
+              columnTitle = 'Adresse email';
+              break;
+            case 'location':
+              columnTitle = 'Implantation';
+              break;
+            case 'password':
+              columnTitle = 'Mot de passe';
+              break;
+            case 'type':
+              columnTitle = 'Type de compte';
+              break;
+            default:
+              columnTitle = '';
+          }
+        } else {
+          switch (column) {
+            // Locations rows
+            case 'location_name':
+              columnTitle = 'Nom';
+              break;
+            case 'location_mail':
+              columnTitle = 'Adresse email';
+              break;
+            default:
+              columnTitle = '';
+          }
         }
 
         if (columnTitle !== '') {
           let title = $('<span></span>')
-            .addClass('users__container__header__item')
+            .addClass(`${childMenuClassname}__container__header__item`)
             .text(columnTitle)
             .appendTo(header);
         }
       }
 
       // Ajout des résultats, ligne par ligne
-      for (const [i, data] of users.entries()) {
-        appendUserRow(i, data);
-        if (i === users.length - 1) {
-          iUserRow = i + 1;
+      for (const [i, info] of data.entries()) {
+        if (childMenuClassname === 'users') {
+          appendUserRow(i, info);
+        } else {
+          appendLocationRow(i, info);
+        }
+
+        if (i === data.length - 1) {
+          iDataRow = i + 1;
         }
       }
 
-      $('.users__container').fadeIn();
+      $(`.${childMenuClassname}__container`).fadeIn();
 
       // Only show the customized context menu is the user is admin
       if ($('.context').length) {
-        $('.users__container__row').contextmenu(function(e) {
+        $(`.${childMenuClassname}__container__row`).contextmenu(function(e) {
           $('.context')
             .css({
               left: `${e.pageX}px`,
@@ -145,7 +233,7 @@ const manageUsers = () => {
           e.preventDefault();
 
           // Hide the context menu on left-click to prevent displaying it indefinitely
-          $('.users, .users *').click(function(e) {
+          $(`.${childMenuClassname}, .${childMenuClassname} *`).click(function(e) {
             if (e.target === this) {
               $('.context')
                 .removeClass('flex')
@@ -154,120 +242,161 @@ const manageUsers = () => {
           });
         });
 
-        $('.context__list__item').click(() => {
-          $('.context')
-            .removeClass('flex')
-            .addClass('hidden');
-        });
-
         $('.context__list__item--modify').click(function() {
-          $('.users').addClass('blur backgroundColor');
+          if ($('.users').hasClass('flex')) {
+            $(`.register`)
+              .addClass('absolute zero flex')
+              .removeClass('hidden');
+
+            // Update the password field placeholder
+            $('.register.absolute .register__form__password input').attr('placeholder', 'Laisser vide pour un mot de passe inchangé');
+
+            $('.users').addClass('blur backgroundColor');
+          } else if ($('.locations').hasClass('flex')) {
+            $(`.addLocation`)
+              .addClass('absolute zero flex')
+              .removeClass('hidden');
+
+            $('.locations').addClass('blur backgroundColor');
+          }
 
           toggleHeader();
 
-          hideRegisterForm();
-
-          $('.register')
-            .addClass('absolute zero flex')
-            .removeClass('hidden');
-
-          // Modify the title to mention the user
-          $('.register__title').text(`Modification de l'utilisateur ${$(`.${parent} .users__container__row__item--firstname`).text()}
-            ${$(`.${parent} .users__container__row__item--name`).text()}`);
-
-          // Fill in all the fields with the selected record data
-          $('.register.absolute .register__form__userID').val($(`.${parent} .users__container__row__item--id`).text());
-          $('.register.absolute .register__form__username input').val($(`.${parent} .users__container__row__item--name`).text());
-          $('.register.absolute .register__form__userFirstName input').val($(`.${parent} .users__container__row__item--firstname`).text());
-          $('.register.absolute .register__form__email input').val($(`.${parent} .users__container__row__item--email`).text());
-          $('.register.absolute .register__form__location select').val($(`.${parent} .users__container__row__item--location_id`).text());
-          $('.register.absolute .register__form__type select').val($(`.${parent} .users__container__row__item--type`).text());
-
-          // Fill in the user's gender
-          if ($(`.${parent} .users__container__row__item--gender`).text() === 'm') {
-            $('.register.absolute .register__form__male input').attr('checked', true);
+          // Modify the title
+          let sectionTitle;
+          if (childMenuClassname === 'users') {
+            sectionTitle = `Modification de l'utilisateur`;
           } else {
-            $('.register.absolute .register__form__female input').attr('checked', true);
+            sectionTitle = `Modification de l'implantation`;
           }
 
-          // The form submit is handled in the register function !
-          $('.register.absolute .register__form__btnContainer__submit').click(() => {
+          $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
+            ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
+
+          // Fill in all the fields with the selected record data
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userID`).val($(`.${parent} .${childMenuClassname}__container__row__item--id`).text());
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__name input`).val($(`.${parent} .${childMenuClassname}__container__row__item--name`).text());
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__email input`).val($(`.${parent} .${childMenuClassname}__container__row__item--email`).text());
+
+          if (childMenuClassname === 'users') {
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());
+
+            // Fill in the user's gender
+            if ($(`.${parent} .${childMenuClassname}__container__row__item--gender`).text() === 'm') {
+              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__male input`).attr('checked', true);
+            } else {
+              $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__female input`).attr('checked', true);
+            }
+          }
+
+          // The users form submit is handled in the register function !
+          $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .users__container__row__item--name`).text($('.register__form__username input').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--firstname`).text($('.register__form__userFirstName input').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--email`).text($('.register__form__email input').val());
-            $(`.${parent} .users__container__row__item--location`).text($('.register__form__location option:selected').text().replace(/\'\'/g, "'"));
-            $(`.${parent} .users__container__row__item--type`).text($('.register__form__type option:selected').val());
+            $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
+            $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+
+            if (childMenuClassname === 'users') {
+              // Update the password field placeholder
+              $('.register.absolute .register__form__password input').attr('placeholder', 'Insérez le mot magique');
+
+              $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
+            }
           });
         });
 
         $('.context__list__item--del').click(function() {
-          let record2delete = {
-            key: $(`.${parent} .users__container__row__item--id`).text(),
-            table: 'users'
-          };
+          let record2delete = {};
+
+          if (parent.match('users')) {
+            record2delete.key = $(`.${parent} .users__container__row__item--id`).text();
+            record2delete.table = 'users';
+          } else if (parent.match('locations')) {
+            record2delete.key = $(`.${parent} .locations__container__row__item--id`).text();
+            record2delete.table = 'locations';
+          }
 
           confirmation();
 
-          // Hide the record from the interface
-          $(`.${parent}`).toggleClass('hidden flex');
-
           recordDelTimeOut = setTimeout(() => {
-            // Delete the record from the interface
-            $(`.${parent}`).remove();
-            confirmation();
+            // Hide the record from the interface
+            $(`.${parent}`)
+              .removeClass('flex')
+              .addClass('hidden');
 
+            confirmation();
+            console.trace(record2delete);
             socket.emit('delete data', record2delete);
 
             // Reset the deletionKey
             record2delete = {};
 
           }, 5000);
-
-          $('.confirmation__body__cancel').click(() => {
-            clearTimeout(recordDelTimeOut);
-            $(`.${parent}`)
-              .removeClass('hidden')
-              .addClass('flex');
-            recordDelTimeOut = undefined;
-
-            // Reset the deletionKey
-            record2delete = {};
-          });
         });
       }
     }
+  }
+
+  // Show the right menu if the user click on another link of the sidebar while the other menu is visible
+  const displayManagementMenu = (elt1, elt2) => {
+    $(`.${elt1}Link`).click(() => {
+      hideMenu(elt2);
+      showMenu(elt1);
+
+      socket.emit(`get ${elt1}`);
+    });
+  }
+
+  displayManagementMenu('users', 'locations');
+  displayManagementMenu('locations', 'users');
+
+  $(`.locationsLink, .usersLink`).click(function() {
+    if ($(`.locations`).hasClass('hidden') || $('.users').hasClass('hidden')) {
+      $(`.home`)
+        .removeClass('flex')
+        .addClass('hidden');
+    }
+
+    showMenu('returnIcon');
+    showMenu('header__container__msg');
   });
 
-  // Add user
-  $('.users__header__addUserBtn').click(function() {
-    toggleHeader();
-
-    $('.users').addClass('blur backgroundColor');
-
-    // Set all the input fields to their default value
-    $('.register input').not('.radio').val('');
-    $('.register select').val('default');
-
-    // Make sure the title is correct
-    $('.register__title').text('Ajouter un utilisateur');
-
-    $('.register')
-      .addClass('absolute zero flex')
-      .removeClass('hidden');
-
-    hideRegisterForm();
+  socket.on(`users retrieved`, data => {
+    handleData(data, 'register', 'users');
   });
 
-  $('.register.absolute .register__form__btnContainer__submit').click(function() {
-    toggleHeader();
+  socket.on(`locations retrieved`, data => {
+    handleData(data, 'addLocation', 'locations');
+  });
 
-    $('.register')
-      .removeClass('absolute zero flex')
+  $('.context__list__item').click(() => {
+    $('.context')
+      .removeClass('flex')
       .addClass('hidden');
-
-    $('.users').removeClass('blur backgroundColor');
   });
-}
+
+  $('.context__list__item--modify, .locations__header__addBtn, .users__header__addBtn').click(() => {
+    hideForm('register', 'users');
+    hideForm('addLocation', 'locations');
+  });
+
+  $('.confirmation__body__cancel').click(() => {
+    clearTimeout(recordDelTimeOut);
+    $(`.${parent}`)
+      .removeClass('hidden')
+      .addClass('flex');
+    recordDelTimeOut = undefined;
+
+    // Reset the deletionKey
+    record2delete = {};
+  });
+
+  // Add data
+  handleAdding('register', 'users');
+  handleAdding('addLocation', 'locations');
+};
 
 manageUsers();

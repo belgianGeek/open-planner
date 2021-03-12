@@ -1,5 +1,5 @@
 module.exports = function(app, io) {
-  const appendUser = require('../modules/appendUser');
+  const appendData = require('../modules/appendData');
   const bcrypt = require('bcrypt');
   const check4updates = require('../modules/check4updates');
   const checkAuth = require('../modules/checkAuth');
@@ -34,14 +34,14 @@ module.exports = function(app, io) {
     });
 
     io.once('connection', io => {
-      io.on('append data', async data => {
+      io.on('append data', data => {
         if (data.table === 'tasks') {
           DBquery(app, io, 'INSERT INTO', data.table, {
             text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
             values: data.values
           });
-        } else if (data.table === 'users') {
-          appendUser(app, data, io);
+        } else if (data.table === 'users' || data.table === 'locations') {
+          appendData(app, data, io);
         } else {
           console.error(`Unable to append data : ${data.table} is not supported or does not exist`);
         }
@@ -52,13 +52,24 @@ module.exports = function(app, io) {
         io.emit('users retrieved', users.rows);
       });
 
+      io.on('get locations', async () => {
+        const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+        io.emit('locations retrieved', locations.rows);
+      });
+
       check4updates(io, app.tag);
 
       restart(io);
 
       shutdown(io);
 
-      deleteData(app, passport, io, 'user_id');
+      io.on('delete data', data => {
+        if (data.table === 'users') {
+          deleteData(app, io, 'user_id', data, passport);
+        } else if (data.table === 'locations') {
+          deleteData(app, io, 'location_id', data);
+        }
+      });
 
       io.on('export db', format => {
         emptyDir('exports');
@@ -121,7 +132,15 @@ module.exports = function(app, io) {
       });
 
       io.on('update', async record => {
-        query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
+        if (record.table === 'users') {
+          if (record.setPassword) {
+            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
+          } else {
+            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}' WHERE user_id = ${record.id}`;
+          }
+        } else {
+          query = `UPDATE ${record.table} SET location_name = '${record.values[0]}', location_mail = '${record.values[1]}' WHERE location_id = ${record.id}`;
+        }
 
         console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {
