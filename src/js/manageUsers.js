@@ -328,7 +328,6 @@ const manageUsers = () => {
               .addClass('hidden');
 
             confirmation();
-            console.trace(record2delete);
             socket.emit('delete data', record2delete);
 
             // Reset the deletionKey
