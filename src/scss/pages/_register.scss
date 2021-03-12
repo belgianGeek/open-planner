@@ -1,3 +1,4 @@
+.addLocation,
 .register {
   flex-direction: column;
   width: 100%;
@@ -18,8 +19,9 @@
     border-radius: 0.5em;
     top: 0;
     align-items: center;
+    z-index: 2;
 
-    .register__form {
+    .register__form, .addLocation__form {
       width: 80%;
     }
 
@@ -41,19 +43,6 @@
       }
     }
 
-    &__gender {
-      flex-direction: column;
-
-      label {
-        width: 45%;
-
-        .input {
-          width: auto;
-          margin-right: 0.5em;
-        }
-      }
-    }
-
     &__btnContainer {
       justify-content: space-evenly;
       padding-top: 1.5em;
@@ -67,14 +56,29 @@
     &__nameContainer {
       justify-content: space-between;
     }
+  }
+}
 
-    &__female,
-    &__male {
-      align-items: center;
+.register__form {
+  &__gender {
+    flex-direction: column;
 
-      &__input {
-        margin-right: 1em;
+    label {
+      width: 45%;
+
+      .input {
+        width: auto;
+        margin-right: 0.5em;
       }
+    }
+  }
+
+  &__female,
+  &__male {
+    align-items: center;
+
+    &__input {
+      margin-right: 1em;
     }
   }
 }
