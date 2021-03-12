@@ -248,6 +248,9 @@ const manageUsers = () => {
               .addClass('absolute zero flex')
               .removeClass('hidden');
 
+            // Update the password field placeholder
+            $('.register.absolute .register__form__password input').attr('placeholder', 'Laisser vide pour un mot de passe inchangé');
+
             $('.users').addClass('blur backgroundColor');
           } else if ($('.locations').hasClass('flex')) {
             $(`.addLocation`)
@@ -295,6 +298,9 @@ const manageUsers = () => {
             $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
 
             if (childMenuClassname === 'users') {
+              // Update the password field placeholder
+              $('.register.absolute .register__form__password input').attr('placeholder', 'Insérez le mot magique');
+
               $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
