@@ -40,15 +40,21 @@ async function mail(receiver, applicant, client) {
         }
       });
 
-      let options = {
-        from: `${res.rows[0].sender} <${sender}>`,
-        to: receiver.mail,
-        subject: "Une nouvelle demande a été introduite dans le tableau d'intervention",
-        html: msg
-      };
+      mail.verify((err, success) => {
+        if (!err) {
+          let options = {
+            from: `${res.rows[0].sender} <${sender}>`,
+            to: receiver.mail,
+            subject: "Une nouvelle demande a été introduite dans le tableau d'intervention",
+            html: msg
+          };
 
-      mail.sendMail(options).catch(err => console.error(err));
-      console.log(`Mail envoyé à l'adresse ${receiver.mail} le ${new Date()}`);
+          mail.sendMail(options).catch(err => console.trace(err));
+          console.log(`Mail envoyé à l'adresse ${receiver.mail} le ${new Date()}`);
+        } else {
+          console.trace('Il semble que les paramètres SMTP spécifiés soient incorrects : ' + err);
+        }
+      });
     }
     sendMail();
   } else {
