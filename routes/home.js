@@ -8,6 +8,7 @@ module.exports = function(app, io) {
   const env = require('dotenv').config();
   const exportDB = require('../modules/exportDB');
   const emptyDir = require('../modules/emptyDir');
+  const getSettings = require('../modules/getSettings');
   const getUsers = require('../modules/getUsers');
   const mail = require('../modules/mail');
   const notify = require('../modules/notify');
@@ -17,7 +18,20 @@ module.exports = function(app, io) {
   const process = require('process');
   const shutdown = require('../modules/shutdown');
 
+  // mail({
+  //   name: 'Vdw',
+  //   firstname: 'Max',
+  //   gender: 'm',
+  //   request: 'Test CC',
+  //   mail: 'maxime.vanderwegen@centreifapme.be'
+  // }, {
+  //   location: 'Château Massart',
+  //   name: 'Focant',
+  //   firstname: 'Claudy'
+  // }, app.client, true);
+
   app.get('/', checkAuth, async (req, res) => {
+    app.userSettings = await getSettings(app.client);
     const response = await app.client.query(`SELECT * FROM users`);
     let firstUser = false;
     if (!response.rowCount) {
@@ -34,6 +48,8 @@ module.exports = function(app, io) {
     });
 
     io.once('connection', io => {
+      io.emit('settings', app.userSettings);
+
       io.on('append data', async data => {
         if (data.table === 'tasks') {
           DBquery(app, io, 'INSERT INTO', data.table, {
@@ -106,22 +122,23 @@ module.exports = function(app, io) {
           .then(res => {
             receiver.mail = res.rows[0].location_mail;
             // Do not set the receiver gender
-            mail(receiver, applicant, app.client);
+            mail(receiver, applicant, app.client, data.sendcc);
             notify(io, 'mail');
-          })
-          .catch(err => {
-            console.log(JSON.stringify(err, null, 2));
           });
       });
 
       io.on('settings', settings => {
-        if (settings.mail_content !== undefined) {
-          query = `UPDATE settings SET mail_content = '${settings.mail_content}'`;
-          console.log(query);
+        query = ['UPDATE settings SET'];
+        if (settings.sendmail !== undefined) {
+          query.push(`sendmail = ${settings.sendmail},`);
+        }
+
+        if (settings.sendcc !== undefined) {
+          query.push(`sendcc = ${settings.sendcc},`);
         }
 
         DBquery(app, io, 'UPDATE', 'settings', {
-          text: query
+          text: query.join(' ').replace(/,$/, '')
         });
       });
 
