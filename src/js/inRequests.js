@@ -83,13 +83,15 @@ const inRequests = () => {
         // Set the notification status if a new record is created
         // Else, set the assigned worker
         if (!$('.inRequests').hasClass('absolute')) {
-          data2send.sendMail = $('.inRequests__form__requestInfo__row1__sendMail').is(':checked');
+          data2send.sendMail = globalSettings.sendmail;
+          data2send.sendCc = globalSettings.sendcc;
 
           // Default task status
           data2send.values.push('waiting');
 
           // Do not send an assigned worker ID because the task is not yet assigned
         } else {
+          data2send.sendMail = data2send.sendCc = globalSettings.sendcc;
           data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
           data2send.values.push(assignedWorker.val());
         }
@@ -110,7 +112,8 @@ const inRequests = () => {
                 name: applicantName.val(),
                 firstname: applicantFirstname.val(),
                 location: applicantLocation.text()
-              }
+              },
+              sendcc: data2send.sendCc
             });
           }
         } else {

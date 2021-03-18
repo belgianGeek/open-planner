@@ -150,7 +150,7 @@ const search = () => {
         } else if (data.user_fk === null) assignedWorker.append('Non attribué');
         else {
           assignedWorker.append('Problème d\'affichage :((');
-          console.log(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
+          console.trace(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
         }
 
         let status = $('\
