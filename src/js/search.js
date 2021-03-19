@@ -29,6 +29,7 @@ const search = () => {
 
       if ($('.search__container__readerInput').val() !== '') {
         searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
+        searchData.getApplicant = true;
       }
 
       socket.emit('search', searchData);
@@ -126,9 +127,16 @@ const search = () => {
           .addClass('search__results__container__row__item search__results__container__row__item--aw')
           .appendTo(row);
 
+        let commentMatches = {
+          "\'\'": "\'",
+          '\n': '<br>'
+        };
+
         let comment = $('<span></span>')
           .addClass('search__results__container__row__item search__results__container__row__item--body')
-          .append(data.comment.replace(/\n/gi, '<br>'))
+          .append(data.comment.replace(/\n|\'\'/g, matched => {
+            return commentMatches[matched];
+          }))
           .appendTo(row);
 
         if (data.user_fk !== undefined && data.user_fk !== null) {
@@ -142,7 +150,7 @@ const search = () => {
         } else if (data.user_fk === null) assignedWorker.append('Non attribué');
         else {
           assignedWorker.append('Problème d\'affichage :((');
-          console.log(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
+          console.trace(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
         }
 
         let status = $('\

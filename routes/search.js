@@ -29,15 +29,15 @@ module.exports = function(app, io) {
 
     io.once('connection', io => {
       io.on('search', data => {
-        if (!data.getApplicant) query = `SELECT * FROM tasks INNER JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
-        else query = `SELECT * FROM tasks INNER JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' ORDER BY tasks.task_id`;
+        if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
+        else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' AND location_fk = ${data.location} ORDER BY tasks.task_id`;
 
         // Disable automatic notifications for the first request in case it does not return any results
         DBquery(app, io, 'SELECT', 'tasks', {
             text: query
           }, false)
           .then(res => {
-            if (res.rowCount !== 0) {
+            if (res.rowCount > 0) {
               io.emit('search results', res.rows);
             } else if (res.rowCount === 0) {
               if (!data.getApplicant) query = `SELECT * FROM tasks WHERE location_fk = ${data.location} ORDER BY task_id`;

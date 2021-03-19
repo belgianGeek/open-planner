@@ -6,11 +6,12 @@ const createSettingsTable = client => {
     client.query(`CREATE TABLE IF NOT EXISTS settings (
       sender TEXT,
       mail_address TEXT,
-      mail_content TEXT,
       smtp_user TEXT,
       smtp_host TEXT,
       smtp_passwd TEXT,
-      wallpaper TEXT
+      wallpaper TEXT,
+      sendcc BOOLEAN,
+      sendmail BOOLEAN
   )`, (err, res) => {
       if (err) {
         msg = `La création de la table 'settings' a échoué : ${JSON.stringify(err, null, 2)}`;
@@ -25,8 +26,8 @@ const createSettingsTable = client => {
               console.log('Remplissage initial de la table \'settings\'...');
               let mailContent;
               client.query({
-                  text: `INSERT INTO settings(sender, mail_address, mail_content, smtp_user, smtp_host, smtp_passwd, wallpaper) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-                  values: [process.env.SENDER, process.env.MAIL_SENDER, `%APPLICANT% a introduit une nouvelle demande dans le tableau d'intervention sur le site %LOCATION%.\n\nVoici le détail de la demande :\n\n%REQUEST%\n\nBonne journée,\nBien à vous,\n%SENDER%`, process.env.MAIL_SENDER, process.env.SMTP_HOST, process.env.SMTP_PASSWD, '../src/scss/wallpaper.jpg']
+                  text: `INSERT INTO settings(sender, mail_address, smtp_user, smtp_host, smtp_passwd, wallpaper, sendcc, sendmail) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+                  values: [process.env.MAIL_SENDER, process.env.SMTP_USER, process.env.SMTP_USER, process.env.SMTP_HOST, process.env.SMTP_PASSWD, '../src/scss/wallpaper.jpg', true, true]
                 })
                 .then(res => {
                   msg = 'Remplissage de la table \'settings\' effectué avec succès !';
