@@ -13,13 +13,25 @@
       <h1 class="search__title title">Module de recherche</h1>
       <form class="search__container flex" method="GET" action="/">
         <label for="search__container__select">Effectuer une recherche</label>
-        <select class="search__container__select" name="search__select">
+        <select class="search__container__select input" name="search__select">
           <option value="default">Choisissez un site</option>
           <% for(const [i, location] of locations.entries()) { %>
           <option value="<%= i + 1 %>"><%= location %></option>
           <% } %>
         </select>
         <input class="search__container__readerInput input" type="text" placeholder="Nom de famille du demandeur">
+        <svg class="search__container__help" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <title>Vous pouvez remplir le champ pour filtrer votre recherche avec le nom de famille d'un demandeur</title>
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          <svg class="help__hover" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10">
+            </circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </svg>
         <button class="search__container__submit" type="submit">
           <svg class="search__container__submit__svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="arcs">
             <circle cx="11" cy="11" r="8"></circle>
@@ -35,7 +47,7 @@
   </main>
   <%- include('notification'); %>
   <% if (userType !== 'guest') { %>
-    <%- include('contextMenu'); %>
+  <%- include('contextMenu'); %>
   <% } %>
   <%- include('about'); %>
   <%- include('in_requests01', {

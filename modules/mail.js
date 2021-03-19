@@ -4,7 +4,7 @@ const ejs = require('ejs');
 const ip = require('ip');
 const path = require('path');
 
-async function mail(receiver, applicant, client) {
+async function mail(receiver, applicant, client, sendcc) {
   let tempReceiverName;
 
   if (receiver.name !== undefined) {
@@ -40,19 +40,36 @@ async function mail(receiver, applicant, client) {
         }
       });
 
-      let options = {
-        from: `${res.rows[0].sender} <${sender}>`,
-        to: receiver.mail,
-        subject: "Une nouvelle demande a été introduite dans le tableau d'intervention",
-        html: msg
-      };
+      mail.verify(async (err, success) => {
+        if (!err) {
+          let options = {
+            from: `${res.rows[0].sender} <${sender}>`,
+            to: receiver.mail,
+            subject: "Une nouvelle demande a été introduite dans le tableau d'intervention",
+            html: msg
+          };
 
-      mail.sendMail(options).catch(err => console.error(err));
-      console.log(`Mail envoyé à l'adresse ${receiver.mail} le ${new Date()}`);
+          // Send a copy of the request to the applicant
+          if (sendcc) {
+            const cc = await client.query(`SELECT email FROM users WHERE name ILIKE '${applicant.name}' AND firstname ILIKE '${applicant.firstname}'`);
+            options.cc = cc.rows[0].email;
+          }
+
+          mail.sendMail(options).catch(err => console.trace(err));
+
+          if (!sendcc) {
+            console.log(`Mail envoyé à l'adresse ${receiver.mail} le ${new Date()}`);
+          } else {
+            console.log(`Mail envoyé aux adresses ${receiver.mail} et ${options.cc} le ${new Date()}`);
+          }
+        } else {
+          console.trace('Il semble que les paramètres SMTP spécifiés soient incorrects : ' + err);
+        }
+      });
     }
     sendMail();
   } else {
-    console.error(res.rowCount, res.rows);
+    console.trace(res.rowCount, res.rows);
   }
 }
 
