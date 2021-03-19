@@ -25,17 +25,18 @@ module.exports = function(app, io) {
           programName: process.env.PROGRAM_NAME
         });
 
-      io.on('connection', io => {
-        io.on('append data', async data => {
-          const users = await app.client.query('SELECT * FROM users');
-          try {
-            // Only append a new user if there is not any users recorded in the DB yet
-            if (users.rows.length === 0) {
-              appendData(app, data, io);
+        io.on('connection', io => {
+          io.on('append data', async data => {
+            const users = await app.client.query('SELECT * FROM users');
+            try {
+              // Only append a new user if there is not any users recorded in the DB yet
+              if (users.rows.length === 0) {
+                appendData(app, data, io);
+              }
+            } catch (e) {
+              console.trace(e);
             }
-          } catch (e) {
-            console.trace(e);
-          }
+          });
         });
       }
     })

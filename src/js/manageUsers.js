@@ -342,6 +342,7 @@ const manageUsers = () => {
   // Show the right menu if the user click on another link of the sidebar while the other menu is visible
   const displayManagementMenu = (elt1, elt2) => {
     $(`.${elt1}Link`).click(() => {
+      hideMenu('inRequests');
       hideMenu(elt2);
       showMenu(elt1);
 
