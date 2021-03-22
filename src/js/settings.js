@@ -1,35 +1,4 @@
 const settings = () => {
-  const toggleSwitch = (input, slider, check = true) => {
-    if (check) {
-      $(input).prop('checked', true);
-      $(slider)
-        .removeClass('unchecked')
-        .addClass('checked');
-    } else {
-      $(input).prop('checked', false);
-      $(slider)
-        .removeClass('checked')
-        .addClass('unchecked');
-    }
-  }
-
-  // Get settings from the server-side
-  socket.on('settings', settings => {
-    // Update the global object with the retrieved settings
-    globalSettings = settings;
-    if (settings.sendcc) {
-      toggleSwitch('.toggleMailCc__Input', '.toggleMailCc__Slider', true);
-    } else {
-      toggleSwitch('.toggleMailCc__Input', '.toggleMailCc__Slider', false);
-    }
-
-    if (settings.sendmail) {
-      toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', true);
-    } else {
-      toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', false);
-    }
-  });
-
   // Show settings on btn click
   $('.settingsLink').click(() => {
     $('.settings__container').toggleClass('hidden flex');
@@ -42,15 +11,33 @@ const settings = () => {
       $(this).toggleClass('hidden flex');
       $('.wrapper').removeClass('blur');
 
-      if (settings.sendmail !== $('.toggleMail__Input').prop('checked')) {
+      if (globalSettings.sendmail !== $('.toggleMail__Input').prop('checked')) {
         updatedSettings.sendmail = globalSettings.sendmail = $('.toggleMail__Input').prop('checked');
       }
 
-      if (settings.sendcc !== $('.toggleMailCc__Input').prop('checked')) {
+      if (globalSettings.sendcc !== $('.toggleMailCc__Input').prop('checked')) {
         updatedSettings.sendcc = globalSettings.sendcc = $('.toggleMailCc__Input').prop('checked');
       }
 
-      socket.emit('settings', updatedSettings);
+      if (globalSettings.sender !== $('.settings__child__senderContainer__senderLabel__input').val()) {
+        updatedSettings.sender = globalSettings.sender = $('.settings__child__senderContainer__senderLabel__input').val();
+      }
+
+      if (globalSettings.smtp_host !== $('.settings__child__mailContainer__smtpHostLabel__input').val()) {
+        updatedSettings.smtp_host = globalSettings.smtp_host = $('.settings__child__mailContainer__smtpHostLabel__input').val();
+      }
+
+      if (globalSettings.smtp_user !== $('.settings__child__mailContainer__smtpUserLabel__input').val()) {
+        updatedSettings.smtp_user = globalSettings.smtp_user = $('.settings__child__mailContainer__smtpUserLabel__input').val();
+      }
+
+      if ($('.settings__child__mailContainer__smtpPasswdLabel__input').val() !== '') {
+        updatedSettings.smtp_passwd = $('.settings__child__mailContainer__smtpPasswdLabel__input').val();
+      }
+
+      if (Object.keys(updatedSettings).length > 0) {
+        socket.emit('settings', updatedSettings);
+      }
     }
   });
 }

@@ -46,15 +46,34 @@
 
     &__heading {
       font-family: Lobster Two Bold Italic;
-      margin-top: 2em;
     }
 
     &__heading2 {
       font-size: 1.5em;
     }
 
-    &__programNameContainer {
+    &__programNameContainer,
+    &__senderContainer,
+    &__mailContainer {
       align-items: center;
+      width: 100%;
+
+      input {
+        width: 100%;
+      }
+
+      label {
+        flex: 1;
+        flex-direction: column;
+        margin-right: 1em;
+      }
+    }
+
+    &__programNameContainer,
+    &__senderContainer {
+      .protip {
+        flex: 2;
+      }
     }
 
     .settings__BtnContainer {
