@@ -1,6 +1,7 @@
 let initialPibNb, initialBarcode;
 const inRequests = () => {
   let inRequestsTimeOut;
+  console.log(globalSettings);
 
   // autocomplete('.inRequests__form__readerInfo__container__name', '.inRequests__form__readerInfo__container__autocomplete');
   // autocomplete('.inRequests__step4__container__reader', '.inRequests__step4__container__autocomplete');
@@ -80,46 +81,41 @@ const inRequests = () => {
         data2send.values.push(applicantLocation.val());
         data2send.values.push(requestContent.val());
 
+        // Create an object to store the notification-related information
+        data2send.mail = {};
+
         // Set the notification status if a new record is created
         // Else, set the assigned worker
         if (!$('.inRequests').hasClass('absolute')) {
-          data2send.sendMail = globalSettings.sendmail;
-          data2send.sendCc = globalSettings.sendcc;
+          // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
+          data2send.mail.title = "🔥 Une nouvelle demande a été introduite dans le tableau d'intervention 🔥";
+          data2send.mail.status = 'waiting';
 
           // Default task status
           data2send.values.push('waiting');
 
           // Do not send an assigned worker ID because the task is not yet assigned
-        } else {
-          data2send.sendMail = data2send.sendCc = globalSettings.sendcc;
-          data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
-          data2send.values.push(assignedWorker.val());
-        }
 
-        // Send data to the server
-        // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
-        if (!$('.inRequests').hasClass('absolute')) {
           socket.emit('append data', data2send);
 
           $('.home').toggleClass('hidden flex');
           $('.header__container__icon, .header__container__msg').toggleClass('hidden');
-
-          // If the user want to send a notification email to the workers team
-          if (data2send.sendMail) {
-            socket.emit('send mail', {
-              request: requestContent.val(),
-              applicant: {
-                name: applicantName.val(),
-                firstname: applicantFirstname.val(),
-                location: applicantLocation.text()
-              },
-              sendcc: data2send.sendCc
-            });
-          }
         } else {
           // Else, update the existing record and hide the update form
 
-          data2send.id = $('.inRequests.absolute .inRequests__id').text();
+          data2send.mail.id = data2send.id = $('.inRequests.absolute .inRequests__id').text();
+          data2send.mail.creationDate = new Date(requestDate.val()).toLocaleDateString();
+          // Check the task status to adapt the mail sent to the user
+          if ($('.inRequests__form__requestInfo__row1__status option:selected').val() === 'done') {
+            data2send.mail.title = `🏁 La demande n°${data2send.mail.id} est traitée 🏁`;
+            data2send.mail.status = 'done';
+          } else {
+            data2send.mail.title = `🙃 La demande n°${data2send.mail.id} a été mise à jour 🙃`;
+            data2send.mail.status = 'wip';
+          }
+
+          data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
+          data2send.values.push(assignedWorker.val());
 
           $('.inRequests.absolute').toggleClass('hidden flex');
           $('.wrapper').toggleClass('backgroundColor blur');
@@ -128,6 +124,20 @@ const inRequests = () => {
 
           // Hide the button to hide the form
           $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden');
+        }
+
+        // If the user want to send a notification email to the workers team
+        if (globalSettings.sendmail) {
+          socket.emit('send mail', {
+            request: requestContent.val(),
+            applicant: {
+              name: applicantName.val(),
+              firstname: applicantFirstname.val(),
+              location: applicantLocation.text()
+            },
+            sendcc: globalSettings.sendCc,
+            mail: data2send.mail
+          });
         }
 
         $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');

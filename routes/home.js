@@ -18,20 +18,8 @@ module.exports = function(app, io) {
   const process = require('process');
   const shutdown = require('../modules/shutdown');
 
-  // mail({
-  //   name: 'Vdw',
-  //   firstname: 'Max',
-  //   gender: 'm',
-  //   request: 'Test CC',
-  //   mail: 'maxime.vanderwegen@centreifapme.be'
-  // }, {
-  //   location: 'Château Massart',
-  //   name: 'Focant',
-  //   firstname: 'Claudy'
-  // }, app.client, true);
-
   app.get('/', checkAuth, async (req, res) => {
-    app.userSettings = await getSettings(app.client);
+    let userSettings = await getSettings(app.client);
     const response = await app.client.query(`SELECT * FROM users`);
     let firstUser = false;
     if (!response.rowCount) {
@@ -48,7 +36,7 @@ module.exports = function(app, io) {
     });
 
     io.once('connection', io => {
-      io.emit('settings', app.userSettings);
+      io.emit('settings', userSettings);
 
       io.on('append data', async data => {
         if (data.table === 'tasks') {
@@ -108,24 +96,7 @@ module.exports = function(app, io) {
         }
       });
 
-      io.on('send mail', data => {
-        let receiver = {
-          mail: '',
-          request: data.request
-        };
-
-        let applicant = data.applicant;
-
-        DBquery(app, io, 'SELECT', 'users', {
-            text: `SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id`
-          })
-          .then(res => {
-            receiver.mail = res.rows[0].location_mail;
-            // Do not set the receiver gender
-            mail(receiver, applicant, app.client, data.sendcc);
-            notify(io, 'mail');
-          });
-      });
+      mail(app, io);
 
       io.on('settings', settings => {
         query = ['UPDATE settings SET'];

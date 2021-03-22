@@ -20,6 +20,14 @@
       display: block;
     }
 
+    .inline {
+      display: inline;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
     .quote {
       border-left: 2px solid blue;
       padding: 0.5em;
@@ -38,8 +46,25 @@
     <% } else { %>
     <p>Bonjour Madame/Monsieur,</p>
     <% } %>
-    <p><%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> dans le tableau d'intervention concernant le site <strong><%= location %></strong>. En voici le détail :</p>
-    <blockquote class="quote"><em><%= request %></em></blockquote>
+    <% if (status === 'waiting') { %>
+      <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> dans le tableau d'intervention concernant le site <strong><%= location %></strong>. En voici le détail :</p>
+      <blockquote class="quote"><em><%= request %></em></blockquote>
+    <% } else if (status === 'wip' || status === 'done') { %>
+      <% if (status === 'wip') { %>
+        <% status = 'En cours'; %>
+        <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif dans le tableau d'intervention en suivant <a href="http://<%= host %>:8000/search">ce lien</a>.</p>
+      <% } else { %>
+        <% status = 'Terminée'; %>
+        <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁😃 Vous trouverez son récapitulatif dans le tableau d'intervention en suivant <a href="http://<%= host %>:8000/search">ce lien</a>.</p>
+      <% } %>
+      <h2>Détails</h2>
+      <article>
+          <p><u>Date d'introduction</u> : <%= date %></p>
+          <p><u>Site</u> : <%= location %></p>
+          <p><u>Statut</u> : <quote class="quote"><em><%= status %></em></quote></p>
+          <p><u>Objet</u> : <quote class="quote"><em><%= request %></em></quote></p>
+      </article>
+    <% } %>
     <p>Bonne journée,</p>
     <p>Bien à vous,</p>
     <P><%= sender %></p>
