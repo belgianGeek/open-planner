@@ -108,6 +108,22 @@ module.exports = function(app, io) {
           query.push(`sendcc = ${settings.sendcc},`);
         }
 
+        if (settings.sender !== undefined) {
+          query.push(`sender = '${settings.sender}',`);
+        }
+
+        if (settings.smtp_passwd !== undefined) {
+          query.push(`smtp_passwd = '${settings.smtp_passwd}',`);
+        }
+
+        if (settings.smtp_user !== undefined) {
+          query.push(`smtp_user = '${settings.smtp_user}',`);
+        }
+
+        if (settings.smtp_host !== undefined) {
+          query.push(`smtp_host = '${settings.smtp_host}',`);
+        }
+
         DBquery(app, io, 'UPDATE', 'settings', {
           text: query.join(' ').replace(/,$/, '')
         });

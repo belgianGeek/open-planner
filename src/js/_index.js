@@ -47,6 +47,11 @@ socket.on('settings', settings => {
   } else {
     toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', false);
   }
+
+  $('.settings__child__senderContainer__senderLabel__input').val(globalSettings.sender);
+  $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
+  $('.settings__child__mailContainer__smtpUserLabel__input').val(globalSettings.smtp_user);
+  $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
 });
 
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
