@@ -76,7 +76,7 @@ module.exports = function(app, io) {
         });
       });
 
-      deleteData(app, passport, io, 'task_id');
+      deleteData(app, io, 'task_id', passport);
 
       mail(app, io);
     });
