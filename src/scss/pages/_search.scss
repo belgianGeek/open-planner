@@ -24,12 +24,8 @@
       border: none;
     }
 
-    select {
-      color: black;
-
-      option {
-        color: black;
-      }
+    &__help {
+      @include help;
     }
   }
 

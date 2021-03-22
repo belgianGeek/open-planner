@@ -3,23 +3,33 @@
     <span class="settings__child__header flex">
       <h1>Paramètres</h1>
     </span>
-    <h2 class="settings__child__heading2 settings__child__heading">E-mail de notification</h2>
-    <div class="settings__child__textarea flex">
-      <textarea class="settings__child__textarea__content" name="email" rows="8" cols="80"></textarea>
-    </div>
+    <span class="toggleMail flex">
+      <span class="toggleMail__Comment">Lors de l'introduction d'une demande, envoyer un mail à l'équipe chargée d'effectuer la tâche</span>
+      <label class="toggleMail__Switch">
+        <input class="toggleMail__Input" type="checkbox" name="toggleMailInput" value="">
+        <span class="toggleMail__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleMailCc flex">
+      <span class="toggleMailCc__Comment">Lors de l'introduction ou de la modification d'une demande, prévenir le demandeur par mail</span>
+      <label class="toggleMailCc__Switch">
+        <input class="toggleMailCc__Input" type="checkbox" name="toggleMailCcInput" value="">
+        <span class="toggleMailCc__Slider"></span>
+      </label>
+    </span>
     <h2 class="settings__child__heading2 settings__child__heading">Personnalisation</h2>
-    <form class="backgroundImageUploadForm flex" action="/" enctype="multipart/form-data" method="post">
+    <!-- <form class="backgroundImageUploadForm flex" action="/" enctype="multipart/form-data" method="post">
       <label for="backgroundImageUploadForm__label">Cet arrière-plan est moche !</label>
       <button class="backgroundImageUploadForm__Btn btn" type="button" name="backgroundImageUploadBtn">Télécharger une image</button>
       <input class="backgroundImageUploadForm__InputFile hidden" type="file" name="backgroundImageUploadInput" accept="image/png, image/jpg">
       <input class="backgroundImageUploadForm__InputUrl input" type="text" name="backgroundImageUrl" value="" placeholder='Insérer un lien'>
-    </form>
-    <span class="settings__child__libraryContainer flex">
-      <label class="settings__child__libraryContainer__label">
-        Nom de la bibliothèque
-        <input class="settings__child__libraryContainer__label__input" type="text" placeholder="Nom de la bibliothèque">
+    </form> -->
+    <span class="settings__child__programNameContainer flex">
+      <label class="settings__child__programNameContainer__label">
+        Nom de l'interface
+        <input class="settings__child__programNameContainer__label__input input" type="text" placeholder="Nom de l'interface">
       </label>
-      <span class="protip protip--noMargin">Cette indication est utilisée dans les mails envoyés aux lecteurs ainsi que dans les différents formulaires de PIB Manager</span>
+      <span class="protip protip--noMargin">Cette indication est utilisée dans les notifications envoyées par mail ainsi que dans les différents formulaires de l'interface</span>
     </span>
   </div>
 </div>

@@ -51,7 +51,7 @@ const createDB = (config, DBname = process.env.DB) => {
     app.client = new Client(config);
 
     app.client.connect()
-      .then(() => {
+      .then(async() => {
         console.log('Reconnexion effectuée !');
         // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
         createLocationsTable(app.client, process.env.LOCATIONS.split(','));

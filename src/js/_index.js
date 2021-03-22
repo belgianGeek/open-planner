@@ -8,6 +8,9 @@ let data2send = {
 
 let inRequestsReaderGender;
 
+// Store the settings retrieved from the database into a global object
+let globalSettings = {};
+
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 
 // Check if all the fomr fields are fullfilled before submit
