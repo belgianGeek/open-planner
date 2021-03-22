@@ -8,8 +8,51 @@ let data2send = {
 
 let inRequestsReaderGender;
 
+const toggleSwitch = (input, slider, check = true) => {
+  if (check) {
+    $(input).prop('checked', true);
+    $(slider)
+      .removeClass('unchecked')
+      .addClass('checked');
+  } else {
+    $(input).prop('checked', false);
+    $(slider)
+      .removeClass('checked')
+      .addClass('unchecked');
+  }
+}
+
 // Store the settings retrieved from the database into a global object
 let globalSettings = {};
+// Get settings from the server-side
+socket.on('settings', settings => {
+  // Update the global object with the retrieved settings
+  globalSettings.sendcc = settings.sendcc;
+  globalSettings.sendmail = settings.sendmail;
+  globalSettings.mail_address = settings.mail_address;
+  globalSettings.sender = settings.sender;
+  globalSettings.smtp_user = settings.smtp_user;
+  globalSettings.smtp_host = settings.smtp_host;
+  globalSettings.smtp_passwd = settings.smtp_passwd;
+  globalSettings.wallpaper = settings.wallpaper;
+
+  if (settings.sendcc) {
+    toggleSwitch('.toggleMailCc__Input', '.toggleMailCc__Slider', true);
+  } else {
+    toggleSwitch('.toggleMailCc__Input', '.toggleMailCc__Slider', false);
+  }
+
+  if (settings.sendmail) {
+    toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', true);
+  } else {
+    toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', false);
+  }
+
+  $('.settings__child__senderContainer__senderLabel__input').val(globalSettings.sender);
+  $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
+  $('.settings__child__mailContainer__smtpUserLabel__input').val(globalSettings.smtp_user);
+  $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
+});
 
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 

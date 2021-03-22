@@ -5,13 +5,17 @@ module.exports = function(app, io) {
   const deleteData = require('../modules/deleteData');
   const DBquery = require('../modules/DBquery');
   const env = require('dotenv').config();
+  const getSettings = require('../modules/getSettings');
+  const mail = require('../modules/mail');
   const notify = require('../modules/notify');
   const passport = require('passport');
   const restart = require('../modules/restart');
   const process = require('process');
   const shutdown = require('../modules/shutdown');
 
-  app.get('/search', checkAuth, (req, res) => {
+  app.get('/search', checkAuth, async(req, res) => {
+    let userSettings = await getSettings(app.client);
+
     app.client.query(`SELECT user_id, name, firstname FROM users`)
       .then(data => {
         res.render('search.ejs', {
@@ -28,6 +32,8 @@ module.exports = function(app, io) {
     let query = '';
 
     io.once('connection', io => {
+      io.emit('settings', userSettings);
+
       io.on('search', data => {
         if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
         else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' AND location_fk = ${data.location} ORDER BY tasks.task_id`;
@@ -70,9 +76,9 @@ module.exports = function(app, io) {
         });
       });
 
-      io.on('delete data', data => {
-        deleteData(app, io, 'task_id', data);
-      });
+      deleteData(app, passport, io, 'task_id');
+
+      mail(app, io);
     });
   });
 };
