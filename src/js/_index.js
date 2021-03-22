@@ -8,7 +8,7 @@ let data2send = {
 
 let inRequestsReaderGender;
 
-const toggleSwitch = (input, slider, check = true) => {
+const toggleSwitch = (input, slider, check) => {
   if (check) {
     $(input).prop('checked', true);
     $(slider)
