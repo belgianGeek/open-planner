@@ -135,7 +135,7 @@ const inRequests = () => {
               firstname: applicantFirstname.val(),
               location: applicantLocation.text()
             },
-            sendcc: globalSettings.sendCc,
+            sendcc: globalSettings.sendcc,
             mail: data2send.mail
           });
         }
