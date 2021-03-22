@@ -36,6 +36,11 @@ module.exports = function(app, io) {
     });
 
     io.once('connection', io => {
+      io.emit('username', {
+        firstname: req.user.firstname,
+        name: req.user.name
+      });
+      
       io.emit('settings', userSettings);
 
       io.on('append data', async data => {

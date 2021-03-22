@@ -54,6 +54,11 @@ socket.on('settings', settings => {
   $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
 });
 
+socket.on('username', userData => {
+  $('.inRequests__form__applicantInfo__name').val(userData.name);
+  $('.inRequests__form__applicantInfo__firstname').val(userData.firstname);
+});
+
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 
 // Check if all the fomr fields are fullfilled before submit
