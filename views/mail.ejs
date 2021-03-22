@@ -20,6 +20,30 @@
       display: block;
     }
 
+    table {
+      border: 2px solid #00c0ff;
+      border-collapse: collapse;
+      color: white;
+    }
+
+    td, .underline {
+      padding: 0.5em;
+      border-bottom: 2px solid #00c0ff;
+      border-right: 2px solid #00c0ff;
+    }
+
+    th {
+      padding: 0.5em;
+    }
+
+    tr {
+      border-bottom: 2px solid #00c0ff;
+    }
+
+    thead {
+      background-color: #00c0ff;
+    }
+
     .inline {
       display: inline;
     }
@@ -57,13 +81,29 @@
         <% status = 'Terminée'; %>
         <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁😃 Vous trouverez son récapitulatif dans le tableau d'intervention en suivant <a href="http://<%= host %>:8000/search">ce lien</a>.</p>
       <% } %>
-      <h2>Détails</h2>
-      <article>
-          <p><u>Date d'introduction</u> : <%= date %></p>
-          <p><u>Site</u> : <%= location %></p>
-          <p><u>Statut</u> : <quote class="quote"><em><%= status %></em></quote></p>
-          <p><u>Objet</u> : <quote class="quote"><em><%= request %></em></quote></p>
-      </article>
+      <table>
+        <thead>
+          <th colspan="2">Détails</th>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="underline">Date d'introduction</th>
+            <td><%= date %></td>
+          </tr>
+          <tr>
+            <th class="underline">Site</th>
+            <td><%= location %></td>
+          </tr>
+          <tr>
+            <th class="underline">Statut</th>
+            <td><quote class="quote"><em><%= status %></em></quote></td>
+          </tr>
+          <tr>
+            <th class="underline">Objet</th>
+            <td><quote class="quote"><em><%= request %></em></quote></td>
+          </tr>
+        </tbody>
+      </table>
     <% } %>
     <p>Bonne journée,</p>
     <p>Bien à vous,</p>
