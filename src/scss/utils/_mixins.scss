@@ -35,6 +35,28 @@
 @mixin box-shadow {
   box-shadow: 10px 10px 12px 2px $translucent-black;
 }
+@mixin help {
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    .help__hover {
+      opacity: 1;
+    }
+  }
+
+  .help__hover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    stroke: $electric-blue;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 250ms;
+  }
+}
 @mixin input {
   border: 2px solid $input-border;
   background-color: rgba(0,0,0,.4);
