@@ -11,7 +11,7 @@ const inRequests = () => {
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
   let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');
   let requestContent = $('.inRequests__form__requestInfo__comment');
-  let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker');
+  let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker option:selected');
 
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
@@ -44,8 +44,8 @@ const inRequests = () => {
     }
 
     if ($('.inRequests').hasClass('absolute')) {
-      if (assignedWorker.val() === '') {
-        invalid(assignedWorker);
+      if (assignedWorker.val() === 'default') {
+        invalid($('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker'));
       }
     }
 
