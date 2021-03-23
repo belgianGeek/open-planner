@@ -40,7 +40,7 @@ module.exports = function(app, io) {
         firstname: req.user.firstname,
         name: req.user.name
       });
-      
+
       io.emit('settings', userSettings);
 
       io.on('append data', async data => {

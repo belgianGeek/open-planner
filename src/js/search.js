@@ -96,22 +96,22 @@ const search = () => {
           .appendTo('.search__results__container');
 
         let id = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--id')
+          .addClass('search__results__container__row__item  rowItem search__results__container__row__item--id')
           .append(data.task_id)
           .appendTo(row);
 
         let applicantName = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--name')
+          .addClass('search__results__container__row__item  rowItem search__results__container__row__item--name')
           .append(data.applicant_name.replace(/\'\'/g, "'"))
           .appendTo(row);
 
         let applicantFirstname = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--firstname')
+          .addClass('search__results__container__row__item  rowItem search__results__container__row__item--firstname')
           .append(data.applicant_firstname.replace(/\'\'/g, "'"))
           .appendTo(row);
 
-        let date = $('<span></span>').addClass('search__results__container__row__item search__results__container__row__item--date');
-        let timestamp = $('<span></span>').addClass('search__results__container__row__item search__results__container__row__item--timestamp hidden');
+        let date = $('<span></span>').addClass('search__results__container__row__item  rowItem search__results__container__row__item--date');
+        let timestamp = $('<span></span>').addClass('search__results__container__row__item  rowItem search__results__container__row__item--timestamp hidden');
 
         if (data.request_date !== null) {
           date.append(new Date(data.request_date).toLocaleDateString());
@@ -124,7 +124,7 @@ const search = () => {
         date.appendTo(row);
 
         let assignedWorker = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--aw')
+          .addClass('search__results__container__row__item  rowItem search__results__container__row__item--aw')
           .appendTo(row);
 
         let commentMatches = {
@@ -133,7 +133,7 @@ const search = () => {
         };
 
         let comment = $('<span></span>')
-          .addClass('search__results__container__row__item search__results__container__row__item--body')
+          .addClass('search__results__container__row__item  rowItem search__results__container__row__item--body')
           .append(data.comment.replace(/\n|\'\'/g, matched => {
             return commentMatches[matched];
           }))
@@ -158,7 +158,7 @@ const search = () => {
         <circle cx="50%" cy="50%" r="5"/>\
         <title class="status__title"></title>\
       </svg>\
-      ').addClass('search__results__container__row__item search__results__container__row__item--status')
+      ').addClass('search__results__container__row__item  search__results__container__row__item--status')
           .attr('viewBox', '0 0 75 10')
           .appendTo(row);
 
@@ -226,6 +226,9 @@ const search = () => {
             .addClass('absolute flex')
             .removeClass('hidden');
 
+          // Block all the user-related fields to prevent modifications
+          $('.inRequests.absolute .inRequests__form__applicantInfo__name, .inRequests.absolute .inRequests__form__applicantInfo__firstname').attr('disabled', true);
+
           // Show all the fields that can be modified for the request to be updated and assigned
           $('.inRequests.absolute .inRequests__form__btnContainer__hide, .inRequests__form__requestInfo__row1__assignedWorker, .inRequests.absolute .inRequests__form__requestInfo__row1__status')
             .removeClass('hidden')
@@ -241,8 +244,12 @@ const search = () => {
           $('.inRequests.absolute .inRequests__form__applicantInfo__name').val($(`.${parent} .search__results__container__row__item--name`).text());
           $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val($(`.${parent} .search__results__container__row__item--firstname`).text());
           $('.inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').val(date);
-          $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} .search__results__container__row__item--body`).text().replace('<br>', '\n'));
-          $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker').val($(`.${parent} .search__results__container__row__item--awid`).text());
+          $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} .search__results__container__row__item--body`).html().replace(/<br>/g, '\n\n'));
+
+          // Check if the assigned worker ID is defined
+          if ($(`${parent} .search__results__container__row__item--awid`).length) {
+            $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker option:selected').val($(`.${parent} .search__results__container__row__item--awid`).text());
+          }
 
           // Request status
           if ($(`.${parent} .search__results__container__row__item--status`).hasClass('wip')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('wip');
@@ -256,8 +263,14 @@ const search = () => {
             $(`.${parent} .search__results__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
             $(`.${parent} .search__results__container__row__item--date`).text(new Date($('.inRequests__form__requestInfo__row1__requestDate').val()).toLocaleDateString());
             $(`.${parent} .search__results__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--body`).text($('.inRequests__form__requestInfo__comment').val().replace('\n', '<br>'));
-            $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
+            $(`.${parent} .search__results__container__row__item--body`).html($('.inRequests__form__requestInfo__comment').val().replace(/\n\n/g, '<br>'));
+
+            // Check for default values
+            if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
+              $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
+            } else {
+              $(`.${parent} .search__results__container__row__item--aw`).text('Non attribué');
+            }
 
             $(`.${parent} .search__results__container__row__item--status`)
               .removeClass('waiting wip done')

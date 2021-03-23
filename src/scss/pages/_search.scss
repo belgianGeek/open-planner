@@ -47,6 +47,11 @@
 
     &__h2 {
       font-size: 1.6em;
+
+      &__help {
+        margin-left: 0.3em;
+        @include help;
+      }
     }
   }
 }
