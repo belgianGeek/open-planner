@@ -11,6 +11,7 @@ const os = require('os');
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
@@ -44,6 +45,7 @@ const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const createSettingsTable = require('./modules/createSettingsTable');
+const generateRandomString = radix => bcrypt.hashSync(Math.random.toString(radix).substr(2,), 10);
 
 const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
@@ -52,14 +54,17 @@ const createDB = (config, DBname = process.env.DB) => {
 
     app.client.connect()
       .then(async() => {
-        console.log('Reconnexion effectuée !');
         // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
-        createLocationsTable(app.client, process.env.LOCATIONS.split(','));
+        createLocationsTable(app.client);
         createUsersTable(app.client);
         createTasksTable(app.client);
         createSettingsTable(app.client);
 
         getUsers(app, passport);
+
+        setTimeout(function () {
+          console.log(`Tu peux te connecter à ${process.env.PROGRAM_NAME} ici : http://${ip.address()}:8000.`);
+        }, 10);
       })
       .catch(err => {
         console.log(err);
@@ -72,7 +77,6 @@ const createDB = (config, DBname = process.env.DB) => {
 
     initClient
       .end()
-      .then(() => console.log('Reconnexion en cours...'))
       .catch(err => console.error('Une erreur est survenue lors de la tentative de reconnexion à la base de données', err));
   }
 
@@ -110,7 +114,6 @@ app.file2download = {};
 initClient.connect()
   .then(() => {
     if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
-      console.log(`Tu peux te connecter à ${process.env.PROGRAM_NAME} ici : http://${ip.address()}:8000.`);
       createDB(config, process.env.DB);
     } else {
       console.log(`Désolé, il semble que tu n'aies pas accès à Internet... Rétablis ta connexion et réessaie :-)`);
@@ -132,9 +135,9 @@ app.use(express.urlencoded({
 }));
 app.use(flash());
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: generateRandomString(16),
   resave: false,
-  savedUninitialized: false
+  saveUninitialized: false
 }));
 
 app.use(passport.initialize());
