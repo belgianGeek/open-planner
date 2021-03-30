@@ -1,0 +1,38 @@
+<section class="dbConfig flex">
+  <form class="dbConfig__form flex" action="/createdb" method="post">
+    <h2 class="dbConfig__title title">Personnalisation</h2>
+    <label class="dbConfig__form__name flex">
+      Nom de l'instance Open Planner
+      <input class="input" type="text" name="instance" placeholder="Nom de l'instance..." required>
+    </label>
+    <label class="dbConfig__form__locationName flex">
+      Ajout d'une première implantation
+      <input class="input" type="text" name="location_name" placeholder="Nom de l'implantation..." required>
+    </label>
+    <label class="dbConfig__form__locationMail flex">
+      Adresse mail liée à la première implantation
+      <input class="input" type="email" name="location_mail" placeholder="Adresse mail liée à l'implantation..." required>
+    </label>
+    <h2 class="dbConfig__title title">Paramètres d'emailing</h2>
+    <label class="dbConfig__form__senderLabel flex">
+      Nom de l'expéditeur
+      <input class="input" type="text" name="sender_name" placeholder="Nom de l'expéditeur" required>
+    </label>
+    <label class="dbConfig__form__smtpUserLabel flex">
+      Adresse de l'expéditeur
+      <input class="input" type="email" name="smtp_user" placeholder="Adresse mail" required>
+    </label>
+    <label class="dbConfig__form__smtpHostLabel flex">
+      Serveur SMTP
+      <input class="input" type="text" name="smtp_host" placeholder="Adresse du serveur SMTP" required>
+    </label>
+    <label class="dbConfig__form__smtpPasswdLabel flex">
+      Mot de passe de l'adresse email
+      <input class="input" type="password" name="smtp_passwd" placeholder="Insérez le mot magique" required>
+    </label>
+    <span class="dbConfig__form__btnContainer flex">
+      <button class="dbConfig__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
+      <button class="dbConfig__form__btnContainer__submit btn btn--submit" type="submit">Valider</button>
+    </span>
+  </form>
+</section>

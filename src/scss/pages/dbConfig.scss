@@ -1,0 +1,36 @@
+.dbConfig {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  font-size: 1.1em;
+  align-items: center;
+
+  &__title {
+    text-align: center;
+    font-family: 'Lobster Two Bold Italic', sans-serif;
+    font-size: 1.5em;
+    margin: 0.5em 0;
+  }
+
+  &__form {
+    flex-direction: column;
+    width: 80%;
+
+    label {
+      width: 70%;
+      justify-content: space-between;
+      align-items: baseline;
+
+      .input {
+        width: 60%;
+      }
+    }
+
+    &__btnContainer {
+      justify-content: space-evenly;
+      padding-top: 1.5em;
+      align-items: baseline;
+    }
+  }
+}

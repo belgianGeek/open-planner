@@ -2,14 +2,13 @@
   <% let title = ''; %>
   <% let postURL = ''; %>
 
-  <% if (firstUser) { %>
+  <% if (isFirstUserConfigured) { %>
     <% postURL = '/login'; %>
-    <% title = 'Créer un compte'; %>
   <% } else { %>
     <% postURL = '/'; %>
     <% title = 'Ajouter un utilisateur'; %>
   <% } %>
-  <h2 class="register__title title"><%= title %></h2>
+  <h2 class="register__title title"><% if(title !== '') title %></h2>
   <form class="register__form flex" action="<%= postURL %>" method="post">
     <input class="hidden register__form__userID" type="text">
     <label class="register__form__name flex">
@@ -31,7 +30,7 @@
     </label>
     <label class="register__form__password flex">
       Mot de passe
-      <input class="input" type="password" placeholder="Insérez le mot magique">
+      <input class="input" type="password" placeholder="Insérez le mot magique" required>
     </label>
     <label class="register__form__email flex">
       Adresse email
@@ -42,8 +41,10 @@
       <select class="input">
         <option value="default">Choisissez un type de compte...</option>
         <option value="admin">Administrateur</option>
-        <option value="user">Utilisateur</option>
-        <option value="guest">Visiteur</option>
+        <% if (isFirstUserConfigured) { %>
+          <option value="user">Utilisateur</option>
+          <option value="guest">Visiteur</option>
+        <% } %>
       </select>
     </label>
     <h3 class="register__form__title title">Sexe</h3>

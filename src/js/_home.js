@@ -20,4 +20,20 @@ const handleHomeBtnClick = (element, parent) => {
   });
 }
 
+const hideMenu = classname => {
+  if (!$(`.${classname}`).hasClass('hidden')) {
+    $(`.${classname}`)
+      .removeClass('flex')
+      .addClass('hidden');
+  }
+}
+
+const showMenu = classname => {
+  if ($(`.${classname}`).hasClass('hidden')) {
+    $(`.${classname}`)
+      .removeClass('hidden')
+      .addClass('flex');
+  }
+}
+
 handleHomeBtnClick('newRequest', 'btnContainer');

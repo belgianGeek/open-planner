@@ -44,7 +44,6 @@ const existPath = require('./modules/existPath');
 const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
-const createSettingsTable = require('./modules/createSettingsTable');
 const generateRandomString = radix => bcrypt.hashSync(Math.random.toString(radix).substr(2,), 10);
 
 const createDB = (config, DBname = process.env.DB) => {
@@ -58,12 +57,11 @@ const createDB = (config, DBname = process.env.DB) => {
         createLocationsTable(app.client);
         createUsersTable(app.client);
         createTasksTable(app.client);
-        createSettingsTable(app.client);
 
         getUsers(app, passport);
 
         setTimeout(function () {
-          console.log(`Tu peux te connecter à ${process.env.PROGRAM_NAME} ici : http://${ip.address()}:8000.`);
+          console.log(`Tu peux te connecter à ${process.env.INSTANCE_NAME} ici : http://${ip.address()}:8000.`);
         }, 10);
       })
       .catch(err => {
@@ -145,6 +143,7 @@ app.use(passport.session());
 
 app.use(methodOverride('_method'));
 
+require('./routes/createDB')(app, io);
 require('./routes/download')(app, io);
 require('./routes/home')(app, io);
 require('./routes/login')(app, io);

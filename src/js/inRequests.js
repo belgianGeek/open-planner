@@ -1,7 +1,6 @@
 let initialPibNb, initialBarcode;
 const inRequests = () => {
   let inRequestsTimeOut;
-  console.log(globalSettings);
 
   // autocomplete('.inRequests__form__readerInfo__container__name', '.inRequests__form__readerInfo__container__autocomplete');
   // autocomplete('.inRequests__step4__container__reader', '.inRequests__step4__container__autocomplete');

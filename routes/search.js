@@ -15,14 +15,15 @@ module.exports = function(app, io) {
 
   app.get('/search', checkAuth, async(req, res) => {
     let userSettings = await getSettings(app.client);
+    let locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);
 
     app.client.query(`SELECT user_id, name, firstname FROM users`)
       .then(data => {
         res.render('search.ejs', {
           currentVersion: app.tag,
-          locations: process.env.LOCATIONS.split(','),
+          locations: locations.rows,
           isSearchPage: true,
-          programName: process.env.PROGRAM_NAME,
+          instanceName: app.open_planner_instance_name,
           users: data.rows,
           userType: req.user.type
         });
