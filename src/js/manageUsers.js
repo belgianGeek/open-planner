@@ -76,22 +76,6 @@ const appendLocationRow = (i, data) => {
 // Hide the header to prevent users from going back to the home page
 const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
 
-const hideMenu = classname => {
-  if (!$(`.${classname}`).hasClass('hidden')) {
-    $(`.${classname}`)
-      .removeClass('flex')
-      .addClass('hidden');
-  }
-}
-
-const showMenu = classname => {
-  if ($(`.${classname}`).hasClass('hidden')) {
-    $(`.${classname}`)
-      .removeClass('hidden')
-      .addClass('flex');
-  }
-}
-
 const manageUsers = () => {
   // Hide the form on btn click
   const hideForm = (parentElt, childElt) => {

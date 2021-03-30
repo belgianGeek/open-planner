@@ -21,17 +21,19 @@ module.exports = function(app, io) {
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.client);
     const response = await app.client.query(`SELECT * FROM users`);
-    let firstUser = false;
+    let isFirstUserConfigured = false;
     if (!response.rowCount) {
-      firstUser = true;
+      isFirstUserConfigured = true;
     }
+
+    let locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);
 
     res.render('index.ejs', {
       currentVersion: app.tag,
-      firstUser: firstUser,
+      isFirstUserConfigured: isFirstUserConfigured,
       isSearchPage: false,
-      locations: process.env.LOCATIONS.split(','),
-      programName: process.env.PROGRAM_NAME,
+      locations: locations.rows,
+      instanceName: app.open_planner_instance_name,
       userType: req.user.type
     });
 

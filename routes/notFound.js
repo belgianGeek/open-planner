@@ -10,7 +10,7 @@ module.exports = function(app, io) {
   app.use((req, res, next) => {
     res.status(404).render('404.ejs', {
       msg: notFoundmessages[Math.floor(Math.random() * notFoundmessages.length)],
-      programName: process.env.PROGRAM_NAME
+      instanceName: app.open_planner_instance_name
     });
   });
 };
