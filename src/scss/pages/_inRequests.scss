@@ -44,6 +44,14 @@
 
     label {
       align-self: center;
+      flex-direction: column;
+      align-items: center;
+      font-size: 1em;
+    }
+
+    .title {
+      padding: 0.5em 0;
+      font-size: 1em;
     }
 
     &__applicantInfo,
@@ -86,6 +94,7 @@
 
       &__row1 {
         justify-content: space-between;
+        margin-top: 1em;
       }
 
       &__comment {
