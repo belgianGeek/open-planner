@@ -13,8 +13,7 @@ module.exports = function(app, io) {
 
   app.get('/search', checkAuth, async(req, res) => {
     let userSettings = await getSettings(app.client);
-    let locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);
-
+    let locations = await app.client.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
     app.client.query(`SELECT user_id, name, firstname FROM users`)
       .then(data => {
         res.render('search.ejs', {

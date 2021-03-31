@@ -16,7 +16,7 @@
         <select class="search__container__select input" name="search__select">
           <option value="default">Choisissez un site</option>
           <% for(const [i, location] of locations.entries()) { %>
-          <option value="<%= i + 1 %>"><%= location %></option>
+          <option value="<%= location.location_id %>"><%= location.location_name %></option>
           <% } %>
         </select>
         <input class="search__container__readerInput input" type="text" placeholder="Nom de famille du demandeur">

@@ -5,7 +5,7 @@
     <span class="inRequests__form__applicantInfo flex">
       <select class="inRequests__form__applicantInfo__location input" required="true">
         <% for(const [i, location] of locations.entries()) { %>
-          <option value="<%= i + 1 %>"><%= location %></option>
+          <option value="<%= location.location_id %>"><%= location.location_name %></option>
         <% } %>
       </select>
       <input class="inRequests__form__applicantInfo__name input" type="text" placeholder="Nom du demandeur..." required="true">
