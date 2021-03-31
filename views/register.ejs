@@ -24,7 +24,7 @@
       <select class="input">
         <option value="default">Choisissez une implantation...</option>
         <% for(const [i, location] of locations.entries()) { %>
-        <option value="<%= i + 1 %>"><%= location %></option>
+        <option value="<%= location.location_id %>"><%= location.location_name %></option>
         <% } %>
       </select>
     </label>
@@ -61,7 +61,9 @@
     <span class="register__form__btnContainer flex">
       <button class="register__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
       <button class="register__form__btnContainer__submit btn btn--submit" type="submit">Valider</button>
-      <button class="register__form__btnContainer__hide btn home-btn" type="button">Annuler</button>
+      <% if (isFirstUserConfigured) { %>
+        <button class="register__form__btnContainer__hide btn home-btn" type="button">Annuler</button>
+      <% } %>
     </span>
   </form>
 </section>

@@ -24,7 +24,7 @@ module.exports = function(app, io) {
       isFirstUserConfigured = true;
     }
 
-    let locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);
+    let locations = await app.client.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
 
     res.render('index.ejs', {
       currentVersion: app.tag,
