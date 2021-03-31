@@ -1,11 +1,9 @@
-const env = require('dotenv').config();
 const fs = require('fs-extra');
 const express = require('express');
 const app = express();
 const ip = require('ip');
 const cp = require('child_process').exec;
 const path = require('path');
-const process = require('process');
 const os = require('os');
 
 const server = require('http').Server(app);
@@ -46,7 +44,7 @@ const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 const generateRandomString = radix => bcrypt.hashSync(Math.random.toString(radix).substr(2,), 10);
 
-const createDB = (config, DBname = process.env.DB) => {
+const createDB = (config, DBname = 'planner') => {
   const createTables = () => {
     console.log(`Base de données ${DBname} créée avec succès, création des tables en cours...`);
     app.client = new Client(config);
@@ -61,7 +59,7 @@ const createDB = (config, DBname = process.env.DB) => {
         getUsers(app, passport);
 
         setTimeout(function () {
-          console.log(`Tu peux te connecter à ${process.env.INSTANCE_NAME} ici : http://${ip.address()}:8000.`);
+          console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
         }, 10);
       })
       .catch(err => {
@@ -71,7 +69,7 @@ const createDB = (config, DBname = process.env.DB) => {
 
   const reconnect = () => {
     // Disconnect from the 'postgres' DB and connect to the newly created 'node-planner' DB
-    config.database = process.env.DB;
+    config.database = 'planner';
 
     initClient
       .end()
@@ -102,7 +100,7 @@ existPath('./exports/');
 // Exporter une sauvegarde de la DB toutes les douze heures
 setInterval(() => {
   console.log('DB backup on ' + Date.now());
-  exportDB(`./backups/${process.env.DB}_${Date.now()}.pgsql`);
+  exportDB(`./backups/planner_${Date.now()}.pgsql`);
 }, 12 * 60 * 60 * 1000);
 
 
@@ -112,7 +110,7 @@ app.file2download = {};
 initClient.connect()
   .then(() => {
     if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
-      createDB(config, process.env.DB);
+      createDB(config);
     } else {
       console.log(`Désolé, il semble que tu n'aies pas accès à Internet... Rétablis ta connexion et réessaie :-)`);
     }
