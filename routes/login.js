@@ -3,11 +3,9 @@ module.exports = function(app, io) {
   const checkNotAuth = require('../modules/checkNotAuth');
   const createSettingsTable = require('../modules/createSettingsTable');
   const DBquery = require('../modules/DBquery');
-  const env = require('dotenv').config();
   const getUsers = require('../modules/getUsers');
   const notify = require('../modules/notify');
   const passport = require('passport');
-  const process = require('process');
 
   app.get('/login', checkNotAuth, async (req, res) => {
       const locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);

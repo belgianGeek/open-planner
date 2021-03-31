@@ -4,13 +4,11 @@ module.exports = function(app, io) {
   const checkAuth = require('../modules/checkAuth');
   const deleteData = require('../modules/deleteData');
   const DBquery = require('../modules/DBquery');
-  const env = require('dotenv').config();
   const getSettings = require('../modules/getSettings');
   const mail = require('../modules/mail');
   const notify = require('../modules/notify');
   const passport = require('passport');
   const restart = require('../modules/restart');
-  const process = require('process');
   const shutdown = require('../modules/shutdown');
 
   app.get('/search', checkAuth, async(req, res) => {

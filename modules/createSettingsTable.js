@@ -1,5 +1,3 @@
-const process = require('process');
-
 const createSettingsTable = (client, data) => {
   let msg;
   return new Promise(function(resolve, reject) {

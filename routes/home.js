@@ -5,7 +5,6 @@ module.exports = function(app, io) {
   const checkAuth = require('../modules/checkAuth');
   const deleteData = require('../modules/deleteData');
   const DBquery = require('../modules/DBquery');
-  const env = require('dotenv').config();
   const exportDB = require('../modules/exportDB');
   const emptyDir = require('../modules/emptyDir');
   const getSettings = require('../modules/getSettings');
@@ -15,7 +14,6 @@ module.exports = function(app, io) {
   const path = require('path');
   const passport = require('passport');
   const restart = require('../modules/restart');
-  const process = require('process');
   const shutdown = require('../modules/shutdown');
 
   app.get('/', checkAuth, async (req, res) => {
@@ -101,8 +99,8 @@ module.exports = function(app, io) {
               console.error(`Une erreur est survenue lors de l'export de la table ${table} : ${err}`);
             });
         } else if (format === 'pgsql') {
-          app.file2download.path = `exports/${process.env.DB}-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
-          app.file2download.name = `${process.env.DB}-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
+          app.file2download.path = `exports/planner-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
+          app.file2download.name = `planner-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
           exportDB(app.file2download.path);
 
           io.emit('export successfull');
