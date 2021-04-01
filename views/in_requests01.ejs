@@ -3,8 +3,7 @@
   <form class="inRequests__form flex" action="/" method="post">
     <h2 class="title">Informations du demandeur</h2>
     <span class="inRequests__form__applicantInfo flex">
-      <% if (!isSearchPage) { %>
-      <label class="flex">
+      <label class="<% if (!isSearchPage) { %> flex <% } else { %> hidden <% } %>">
         Implantation concernée
         <select class="inRequests__form__applicantInfo__location input" required="true">
           <option value="default">Sélectionnez une implantation</option>
@@ -13,7 +12,6 @@
           <% } %>
         </select>
       </label>
-      <% } %>
       <label class="flex">
         Nom du demandeur
         <input class="inRequests__form__applicantInfo__name input" type="text" placeholder="Nom du demandeur..." required="true">

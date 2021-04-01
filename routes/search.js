@@ -22,7 +22,7 @@ module.exports = function(app, io) {
           isSearchPage: true,
           instanceName: app.open_planner_instance_name,
           users: data.rows,
-          userType: req.user.type
+          user: req.user
         });
       })
       .catch(err => console.trace(err));
@@ -66,7 +66,7 @@ module.exports = function(app, io) {
       shutdown(io);
 
       io.on('update', record => {
-        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', request_date = '${record.values[2]}', comment = '${record.values[4]}', status = '${record.values[5]}', user_fk = ${record.values[6]} WHERE task_id = ${record.id}`;
+        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
 
         console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {

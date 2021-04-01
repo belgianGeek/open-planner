@@ -32,7 +32,7 @@ module.exports = function(app, io) {
       isSearchPage: false,
       locations: locations.rows,
       instanceName: app.open_planner_instance_name,
-      userType: req.user.type
+      user: req.user
     });
 
     io.once('connection', io => {
@@ -46,7 +46,7 @@ module.exports = function(app, io) {
       io.on('append data', async data => {
         if (data.table === 'tasks') {
           DBquery(app, io, 'INSERT INTO', data.table, {
-            text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, request_date, location_fk, comment, status) VALUES($1, $2, $3, $4, $5, $6)`,
+            text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status) VALUES($1, $2, $3, $4, $5, $6)`,
             values: data.values
           });
         } else if (data.table === 'users' || data.table === 'locations') {

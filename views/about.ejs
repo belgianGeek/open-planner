@@ -8,7 +8,7 @@
           <u>Version</u>
           <p> :</p>
           <p class="currentVersion"><%= currentVersion %></p>
-          <% if (userType === 'admin') { %>
+          <% if (user.type === 'admin') { %>
           <button class="updateBtn btn home-btn" type="button">Mettre à jour</button>
           <% } %>
         </span>

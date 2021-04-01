@@ -10,11 +10,11 @@ const inRequests = () => {
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
   let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');
   let requestContent = $('.inRequests__form__requestInfo__comment');
-  let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker option:selected');
 
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
     let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
+    let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker option:selected');
     data2send.table = 'tasks';
 
     // Applicant name
@@ -27,9 +27,11 @@ const inRequests = () => {
       invalid(applicantFirstname);
     }
 
-    // Applicant location
-    if (applicantLocation.val() === '') {
-      invalid(applicantLocation);
+    if (!$('.inRequests').hasClass('absolute')) {
+      // Applicant location
+      if (applicantLocation.val() === '') {
+        invalid(applicantLocation);
+      }
     }
 
     // Request date
@@ -54,30 +56,17 @@ const inRequests = () => {
 
       confirmation();
 
-      // Avoid style modification while updating a record through the search module
-      // if (!$('.inRequests').hasClass('absolute')) {
-      //   $(`.inRequests__step2`)
-      //     .removeClass('translateXonwards translateXbackwards hidden fixed')
-      //     .addClass('flex');
-      // }
-
       inRequestsTimeOut = setTimeout(() => {
         // Escape apostrophes
         applicantName.val(applicantName.val().replace(/'/g, "''"));
         applicantFirstname.val(applicantFirstname.val().replace(/'/g, "''"));
-        applicantLocation.val(applicantLocation.val().replace(/'/g, "''"));
         requestContent.val(requestContent.val().replace(/'/g, "''"));
 
-        if ($('.inRequests').hasClass('absolute')) {
-          assignedWorker.val(assignedWorker.val().replace(/'/g, "''"));
-        }
+        // Applicant location and assigned worker are both ID's
+        // we don't need to escape apostrophes
 
         data2send.values.push(applicantName.val());
         data2send.values.push(applicantFirstname.val());
-
-        // Store the date as timestamp
-        data2send.values.push(new Date(requestDate.val()).toUTCString());
-        data2send.values.push(applicantLocation.val());
         data2send.values.push(requestContent.val());
 
         // Create an object to store the notification-related information
@@ -86,6 +75,10 @@ const inRequests = () => {
         // Set the notification status if a new record is created
         // Else, set the assigned worker
         if (!$('.inRequests').hasClass('absolute')) {
+          // Store the date as timestamp
+          data2send.values.push(new Date(requestDate.val()).toUTCString());
+          data2send.values.push(applicantLocation.val());
+
           // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
           data2send.mail.title = "🔥 Une nouvelle demande a été introduite dans le tableau d'intervention 🔥";
           data2send.mail.status = 'waiting';
@@ -113,7 +106,7 @@ const inRequests = () => {
             data2send.mail.status = 'wip';
           }
 
-          data2send.values.push($('.inRequests__form__requestInfo__row1__status').val());
+          data2send.values.push($('.inRequests__form__requestInfo__row1__status option:selected').val());
           data2send.values.push(assignedWorker.val());
 
           $('.inRequests.absolute').toggleClass('hidden flex');
