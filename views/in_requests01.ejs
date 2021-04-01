@@ -3,8 +3,9 @@
   <form class="inRequests__form flex" action="/" method="post">
     <h2 class="title">Informations du demandeur</h2>
     <span class="inRequests__form__applicantInfo flex">
+      <% if (!isSearchPage) { %>
       <label class="flex">
-        Implantation du demandeur
+        Implantation concernée
         <select class="inRequests__form__applicantInfo__location input" required="true">
           <option value="default">Sélectionnez une implantation</option>
           <% for(const [i, location] of locations.entries()) { %>
@@ -12,6 +13,7 @@
           <% } %>
         </select>
       </label>
+      <% } %>
       <label class="flex">
         Nom du demandeur
         <input class="inRequests__form__applicantInfo__name input" type="text" placeholder="Nom du demandeur..." required="true">
@@ -53,7 +55,9 @@
     <span class="inRequests__form__btnContainer flex">
       <button class="inRequests__form__btnContainer__reset btn btn--reset" type="reset">Effacer les champs</button>
       <button class="inRequests__form__btnContainer__submit inRequests__step1__btn btn btn--submit" type="submit">Valider</button>
-      <button class="inRequests__form__btnContainer__hide inRequests__step1__btn btn home-btn hidden" type="button">Retour aux résultats de recherche</button>
+      <% if (isSearchPage) { %>
+        <button class="inRequests__form__btnContainer__hide inRequests__step1__btn btn home-btn flex" type="button">Retour aux résultats de recherche</button>
+      <% } %>
     </span>
   </form>
 </section>

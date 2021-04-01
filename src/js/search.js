@@ -229,15 +229,6 @@ const search = () => {
           // Block all the user-related fields to prevent modifications
           $('.inRequests.absolute .inRequests__form__applicantInfo__name, .inRequests.absolute .inRequests__form__applicantInfo__firstname').attr('disabled', true);
 
-          // Show all the fields that can be modified for the request to be updated and assigned
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide, .inRequests__form__requestInfo__row1__assignedWorker, .inRequests.absolute .inRequests__form__requestInfo__row1__status')
-            .removeClass('hidden')
-            .addClass('flex');
-
-          $('.inRequests__form__applicantInfo__location, .inRequests__form__requestInfo__row1 label')
-            .addClass('hidden')
-            .removeClass('flex');
-
           // Fill in all the fields with the selected record data
           $('.inRequests.absolute .inRequests__id').text($(`.${parent} .search__results__container__row__item--id`).text());
           $('.inRequests.absolute .inRequests__form__applicantInfo__location').val($(`.search__container__select`).val());
