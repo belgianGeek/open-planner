@@ -2,7 +2,7 @@
   &__child {
     width: 50%;
     height: 50%;
-    background: $translucent-black;
+    background: rgba(0,0,0,0.8);
     flex-direction: column;
     border-radius: 0.5em;
     @include box-shadow;
