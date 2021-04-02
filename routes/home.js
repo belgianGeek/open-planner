@@ -7,6 +7,7 @@ module.exports = function(app, io) {
   const DBquery = require('../modules/DBquery');
   const exportDB = require('../modules/exportDB');
   const emptyDir = require('../modules/emptyDir');
+  const fs = require('fs-extra');
   const getSettings = require('../modules/getSettings');
   const getUsers = require('../modules/getUsers');
   const mail = require('../modules/mail');
@@ -85,15 +86,41 @@ module.exports = function(app, io) {
 
         if (format === 'csv') {
           const table = 'tasks';
-          const filename = table + '-' + new Date().toUTCString().replace(/\s/g, '-') + '.csv';
-          DBquery(app, io, 'COPY', table, {
-              text: `COPY ${table} TO '${path.join(__dirname, '../exports/' + filename)}' DELIMITER ',' CSV HEADER`
+          const filename = table + '-' + new Date().toUTCString().replace(/[\s,]/g, '-') + '.csv';
+          DBquery(app, io, 'SELECT', table, {
+              text: `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id ORDER BY tasks.task_id`
             })
-            .then(() => {
-              app.file2download.path = `exports/${filename}`;
-              app.file2download.name = filename;
+            .then(async res => {
+              let data2write = 'Identifiant de la tâche,Demandeur,Date de la demande,Implantation concernée par la demande,Utilisateur chargé de la tâche,Objet de la demande,Statut\n';
 
-              io.emit('export successfull');
+              for (const [i, row] of res.rows.entries()) {
+                const location = await app.client.query(`SELECT location_name FROM locations WHERE location_id = ${row.location_fk}`);
+
+                let status = '';
+                if (row.status === 'done') {
+                  status = 'Terminée';
+                } else if (row.status === 'wip') {
+                  status = 'En cours';
+                } else {
+                  status = 'Aucune attribution';
+                }
+
+                data2write += `${row.task_id},${row.applicant_firstname} ${row.applicant_name.toUpperCase()},${row.request_date.toLocaleDateString('fr-BE')},${location.rows[0].location_name},${row.firstname} ${row.name.toUpperCase()},${row.comment.replace(/\'\'/, "'")},${status}\n`;
+
+                if (i === res.rows.length - 1) {
+                  fs.writeFile(path.join(__dirname, '../exports/' + filename), data2write, (err) => {
+                    if (!err) {
+                      notify(io, 'success');
+                      app.file2download.path = `exports/${filename}`;
+                      app.file2download.name = filename;
+
+                      io.emit('export successfull');
+                    } else {
+                      console.trace(err);
+                    }
+                  });
+                }
+              }
             })
             .catch(err => {
               console.error(`Une erreur est survenue lors de l'export de la table ${table} : ${err}`);

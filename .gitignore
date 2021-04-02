@@ -103,5 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# Backup files
+# Backup and exported files
 backups/
+exports/
