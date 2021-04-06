@@ -1,6 +1,6 @@
 let initialPibNb, initialBarcode;
 const inRequests = () => {
-  let inRequestsTimeOut;
+  let inRequestsTimeOut, attachment;
 
   // autocomplete('.inRequests__form__readerInfo__container__name', '.inRequests__form__readerInfo__container__autocomplete');
   // autocomplete('.inRequests__step4__container__reader', '.inRequests__step4__container__autocomplete');
@@ -10,6 +10,17 @@ const inRequests = () => {
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
   let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');
   let requestContent = $('.inRequests__form__requestInfo__comment');
+
+  // Picture sending is optional
+  data2send.sendAttachment = false;
+
+  $('.inRequests__form__requestInfo__row1__file').on('change', function() {
+    compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
+      attachment = compressedPic;
+      $('.inRequests img').attr('src', compressedPic);
+      data2send.sendAttachment = true;
+    });
+  });
 
   $('.inRequests__form__btnContainer__submit').click(event => {
     event.preventDefault();
@@ -85,6 +96,14 @@ const inRequests = () => {
 
           // Default task status
           data2send.values.push('waiting');
+
+          // If the user adds a file to his request
+          if (data2send.sendAttachment) {
+            data2send.values.push(data2send.sendAttachment);
+            data2send.values.push(attachment);
+          } else {
+            data2send.values.push(data2send.sendAttachment);
+          }
 
           // Do not send an assigned worker ID because the task is not yet assigned
 

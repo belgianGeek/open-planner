@@ -56,6 +56,9 @@ const search = () => {
         let columnTitle = column;
 
         switch (column) {
+          case 'attachment':
+            columnTitle = '📎';
+            break;
           case 'task_id':
             columnTitle = 'N° de demande';
             break;
@@ -181,6 +184,18 @@ const search = () => {
 
           $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En cours de traitement');
         }
+
+        let attachment = $('<span></span>').addClass('search__results__container__row__item search__results__container__row__item--file');
+        if (data.attachment) {
+          attachment.append('📎');
+
+          let attachmentSrc = $('<span></span>')
+            .addClass('search__results__container__row__item search__results__container__row__item--fileSrc hidden')
+            .append(data.attachment_src)
+            .appendTo(row);
+        }
+
+        attachment.appendTo(row);
       }
 
       $('.search__results__container').fadeIn();
@@ -227,7 +242,12 @@ const search = () => {
             .removeClass('hidden');
 
           // Block all the user-related fields to prevent modifications
-          $('.inRequests.absolute .inRequests__form__applicantInfo__name, .inRequests.absolute .inRequests__form__applicantInfo__firstname').attr('disabled', true);
+          $('.inRequests.absolute .inRequests__form__applicantInfo__name, .inRequests.absolute .inRequests__form__applicantInfo__firstname, .inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').attr('disabled', true);
+
+          // Append the attachment if any
+          if ($(`.${parent} .search__results__container__row__item--fileSrc`).length) {
+            $('.inRequests img').attr('src', $(`.${parent} .search__results__container__row__item--fileSrc`).text());
+          }
 
           // Fill in all the fields with the selected record data
           $('.inRequests.absolute .inRequests__id').text($(`.${parent} .search__results__container__row__item--id`).text());
