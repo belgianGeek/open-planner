@@ -65,7 +65,7 @@ const register = () => {
         // Push the password last because it will be extracted on the server
 
         // Handle modifications and user adding differently based on the form title
-        if (!$('.register').hasClass('absolute') || !$('.register__title').text().match('Modification')) {
+        if (!$('.register__title').text().match('Modification')) {
           data2send.values.push(password.val());
           socket.emit('append data', data2send);
         } else {
