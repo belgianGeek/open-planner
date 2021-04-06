@@ -57,7 +57,7 @@ const search = () => {
 
         switch (column) {
           case 'attachment':
-            columnTitle = '📎';
+            columnTitle = 'Pièce jointe';
             break;
           case 'task_id':
             columnTitle = 'N° de demande';

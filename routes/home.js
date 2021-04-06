@@ -14,8 +14,6 @@ module.exports = function(app, io) {
   const notify = require('../modules/notify');
   const path = require('path');
   const passport = require('passport');
-  const restart = require('../modules/restart');
-  const shutdown = require('../modules/shutdown');
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.client);
@@ -75,10 +73,6 @@ module.exports = function(app, io) {
       });
 
       check4updates(io, app.tag);
-
-      restart(io);
-
-      shutdown(io);
 
       io.on('delete data', data => {
         if (data.table === 'users') {
