@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const { randomBytes } = require('crypto');
 const express = require('express');
 const app = express();
 const ip = require('ip');
@@ -42,7 +43,6 @@ const existPath = require('./modules/existPath');
 const createLocationsTable = require('./modules/createLocationsTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
-const generateRandomString = radix => bcrypt.hashSync(Math.random.toString(radix).substr(2,), 10);
 
 const createDB = (config, DBname = 'planner') => {
   const createTables = () => {
@@ -131,7 +131,7 @@ app.use(express.urlencoded({
 }));
 app.use(flash());
 app.use(session({
-  secret: generateRandomString(16),
+  secret: randomBytes(256).toString('hex'),
   resave: false,
   saveUninitialized: false
 }));
