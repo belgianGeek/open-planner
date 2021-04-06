@@ -65,11 +65,9 @@
   margin: 1em 0;
 }
 @mixin simple-step {
-  justify-content: center;
   align-items: center;
   font-size: 1.1em;
   width: 100%;
-  flex-direction: column;
   height: 60vh;
 }
 @mixin tabContainer($width: 100%) {

@@ -46,10 +46,17 @@ module.exports = function(app, io) {
 
       io.on('append data', async data => {
         if (data.table === 'tasks') {
-          DBquery(app, io, 'INSERT INTO', data.table, {
-            text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status) VALUES($1, $2, $3, $4, $5, $6)`,
-            values: data.values
-          });
+          if (!data.sendAttachment) {
+            DBquery(app, io, 'INSERT INTO', data.table, {
+              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status, attachment) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+              values: data.values
+            });
+          } else {
+            DBquery(app, io, 'INSERT INTO', data.table, {
+              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status, attachment, attachment_src) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+              values: data.values
+            });
+          }
         } else if (data.table === 'users' || data.table === 'locations') {
           appendData(app, data, io);
         } else {

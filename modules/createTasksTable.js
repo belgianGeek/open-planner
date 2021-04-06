@@ -9,6 +9,8 @@ module.exports = function createTasksTable(client) {
       user_fk INT,
       comment TEXT,
       status TEXT,
+      attachment TEXT,
+      attachment_src TEXT,
       CONSTRAINT location_fk
         FOREIGN KEY(location_fk)
 	       REFERENCES locations(location_id)

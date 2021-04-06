@@ -1,5 +1,5 @@
 .inRequests {
-  margin-left: 3em;
+  margin-left: 6em;
   width: 100%;
 
   &.absolute {
@@ -14,7 +14,13 @@
   }
 
   &__step1 {
+    justify-content: space-around;
     @include simple-step();
+
+    img {
+      object-fit: contain;
+      padding: 0 1.5em;
+    }
 
     &__container {
       & textarea {
@@ -26,6 +32,11 @@
         border: 2px solid grey;
         border-radius: 0.5em;
         background-color: $translucent-black;
+
+        &::placeholder {
+          text-align: center;
+          padding-top:3em;
+        }
       }
     }
   }
@@ -95,6 +106,7 @@
       &__row1 {
         justify-content: space-between;
         margin-top: 1em;
+        align-items: baseline;
       }
 
       &__comment {
