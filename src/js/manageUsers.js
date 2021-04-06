@@ -1,5 +1,25 @@
 let iDataRow = 0;
 let parent;
+function userTypeSwitch(inputValue) {
+  let returnValue = '';
+
+  switch (inputValue) {
+    case 'guest':
+      returnValue = 'Visiteur';
+      break;
+    case 'user':
+      returnValue = 'Utilisateur';
+      break;
+    case 'admin':
+      returnValue = 'Administrateur';
+      break;
+    default:
+      inputValue;
+  }
+
+  return returnValue;
+}
+
 const appendUserRow = (i, data) => {
   let row = $('<span></span>')
     .addClass(`users__container__row users__container__row--${i} flex`)
@@ -46,8 +66,15 @@ const appendUserRow = (i, data) => {
     .val('12345678')
     .appendTo(row);
 
-  let type = $('<span></span>')
+  // Translate the user type shown in the interface
+  let typeDisplayed = $('<span></span>')
     .addClass('users__container__row__item users__container__row__item--type')
+    .append(userTypeSwitch(data.type))
+    .appendTo(row);
+
+  // Keep the original version to fill the management forms
+  let type = $('<span></span>')
+    .addClass('users__container__row__item users__container__row__item--hiddenType hidden')
     .append(data.type)
     .appendTo(row);
 }
@@ -104,7 +131,7 @@ const manageUsers = () => {
       $('.register select').val('default');
 
       // Make sure the title is correct
-      if (parentMenuClassname === 'users') {
+      if (childMenuClassname === 'users') {
         $('.register__title').text('Ajouter un utilisateur');
       } else {
         $('.addLocation__title').text('Ajouter une implantation');
@@ -265,7 +292,7 @@ const manageUsers = () => {
           if (childMenuClassname === 'users') {
             $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userFirstName input`).val($(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text());
             $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__location select`).val($(`.${parent} .${childMenuClassname}__container__row__item--location_id`).text());
-            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--type`).text());
+            $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__type select`).val($(`.${parent} .${childMenuClassname}__container__row__item--hiddenType`).text());
 
             // Fill in the user's gender
             if ($(`.${parent} .${childMenuClassname}__container__row__item--gender`).text() === 'm') {
@@ -287,7 +314,9 @@ const manageUsers = () => {
 
               $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
-              $(`.${parent} .${childMenuClassname}__container__row__item--type`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
+              $(`.${parent} .${childMenuClassname}__container__row__item--hiddenType`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
+
+              $(`.${parent} .${childMenuClassname}__container__row__item--type`).text(userTypeSwitch($(`.${parentMenuClassname}__form__type option:selected`).val()));
             }
           });
         });

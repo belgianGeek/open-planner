@@ -21,7 +21,7 @@ module.exports = function(app, io) {
     let userSettings = await getSettings(app.client);
     const response = await app.client.query(`SELECT * FROM users`);
     let isFirstUserConfigured = false;
-    if (!response.rowCount) {
+    if (response.rowCount) {
       isFirstUserConfigured = true;
     }
 
