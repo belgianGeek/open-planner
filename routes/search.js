@@ -8,8 +8,6 @@ module.exports = function(app, io) {
   const mail = require('../modules/mail');
   const notify = require('../modules/notify');
   const passport = require('passport');
-  const restart = require('../modules/restart');
-  const shutdown = require('../modules/shutdown');
 
   app.get('/search', checkAuth, async(req, res) => {
     let userSettings = await getSettings(app.client);
@@ -61,12 +59,12 @@ module.exports = function(app, io) {
 
       check4updates(io, app.tag);
 
-      restart(io);
-
-      shutdown(io);
-
       io.on('update', record => {
-        query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
+        if (!record.attachments) {
+          query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
+        } else {
+          query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]}, attachment = ${record.values[5]}, attachment_src = '${record.values[6]}' WHERE task_id = ${record.id}`;
+        }
 
         console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {

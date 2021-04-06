@@ -15,11 +15,16 @@ const inRequests = () => {
   data2send.sendAttachment = false;
 
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
-    compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
-      attachment = compressedPic;
-      $('.inRequests img').attr('src', compressedPic);
-      data2send.sendAttachment = true;
-    });
+    if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
+      compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
+        $('.inRequests img').attr('src', compressedPic);
+        attachment = compressedPic;
+        data2send.sendAttachment = true;
+      });
+    } else {
+      attachment = undefined;
+      data2send.sendAttachment = false;
+    }
   });
 
   $('.inRequests__form__btnContainer__submit').click(event => {
@@ -61,6 +66,16 @@ const inRequests = () => {
       }
     }
 
+    // If the user adds a file to his request
+    const handleAttachment = () => {
+      if (data2send.sendAttachment) {
+        data2send.values.push(data2send.sendAttachment);
+        data2send.values.push(attachment);
+      } else {
+        data2send.values.push(data2send.sendAttachment);
+      }
+    }
+
     if (!validationErr) {
       $('.input').removeClass('invalid');
       $('form .warning').hide();
@@ -83,6 +98,12 @@ const inRequests = () => {
         // Create an object to store the notification-related information
         data2send.mail = {};
 
+        // Send an attachment if a custom image is added by the user
+        // (Works for both the absolute and static forms)
+        if ($('.inRequests img').attr('src') !== '/src/scss/icons/empty.svg') {
+          data2send.sendAttachment = true;
+        }
+
         // Set the notification status if a new record is created
         // Else, set the assigned worker
         if (!$('.inRequests').hasClass('absolute')) {
@@ -97,13 +118,7 @@ const inRequests = () => {
           // Default task status
           data2send.values.push('waiting');
 
-          // If the user adds a file to his request
-          if (data2send.sendAttachment) {
-            data2send.values.push(data2send.sendAttachment);
-            data2send.values.push(attachment);
-          } else {
-            data2send.values.push(data2send.sendAttachment);
-          }
+          handleAttachment();
 
           // Do not send an assigned worker ID because the task is not yet assigned
 
@@ -128,6 +143,8 @@ const inRequests = () => {
           data2send.values.push($('.inRequests__form__requestInfo__row1__status option:selected').val());
           data2send.values.push(assignedWorker.val());
 
+          handleAttachment();
+
           $('.inRequests.absolute').toggleClass('hidden flex');
           $('.wrapper').toggleClass('backgroundColor blur');
 
@@ -139,7 +156,7 @@ const inRequests = () => {
 
         // If the user want to send a notification email to the workers team
         if (globalSettings.sendmail) {
-          socket.emit('send mail', {
+          let options = {
             request: requestContent.val(),
             applicant: {
               name: applicantName.val(),
@@ -148,7 +165,17 @@ const inRequests = () => {
             },
             sendcc: globalSettings.sendcc,
             mail: data2send.mail
-          });
+          }
+
+          if (data2send.sendAttachment) {
+            options.attachments = [{
+              filename: `${globalSettings.instance_name.replace(/[\/'\s]/, '-')}_${Date.now()}.jpg`,
+              encoding: 'base64',
+              content: $('.inRequests img').attr('src').split(';base64,').pop()
+            }];
+          }
+
+          socket.emit('send mail', options);
         }
 
         $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');

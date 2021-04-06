@@ -54,6 +54,11 @@ const mail = (app, io) => {
               html: msg
             };
 
+            // Handle attachments
+            if (mailObject.attachments !== undefined) {
+              options.attachments = mailObject.attachments;
+            }
+
             // Send a copy of the request to the applicant
             if (mailObject.sendcc) {
               const cc = await app.client.query(`SELECT email FROM users WHERE name ILIKE '${applicant.name}' AND firstname ILIKE '${applicant.firstname}'`);
@@ -80,6 +85,10 @@ const mail = (app, io) => {
 
   io.on('send mail', data => {
     data.mail.sendcc = data.sendcc;
+
+    if (data.attachments !== undefined) {
+      data.mail.attachments = data.attachments;
+    }
 
     let receiver = {
       mail: '',
