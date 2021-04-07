@@ -12,7 +12,11 @@ const settings = () => {
       $('.wrapper').removeClass('blur');
 
       if (globalSettings.instance_name !== $('.settings__child__instanceNameContainer__label__input').val()) {
-        updatedSettings.instance_name = globalSettings.instance_name = $('.settings__child__instanceNameContainer__label__input').val();
+        updatedSettings.instance_name = globalSettings.instance_name = $('.settings__child__instanceNameContainer__label__input').val().replace(/\'\'/g, "'");
+      }
+
+      if (globalSettings.instance_description !== $('.settings__child__descriptionContainer__label__textarea').text()) {
+        updatedSettings.instance_description = globalSettings.instance_description = $('.settings__child__descriptionContainer__label__textarea').text().replace(/\'\'/g, "'");
       }
 
       if (globalSettings.sendmail !== $('.toggleMail__Input').prop('checked')) {

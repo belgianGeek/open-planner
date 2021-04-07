@@ -3,6 +3,7 @@ const createSettingsTable = (client, data) => {
   return new Promise(function(resolve, reject) {
     client.query(`CREATE TABLE IF NOT EXISTS settings (
       instance_name TEXT,
+      instance_description TEXT,
       sender TEXT,
       mail_address TEXT,
       smtp_user TEXT,

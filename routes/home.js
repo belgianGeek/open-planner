@@ -17,7 +17,6 @@ module.exports = function(app, io) {
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.client);
-    console.log(userSettings);
     const response = await app.client.query(`SELECT * FROM users`);
     let isFirstUserConfigured = false;
     if (response.rowCount) {
@@ -32,6 +31,7 @@ module.exports = function(app, io) {
       isSearchPage: false,
       locations: locations.rows,
       instanceName: app.open_planner_instance_name,
+      instance_description: app.open_planner_instance_description,
       sendAttachments: userSettings.sendattachments,
       user: req.user
     });
@@ -143,6 +143,10 @@ module.exports = function(app, io) {
         query = ['UPDATE settings SET'];
         if (settings.instance_name !== undefined) {
           query.push(`instance_name = ${settings.instance_name},`);
+        }
+
+        if (settings.instance_description !== undefined) {
+          query.push(`instance_description = ${settings.instance_description},`);
         }
 
         if (settings.sendmail !== undefined) {

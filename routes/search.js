@@ -19,6 +19,7 @@ module.exports = function(app, io) {
           locations: locations.rows,
           isSearchPage: true,
           instanceName: app.open_planner_instance_name,
+          instance_description: app.open_planner_instance_description,
           sendAttachments: userSettings.sendattachments,
           users: data.rows,
           user: req.user
