@@ -15,7 +15,7 @@ const mail = (app, io) => {
 
     let htmlMsg = msg = '';
 
-    const res = await app.client.query(`SELECT * FROM settings`);
+    const res = await app.pool.query(`SELECT * FROM settings`);
     if (res.rowCount !== 0 && res.rowCount !== null) {
 
       let sender = smtpUsername = res.rows[0].smtp_user;
@@ -61,7 +61,7 @@ const mail = (app, io) => {
 
             // Send a copy of the request to the applicant
             if (mailObject.sendcc) {
-              const cc = await app.client.query(`SELECT email FROM users WHERE name ILIKE '${applicant.name}' AND firstname ILIKE '${applicant.firstname}'`);
+              const cc = await app.pool.query(`SELECT email FROM users WHERE name ILIKE '${applicant.name}' AND firstname ILIKE '${applicant.firstname}'`);
               options.cc = cc.rows[0].email;
             }
 

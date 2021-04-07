@@ -11,12 +11,24 @@ const settings = () => {
       $(this).toggleClass('hidden flex');
       $('.wrapper').removeClass('blur');
 
+      if (globalSettings.instance_name !== $('.settings__child__instanceNameContainer__label__input').val()) {
+        updatedSettings.instance_name = globalSettings.instance_name = $('.settings__child__instanceNameContainer__label__input').val().replace(/\'\'/g, "'");
+      }
+
+      if (globalSettings.instance_description !== $('.settings__child__descriptionContainer__label__textarea').val()) {
+        updatedSettings.instance_description = globalSettings.instance_description = $('.settings__child__descriptionContainer__label__textarea').val().replace(/\'\'/g, "'");
+      }
+
       if (globalSettings.sendmail !== $('.toggleMail__Input').prop('checked')) {
         updatedSettings.sendmail = globalSettings.sendmail = $('.toggleMail__Input').prop('checked');
       }
 
       if (globalSettings.sendcc !== $('.toggleMailCc__Input').prop('checked')) {
         updatedSettings.sendcc = globalSettings.sendcc = $('.toggleMailCc__Input').prop('checked');
+      }
+
+      if (globalSettings.sendattachments !== $('.toggleAttachments__Input').prop('checked')) {
+        updatedSettings.sendattachments = globalSettings.sendattachments = $('.toggleAttachments__Input').prop('checked');
       }
 
       if (globalSettings.sender !== $('.settings__child__senderContainer__senderLabel__input').val()) {

@@ -10,15 +10,19 @@ module.exports = function(app, io) {
   const passport = require('passport');
 
   app.get('/search', checkAuth, async(req, res) => {
-    let userSettings = await getSettings(app.client);
-    let locations = await app.client.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
-    app.client.query(`SELECT user_id, name, firstname FROM users`)
+    let userSettings = await getSettings(app.pool);
+    let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
+    app.pool.query(`SELECT user_id, name, firstname FROM users`)
       .then(data => {
         res.render('search.ejs', {
           currentVersion: app.tag,
           locations: locations.rows,
           isSearchPage: true,
           instanceName: app.open_planner_instance_name,
+          instance_description: app.open_planner_instance_description,
+          page_type: 'Module de recherche',
+          route: req.path,
+          sendAttachments: userSettings.sendattachments,
           users: data.rows,
           user: req.user
         });

@@ -52,15 +52,15 @@ const register = () => {
 
     if (!validationErr) {
       const sendAccountInfo = () => {
+        data2send.values = [
+          capitalizeFirstLetter(username.val()),
+          capitalizeFirstLetter(userFirstname.val()),
+          mail.val(),
+          location,
+          gender,
+          type
+        ];
         data2send.setPassword = true;
-        data2send.values.push(capitalizeFirstLetter(username.val()));
-        data2send.values.push(capitalizeFirstLetter(userFirstname.val()));
-
-        data2send.values.push(mail.val());
-
-        data2send.values.push(location);
-        data2send.values.push(gender);
-        data2send.values.push(type);
 
         // Push the password last because it will be extracted on the server
 
@@ -84,8 +84,6 @@ const register = () => {
           password.attr('placeholder', 'Insérez le mot magique');
         }
 
-        data2send.values = [];
-
         $('.register')
           .removeAttr('style')
           .toggleClass('hidden flex');
@@ -98,6 +96,8 @@ const register = () => {
           $('.users').removeClass('blur backgroundColor');
 
           $('.header__container__icon, .header__container__msg').toggleClass('hidden');
+
+          data2send.values = [];
         }
       }
 
@@ -116,6 +116,11 @@ const register = () => {
       } else {
         // Avoid timeout on the login page
         sendAccountInfo();
+
+        // Reload the page to show the login portal
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     } else {
       if (!$('form .warning').length) {
@@ -141,10 +146,5 @@ const register = () => {
     clearTimeout(registerTimeout);
   });
 }
-
-socket.on('first user added', () => {
-  // Bring the user back the login page to allow him to sign in
-  window.location.reload();
-});
 
 register();

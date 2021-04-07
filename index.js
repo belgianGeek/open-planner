@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-const { randomBytes } = require('crypto');
+const randomBytes = require('crypto').randomBytes;
 const express = require('express');
 const app = express();
 const ip = require('ip');
@@ -14,22 +14,19 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
 
 server.listen(8000);
 
-const {
-  Client
-} = require('pg');
+const Pool = require('pg').Pool;
 
 let config = {
   user: 'postgres',
   database: 'postgres',
-  port: 5432,
   host: 'localhost'
 };
-const initClient = new Client(config);
-app.client = undefined;
+const initClient = new Pool(config);
 
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
@@ -41,29 +38,40 @@ const getUsers = require('./modules/getUsers');
 const existPath = require('./modules/existPath');
 
 const createLocationsTable = require('./modules/createLocationsTable');
+const createSessionTable = require('./modules/createSessionTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 
 const createDB = (config, DBname = 'planner') => {
   const createTables = () => {
     console.log(`Base de données ${DBname} créée avec succès, création des tables en cours...`);
-    app.client = new Client(config);
+    app.pool = new Pool(config);
 
-    app.client.connect()
-      .then(async() => {
-        // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
-        createLocationsTable(app.client);
-        createUsersTable(app.client);
-        createTasksTable(app.client);
+    // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
+    app.pool.connect()
+      .then(() => {
+        createLocationsTable(app.pool)
+        .then(res => {
+          console.log(res);
 
-        getUsers(app, passport);
+          createUsersTable(app.pool)
+          .then(res => {
+            console.log(res);
 
-        setTimeout(function () {
-          console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
-        }, 10);
+            getUsers(app, passport);
+
+            createTasksTable(app.pool)
+            .then(res => {
+              console.log(res);
+              console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
+            });
+          })
+          .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
       })
       .catch(err => {
-        console.log(err);
+        console.trace(`Pool connection error : ${err}`);
       });
   }
 
@@ -110,13 +118,16 @@ app.file2download = {};
 initClient.connect()
   .then(() => {
     if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
+      // Check if the 'session' table exist before doing anything else
+      createSessionTable(initClient);
+
       createDB(config);
     } else {
       console.log(`Désolé, il semble que tu n'aies pas accès à Internet... Rétablis ta connexion et réessaie :-)`);
     }
   })
   .catch(err => {
-    console.log(`Connection error : ${err}`);
+    console.log(`Initial Pool connection error : ${err}`);
     if (err.code === 'ECONNREFUSED') {
       console.log('Désolé, la connexion à la base de données n\'a pas pu être établie...\n' +
         'Vérifie que le service PostgreSQL est bien démarré et relance Node Planner.');
@@ -131,9 +142,16 @@ app.use(express.urlencoded({
 }));
 app.use(flash());
 app.use(session({
+  store: new pgSession({
+    pool: app.pool,
+    conString: `postgresql://${config.user}@${config.host}:5432/${config.database}`
+  }),
   secret: randomBytes(256).toString('hex'),
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 30 * 30 // Set the session lifetime to thirty minutes
+  }
 }));
 
 app.use(passport.initialize());

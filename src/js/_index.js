@@ -28,8 +28,10 @@ let globalSettings = {};
 socket.on('settings', settings => {
   // Update the global object with the retrieved settings
   globalSettings.instance_name = settings.instance_name;
+  globalSettings.instance_description = settings.instance_description;
   globalSettings.sendcc = settings.sendcc;
   globalSettings.sendmail = settings.sendmail;
+  globalSettings.sendattachments = settings.sendattachments;
   globalSettings.mail_address = settings.mail_address;
   globalSettings.sender = settings.sender;
   globalSettings.smtp_user = settings.smtp_user;
@@ -49,7 +51,14 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', false);
   }
 
+  if (settings.sendattachments) {
+    toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', true);
+  } else {
+    toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', false);
+  }
+
   $('.settings__child__instanceNameContainer__label__input').val(globalSettings.instance_name);
+  $('.settings__child__descriptionContainer__label__textarea').text(globalSettings.instance_description);
   $('.settings__child__senderContainer__senderLabel__input').val(globalSettings.sender);
   $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
   $('.settings__child__mailContainer__smtpUserLabel__input').val(globalSettings.smtp_user);

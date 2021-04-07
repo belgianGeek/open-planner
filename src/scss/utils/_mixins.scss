@@ -133,6 +133,16 @@
     }
   }
 }
+@mixin textarea($min-height: 10em, $max-height: 15em, $min-width: 100%, $max-width: 100%) {
+  min-width: $min-width;
+  max-width: $max-width;
+  min-height: $min-height;
+  max-height: $max-height;
+  padding: 0.5em;
+  border: 2px solid grey;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+}
 @mixin warning {
   color: red;
   font-style: italic;

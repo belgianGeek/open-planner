@@ -5,10 +5,11 @@
   margin: 0 auto;
   font-size: 1.1em;
   align-items: center;
+  overflow-y: auto;
 
   &__title {
     text-align: center;
-    font-family: 'Lobster Two Bold Italic', sans-serif;
+    font-family: 'Lobster Two', cursive;
     font-size: 1.5em;
     margin: 0.5em 0;
   }
@@ -24,6 +25,10 @@
 
       .input {
         width: 60%;
+      }
+
+      textarea {
+        @include textarea($min-width: 60%, $max-width: 60%);
       }
     }
 
