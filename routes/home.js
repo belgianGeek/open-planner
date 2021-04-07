@@ -17,6 +17,7 @@ module.exports = function(app, io) {
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.client);
+    console.log(userSettings);
     const response = await app.client.query(`SELECT * FROM users`);
     let isFirstUserConfigured = false;
     if (response.rowCount) {
@@ -31,6 +32,7 @@ module.exports = function(app, io) {
       isSearchPage: false,
       locations: locations.rows,
       instanceName: app.open_planner_instance_name,
+      sendAttachments: userSettings.sendattachments,
       user: req.user
     });
 
@@ -44,7 +46,7 @@ module.exports = function(app, io) {
 
       io.on('append data', async data => {
         if (data.table === 'tasks') {
-          if (!data.sendAttachment) {
+          if (!data.sendattachment) {
             DBquery(app, io, 'INSERT INTO', data.table, {
               text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status, attachment) VALUES($1, $2, $3, $4, $5, $6, $7)`,
               values: data.values
@@ -139,12 +141,20 @@ module.exports = function(app, io) {
 
       io.on('settings', settings => {
         query = ['UPDATE settings SET'];
+        if (settings.instance_name !== undefined) {
+          query.push(`instance_name = ${settings.instance_name},`);
+        }
+
         if (settings.sendmail !== undefined) {
           query.push(`sendmail = ${settings.sendmail},`);
         }
 
         if (settings.sendcc !== undefined) {
           query.push(`sendcc = ${settings.sendcc},`);
+        }
+
+        if (settings.sendattachments !== undefined) {
+          query.push(`sendattachments = ${settings.sendattachments},`);
         }
 
         if (settings.sender !== undefined) {

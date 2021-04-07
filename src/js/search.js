@@ -57,7 +57,12 @@ const search = () => {
 
         switch (column) {
           case 'attachment':
-            columnTitle = 'Pièce jointe';
+            // Hide the attachments column is attachments sending is forbidden
+            if (globalSettings.sendattachments) {
+              columnTitle = 'Pièce jointe';
+            } else {
+              columnTitle = '';
+            }
             break;
           case 'task_id':
             columnTitle = 'N° de demande';
@@ -185,17 +190,20 @@ const search = () => {
           $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En cours de traitement');
         }
 
-        let attachment = $('<span></span>').addClass('search__results__container__row__item search__results__container__row__item--file');
-        if (data.attachment) {
-          attachment.append('📎');
+        // Same comment as in the switch up ahead
+        if (globalSettings.sendattachments) {
+          let attachment = $('<span></span>').addClass('search__results__container__row__item search__results__container__row__item--file');
+          if (data.attachment) {
+            attachment.append('📎');
 
-          let attachmentSrc = $('<span></span>')
-            .addClass('search__results__container__row__item search__results__container__row__item--fileSrc hidden')
-            .append(data.attachment_src)
-            .appendTo(row);
+            let attachmentSrc = $('<span></span>')
+              .addClass('search__results__container__row__item search__results__container__row__item--fileSrc hidden')
+              .append(data.attachment_src)
+              .appendTo(row);
+          }
+
+          attachment.appendTo(row);
         }
-
-        attachment.appendTo(row);
       }
 
       $('.search__results__container').fadeIn();

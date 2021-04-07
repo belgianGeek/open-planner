@@ -30,6 +30,7 @@ socket.on('settings', settings => {
   globalSettings.instance_name = settings.instance_name;
   globalSettings.sendcc = settings.sendcc;
   globalSettings.sendmail = settings.sendmail;
+  globalSettings.sendattachments = settings.sendattachments;
   globalSettings.mail_address = settings.mail_address;
   globalSettings.sender = settings.sender;
   globalSettings.smtp_user = settings.smtp_user;
@@ -47,6 +48,12 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', true);
   } else {
     toggleSwitch('.toggleMail__Input', '.toggleMail__Slider', false);
+  }
+
+  if (settings.sendattachments) {
+    toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', true);
+  } else {
+    toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', false);
   }
 
   $('.settings__child__instanceNameContainer__label__input').val(globalSettings.instance_name);

@@ -46,7 +46,7 @@
           Date de la demande
           <input class="inRequests__form__requestInfo__row1__requestDate input" type="date" required="true">
         </label>
-        <% if (!isSearchPage) { %>
+        <% if (!isSearchPage && sendAttachments) { %>
           <label class="flex">
             Joindre une image
             <input class="inRequests__form__requestInfo__row1__file input" type="file" accept="image/*">
@@ -64,5 +64,6 @@
       <% } %>
     </span>
   </form>
-  <img src="/src/scss/icons/empty.svg" alt="Image jointe à la demande" width="100%" height="70%">
+  <!-- Only hide the image tag to avoid errors when loading tasks containing attachments -->
+  <img <% if (!sendAttachments) { %> class="hidden" <% } %>src="/src/scss/icons/empty.svg" alt="Image jointe à la demande" width="100%" height="70%">
 </section>
