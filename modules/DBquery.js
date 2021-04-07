@@ -2,7 +2,7 @@ const notify = require('./notify');
 
 const DBquery = (app, io, action, table, query, displayNotification = true) => {
   return new Promise((fullfill, reject) => {
-    app.client.query(query)
+    app.pool.query(query)
       .then(res => {
         if (res.rowCount === 0 || res.rowCount === null) {
           if (io !== null && displayNotification) {
@@ -23,7 +23,7 @@ const DBquery = (app, io, action, table, query, displayNotification = true) => {
         if (action !== 'SELECT') {
           notify(io, 'error');
         }
-        console.trace(err);
+        console.trace(`DBquery error : ${err}`);
         reject(`Une erreur est survenue lors de l'action '${action}' dans la table '${table}' avec la requête "${query.text}" :\n${err}`);
         return;
       });

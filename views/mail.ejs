@@ -71,15 +71,17 @@
     <p>Bonjour Madame/Monsieur,</p>
     <% } %>
     <% if (status === 'waiting') { %>
-      <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> dans le tableau d'intervention concernant le site <strong><%= location %></strong>. En voici le détail :</p>
-      <blockquote class="quote"><em><%= request %></em></blockquote>
+      <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> concernant le site <strong><%= location %></strong>. En voici le détail :</p>
+      <blockquote class="quote">
+        <em><%= request %></em>
+      </blockquote>
     <% } else if (status === 'wip' || status === 'done') { %>
       <% if (status === 'wip') { %>
         <% status = 'En cours'; %>
-        <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif dans le tableau d'intervention en suivant <a href="http://<%= host %>:8000/search">ce lien</a>.</p>
+        <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
       <% } else { %>
         <% status = 'Terminée'; %>
-        <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁😃 Vous trouverez son récapitulatif dans le tableau d'intervention en suivant <a href="http://<%= host %>:8000/search">ce lien</a>.</p>
+        <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
       <% } %>
       <table>
         <thead>
@@ -96,11 +98,15 @@
           </tr>
           <tr>
             <th class="underline">Statut</th>
-            <td><quote class="quote"><em><%= status %></em></quote></td>
+            <td>
+              <em><%= status %></em>
+            </td>
           </tr>
           <tr>
             <th class="underline">Objet</th>
-            <td><quote class="quote"><em><%= request %></em></quote></td>
+            <td>
+              <em><%= request %></em>
+            </td>
           </tr>
         </tbody>
       </table>

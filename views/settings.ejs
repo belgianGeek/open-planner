@@ -3,6 +3,7 @@
     <span class="settings__child__header flex">
       <h1>Paramètres</h1>
     </span>
+    <h2 class="settings__child__heading2 settings__child__heading">Permissions et notifications</h2>
     <span class="toggleMail flex">
       <span class="toggleMail__Comment">Lors de l'introduction d'une demande, envoyer un mail à l'équipe chargée d'effectuer la tâche</span>
       <label class="toggleMail__Switch">
@@ -17,6 +18,13 @@
         <span class="toggleMailCc__Slider"></span>
       </label>
     </span>
+    <span class="toggleAttachments flex">
+      <span class="toggleAttachments__Comment">Permettre au demandeur de joindre une image à sa demande</span>
+      <label class="toggleAttachments__Switch">
+        <input class="toggleAttachments__Input" type="checkbox" name="toggleAttachmentsInput" value="">
+        <span class="toggleAttachments__Slider"></span>
+      </label>
+    </span>
     <h2 class="settings__child__heading2 settings__child__heading">Personnalisation</h2>
     <!-- <form class="backgroundImageUploadForm flex" action="/" enctype="multipart/form-data" method="post">
       <label for="backgroundImageUploadForm__label">Cet arrière-plan est moche !</label>
@@ -29,8 +37,15 @@
         Nom de l'interface
         <input class="settings__child__instanceNameContainer__label__input input" type="text" placeholder="Nom de l'interface">
       </label>
-      <span class="protip protip--noMargin">Cette indication est utilisée dans les notifications envoyées par mail ainsi que dans les différents formulaires de l'interface</span>
     </span>
+    <span class="protip protip--noMargin">Cette indication est utilisée dans les notifications envoyées par mail ainsi que dans les différents formulaires de l'interface</span>
+    <span class="settings__child__descriptionContainer flex">
+      <label class="settings__child__descriptionContainer__label flex">
+        Décrivez ici l'utilité d'Open Planner
+        <input class="settings__child__descriptionContainer__label__textarea input" placeholder="Indiquez ici l'utilité du logiciel, son public cible..." />
+      </label>
+    </span>
+    <span class="protip protip--noMargin">Cette indication est utilisée pour améliorer le SEO (optimisation pour les moteurs de recherche) et permettre de trouver plus facilement l'outil sur Internet</span>
     <h2 class="settings__child__heading2 settings__child__heading">Emailing</h2>
     <span class="settings__child__senderContainer flex">
       <label class="settings__child__senderContainer__senderLabel flex">

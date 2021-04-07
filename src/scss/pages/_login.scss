@@ -7,10 +7,15 @@
   align-items: center;
   justify-content: space-between;
   min-height: 40vh;
+  @include box-shadow;
 
   label {
     width: 100%;
     justify-content: space-evenly;
     align-items: baseline;
+
+    .input {
+      width: 60%;
+    }
   }
 }
