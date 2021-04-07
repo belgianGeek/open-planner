@@ -17,6 +17,7 @@ module.exports = function(app, io) {
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.client);
+    console.log(userSettings);
     const response = await app.client.query(`SELECT * FROM users`);
     let isFirstUserConfigured = false;
     if (response.rowCount) {
