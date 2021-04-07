@@ -382,7 +382,10 @@ const manageUsers = () => {
   });
 
   socket.on(`locations retrieved`, data => {
-    handleData(data, 'addLocation', 'locations');
+    // Avoid conflicts on other routes than the homepage
+    if (window.location.pathname === '/') {
+      handleData(data, 'addLocation', 'locations');
+    }
   });
 
   $('.context__list__item').click(() => {

@@ -15,14 +15,21 @@ module.exports = function(app, io) {
       let firstUserConfigured = false;
 
       try {
-        const instanceName = await app.client.query(`SELECT instance_name FROM settings`);
-        if (instanceName.rowCount) {
-          app.open_planner_instance_name = instanceName.rows[0].instance_name;
+        const instance = await app.client.query(`SELECT instance_name, instance_description FROM settings`);
+        if (instance.rowCount) {
+          app.open_planner_instance_name = instance.rows[0].instance_name;
+          if (app.open_planner_instance_description !== null) {
+            app.open_planner_instance_description = instance.rows[0].instance_description;
+          } else {
+            app.open_planner_instance_description = 'A simple but powerful open source task manager';
+          }
         } else {
           app.open_planner_instance_name = 'Open Planner';
+          app.open_planner_instance_description = 'A simple but powerful open source task manager';
         }
       } catch (e) {
         app.open_planner_instance_name = 'Open Planner';
+        app.open_planner_instance_description = 'A simple but powerful open source task manager';
       } finally {
         try {
           const settings = await app.client.query(`SELECT * FROM settings`);
@@ -46,13 +53,14 @@ module.exports = function(app, io) {
               isFirstUserConfigured: firstUserConfigured,
               locations: locations.rows,
               instanceName: app.open_planner_instance_name,
+              instance_description: app.open_planner_instance_description,
               isDbConfigured: isDbConfigured
             });
 
             // If there are already registered users, display the login screen
             // Else, display the registration form
             if (!firstUserConfigured || !isDbConfigured) {
-              io.on('connection', io => {
+              io.once('connection', io => {
                 io.on('append data', async data => {
                   const users = await app.client.query('SELECT * FROM users');
                   try {
@@ -68,27 +76,43 @@ module.exports = function(app, io) {
                   }
                 });
 
-                io.on('append settings', settings => {
-                  DBquery(app, io, 'INSERT INTO', 'locations', {
-                    text: `INSERT INTO locations(location_name, location_mail) VALUES($1, $2) RETURNING location_name, location_id`,
-                    values: [settings.location_name, settings.location_mail]
-                  })
-                  .then(res => {
-                    io.emit('locations retrieved', {
-                      location_name: res.rows[0].location_name,
-                      location_id: res.rows[0].location_id
-                    });
-                  });
+                io.on('append settings', async settings => {
+                  try {
+                    const locations = await app.client.query(`SELECT * FROM locations`);
 
-                  createSettingsTable(app.client, settings)
-                    .then(() => {
-                      notify(io, 'success');
-                      io.emit('settings import', true);
-                    })
-                    .catch(() => {
-                      notify(io, 'failure');
-                      io.emit('settings import', false);
-                    });
+                    // Append locations only if there is no row to prevent duplicates
+                    if (!locations.rowCount) {
+                      DBquery(app, io, 'INSERT INTO', 'locations', {
+                          text: `INSERT INTO locations(location_name, location_mail) VALUES($1, $2) RETURNING location_name, location_id`,
+                          values: [settings.location_name, settings.location_mail]
+                        })
+                        .then(res => {
+                          io.emit('locations retrieved', {
+                            location_name: res.rows[0].location_name,
+                            location_id: res.rows[0].location_id
+                          });
+                        });
+
+                      createSettingsTable(app.client, settings)
+                        .then(() => {
+                          notify(io, 'success');
+                          io.emit('settings import', true);
+                        })
+                        .catch(() => {
+                          notify(io, 'failure');
+                          io.emit('settings import', false);
+                        });
+                    }
+                  } catch (e) {
+                    notify(io, 'failure');
+                    console.trace(`Error appending settings : ${e}`);
+                  }
+
+                });
+
+                io.on('get locations', async () => {
+                  const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+                  io.emit('locations retrieved', locations.rows[0]);
                 });
               });
             }

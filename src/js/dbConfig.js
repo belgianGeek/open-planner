@@ -1,5 +1,6 @@
 const dbConfig = () => {
   let instance = $('.dbConfig__form__name input');
+  let instance_description = $('.dbConfig__form__description textarea');
   let location_name = $('.dbConfig__form__locationName input');
   let location_mail = $('.dbConfig__form__locationMail input');
   let sender = $('.dbConfig__form__senderLabel input');
@@ -12,6 +13,7 @@ const dbConfig = () => {
 
     socket.emit('append settings', {
       instance: instance.val(),
+      instance_description: instance_description.text(),
       location_name: location_name.val(),
       location_mail: location_mail.val(),
       sender: sender.val(),
@@ -33,11 +35,22 @@ const dbConfig = () => {
     socket.emit('get locations');
 
     socket.on(`locations retrieved`, location => {
-      const option = $('<option>')
-        .val(location.location_id)
-        .text(location.location_name);
+      if (location !== null) {
+        // Empty the select tag to avoid duplicates and truncated values
+        $('.register__form__location select option').each(function() {
+          if ($(this).val() === '') $(this).remove();
+        });
 
-      $('.register__form__location select').append(option);
+        const option = $('<option>')
+          .val(location.location_id)
+          .text(location.location_name);
+
+        $('.register__form__location select').append(option);
+      }
+    });
+
+    socket.on('first user added', () => {
+      window.location.reload();
     });
   }
 }
