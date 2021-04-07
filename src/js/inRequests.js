@@ -12,18 +12,18 @@ const inRequests = () => {
   let requestContent = $('.inRequests__form__requestInfo__comment');
 
   // Picture sending is optional
-  data2send.sendAttachment = false;
+  data2send.sendattachment = false;
 
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
     if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
       compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
         $('.inRequests img').attr('src', compressedPic);
         attachment = compressedPic;
-        data2send.sendAttachment = true;
+        data2send.sendattachment = true;
       });
     } else {
       attachment = undefined;
-      data2send.sendAttachment = false;
+      data2send.sendattachment = false;
     }
   });
 
@@ -68,11 +68,11 @@ const inRequests = () => {
 
     // If the user adds a file to his request
     const handleAttachment = () => {
-      if (data2send.sendAttachment) {
-        data2send.values.push(data2send.sendAttachment);
+      if (data2send.sendattachment && globalSettings.sendattachments) {
+        data2send.values.push(data2send.sendattachment);
         data2send.values.push(attachment);
       } else {
-        data2send.values.push(data2send.sendAttachment);
+        data2send.values.push(data2send.sendattachment);
       }
     }
 
@@ -101,7 +101,7 @@ const inRequests = () => {
         // Send an attachment if a custom image is added by the user
         // (Works for both the absolute and static forms)
         if ($('.inRequests img').attr('src') !== '/src/scss/icons/empty.svg') {
-          data2send.sendAttachment = true;
+          data2send.sendattachment = true;
         }
 
         // Set the notification status if a new record is created
@@ -146,7 +146,7 @@ const inRequests = () => {
           handleAttachment();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper').toggleClass('backgroundColor blur');
+          $('.wrapper').toggleClass('blur');
 
           socket.emit('update', data2send);
 
@@ -167,7 +167,7 @@ const inRequests = () => {
             mail: data2send.mail
           }
 
-          if (data2send.sendAttachment) {
+          if (data2send.sendattachment && globalSettings.sendattachments) {
             options.attachments = [{
               filename: `${globalSettings.instance_name.replace(/[\/'\s]/, '-')}_${Date.now()}.jpg`,
               encoding: 'base64',
