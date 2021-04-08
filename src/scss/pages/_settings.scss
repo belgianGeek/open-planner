@@ -5,7 +5,6 @@
   @include align(center, center);
   position: absolute;
   top: 0;
-  font-size: 1em;
   z-index: 3;
 
   .settings__child {
@@ -19,12 +18,12 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 1em;
+    font-size: 1.1em;
     @media(max-width: 720px) {
       overflow-y: auto;
       width: 90%;
       // .backgroundImageUploadForm__Btn,
-      // .backgroundImageUploadForm__InputUrl,
-      // .searchEngineSelection__select,
+      // .backgroundImageUploadForm__InputUrl
       .toggleAttachments__Input,
       .toggleMailCc__Input,
       .toggleMail__input {
@@ -40,22 +39,30 @@
         font-size: 2em;
         width: 100%;
         text-align: center;
-        font-family: Lobster Two Bold Italic;
+        font-family: Lobster Two ;
         margin: 0;
       }
     }
 
     &__heading {
-      font-family: Lobster Two Bold Italic;
+      font-family: Lobster Two ;
     }
 
     &__heading2 {
       font-size: 1.5em;
     }
 
+    span:last-child {
+      padding-bottom: 1em;
+    }
+
     &__descriptionContainer textarea {
       @include textarea($min-height: 15em);
       margin-top: 0.75em;
+    }
+
+    &__senderContainer .protip {
+      margin-top: 1em;
     }
 
     &__descriptionContainer,
@@ -77,12 +84,8 @@
       }
     }
 
-    &__descriptionContainer,
-    &__instanceNameContainer,
-    &__senderContainer {
-      .protip {
-        flex: 2;
-      }
+    .protip {
+      font-size: 0.8em;
     }
 
     .settings__BtnContainer {
@@ -111,9 +114,13 @@
     }
 
     .toggleAttachments,
-    .toggleMail,
     .toggleMailCc {
       margin-top: 2em;
+    }
+
+    .toggleAttachments,
+    .toggleMail,
+    .toggleMailCc {
       justify-content: space-between;
       width: 100%;
       align-items: baseline;
@@ -166,24 +173,16 @@
         &:checked + .toggleMailCc__Slider,
         &:checked + .toggleMail__Slider {
           &:before {
-            left: 2px;
+            left: 0;
           }
           background-color: $green;
         }
-        // &:focus + .toggleAttachments__Slider,
-        // &:focus + .toggleMailCc__Slider,
-        // &:focus + .toggleMail__Slider {
-        //   box-shadow: 0 0 1px $green;
-        // }
+
         &:checked + .toggleAttachments__Slider:before,
         &:checked + .toggleMailCc__Slider:before,
         &:checked + .toggleMail__Slider:before {
-          transform: translateX(26px);
+          transform: translateX(22px);
         }
-      }
-
-      & * {
-        font-size: 1.05em;
       }
     }
   }
