@@ -93,11 +93,6 @@
 
       &__comment {
         @include textarea();
-
-        &::placeholder {
-          text-align: center;
-          padding-top: 3em;
-        }
       }
     }
 
