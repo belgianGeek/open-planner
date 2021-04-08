@@ -8,5 +8,12 @@
   <link rel="apple-touch-icon" sizes="152x152" href="src/scss/icons/apple-touch-icon-152x152.png" />
   <title><%= instanceName %></title>
   <meta name="viewport" content="width:device-width, initial-scale=1">
-  <meta name="description" content="<% instance_description %>">
+  <meta name="description" content="<%= page_type %> | <%= instance_description %>">
+  <meta property="og:title" content="<%= page_type %>">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="./src/scss/icons/apple-touch-icon-152x152.png">
+  <meta property="og:url" content="<%= route %>">
+  <meta property="og:site_name" content="<%= instanceName %>">
+  <meta property="og:description" content="<%= page_type %> | <%= instance_description %>">
+  <meta property="og.locale" content="fr-BE">
 </head>

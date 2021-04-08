@@ -24,7 +24,7 @@ module.exports = function(app, io) {
     }
 
     let locations = await app.client.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
-
+  
     res.render('index.ejs', {
       currentVersion: app.tag,
       isFirstUserConfigured: isFirstUserConfigured,
@@ -32,6 +32,8 @@ module.exports = function(app, io) {
       locations: locations.rows,
       instanceName: app.open_planner_instance_name,
       instance_description: app.open_planner_instance_description,
+      page_type: 'Page d\'accueil',
+      route: req.path,
       sendAttachments: userSettings.sendattachments,
       user: req.user
     });

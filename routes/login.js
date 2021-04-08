@@ -17,12 +17,12 @@ module.exports = function(app, io) {
       try {
         const instance = await app.client.query(`SELECT instance_name, instance_description FROM settings`);
         if (instance.rowCount) {
-          app.open_planner_instance_name = instance.rows[0].instance_name;
-          if (app.open_planner_instance_description !== null) {
+          if (typeof instance.rows[0].instance_description !== 'object') {
             app.open_planner_instance_description = instance.rows[0].instance_description;
           } else {
             app.open_planner_instance_description = 'A simple but powerful open source task manager';
           }
+          app.open_planner_instance_name = instance.rows[0].instance_name;
         } else {
           app.open_planner_instance_name = 'Open Planner';
           app.open_planner_instance_description = 'A simple but powerful open source task manager';
@@ -54,7 +54,9 @@ module.exports = function(app, io) {
               locations: locations.rows,
               instanceName: app.open_planner_instance_name,
               instance_description: app.open_planner_instance_description,
-              isDbConfigured: isDbConfigured
+              isDbConfigured: isDbConfigured,
+              page_type: 'S\'identifier',
+              route: req.path
             });
 
             // If there are already registered users, display the login screen
