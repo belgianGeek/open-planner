@@ -14,6 +14,14 @@ const inRequests = () => {
   // Picture sending is optional
   data2send.sendattachment = false;
 
+  const toggleBlur = () => {
+    if ($('.inRequests').hasClass('absolute')) {
+      $('.inRequests').toggleClass('blur');
+    } else {
+      $('.wrapper, .inRequests').toggleClass('blur');
+    }
+  }
+
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
     if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
       compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
@@ -82,6 +90,8 @@ const inRequests = () => {
 
       confirmation();
 
+      toggleBlur();
+
       inRequestsTimeOut = setTimeout(() => {
         // Escape apostrophes
         applicantName.val(applicantName.val().replace(/'/g, "''"));
@@ -146,7 +156,7 @@ const inRequests = () => {
           handleAttachment();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper').toggleClass('blur');
+          toggleBlur();
 
           socket.emit('update', data2send);
 
@@ -208,6 +218,11 @@ const inRequests = () => {
 
   $('.confirmation__body__cancel').click(() => {
     clearTimeout(inRequestsTimeOut);
+    if ($('.inRequests').hasClass('absolute')) {
+      $('.inRequests').removeClass('blur');
+    } else {
+      $('.wrapper, .inRequests').removeClass('blur');
+    }
   });
 }
 
