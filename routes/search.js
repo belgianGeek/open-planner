@@ -20,6 +20,8 @@ module.exports = function(app, io) {
           isSearchPage: true,
           instanceName: app.open_planner_instance_name,
           instance_description: app.open_planner_instance_description,
+          page_type: 'Module de recherche',
+          route: req.path,
           sendAttachments: userSettings.sendattachments,
           users: data.rows,
           user: req.user
