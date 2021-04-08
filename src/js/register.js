@@ -116,6 +116,11 @@ const register = () => {
       } else {
         // Avoid timeout on the login page
         sendAccountInfo();
+
+        // Reload the page to show the login portal
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     } else {
       if (!$('form .warning').length) {

@@ -1,5 +1,5 @@
-const getSettings = async client => {
-  const response = await client.query('SELECT * FROM settings');
+const getSettings = async pool => {
+  const response = await pool.query('SELECT * FROM settings');
   return response.rows[0];
 };
 

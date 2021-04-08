@@ -2,7 +2,7 @@ const passport = require('passport');
 const passportInit = require('./passport');
 
 const getUsers = async (app, passport) => {
-  const users = await app.client.query('SELECT * FROM users');
+  const users = await app.pool.query('SELECT * FROM users');
 
   passportInit(
     passport,

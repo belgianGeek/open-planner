@@ -13,7 +13,7 @@ const dbConfig = () => {
 
     socket.emit('append settings', {
       instance: instance.val(),
-      instance_description: instance_description.text(),
+      instance_description: instance_description.val(),
       location_name: location_name.val(),
       location_mail: location_mail.val(),
       sender: sender.val(),

@@ -11,7 +11,7 @@ const appendData = async (app, data, io) => {
       data.values[6] = await bcrypt.hash(data.values[6], 10);
     }
 
-    const result = await app.client.query(`SELECT * FROM ${data.table}`);
+    const result = await app.pool.query(`SELECT * FROM ${data.table}`);
 
     const addData = () => {
       if (data.table === 'users') {
@@ -27,10 +27,10 @@ const appendData = async (app, data, io) => {
         if (data.table === 'users') {
           getUsers(app, passport);
 
-          const users = await app.client.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+          const users = await app.pool.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
           io.emit('users retrieved', users.rows);
         } else if (data.table === 'locations') {
-          const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+          const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
           io.emit('locations retrieved', locations.rows);
         }
       });
