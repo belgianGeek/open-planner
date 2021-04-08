@@ -8,14 +8,14 @@ module.exports = function(app, io) {
   const passport = require('passport');
 
   app.get('/login', checkNotAuth, async (req, res) => {
-      const locations = await app.client.query(`SELECT location_name FROM locations ORDER BY location_name`);
+      const locations = await app.pool.query(`SELECT location_name FROM locations ORDER BY location_name`);
       app.open_planner_instance_name;
 
       let isDbConfigured = false;
       let firstUserConfigured = false;
 
       try {
-        const instance = await app.client.query(`SELECT instance_name, instance_description FROM settings`);
+        const instance = await app.pool.query(`SELECT instance_name, instance_description FROM settings`);
         if (instance.rowCount) {
           if (typeof instance.rows[0].instance_description !== 'object') {
             app.open_planner_instance_description = instance.rows[0].instance_description;
@@ -28,25 +28,28 @@ module.exports = function(app, io) {
           app.open_planner_instance_description = 'A simple but powerful open source task manager';
         }
       } catch (e) {
+        // Do not catch errors if the table does not exist and proceed to the next step
         app.open_planner_instance_name = 'Open Planner';
         app.open_planner_instance_description = 'A simple but powerful open source task manager';
       } finally {
         try {
-          const settings = await app.client.query(`SELECT * FROM settings`);
+          const settings = await app.pool.query(`SELECT * FROM settings`);
 
           if (settings.rowCount) {
             isDbConfigured = true;
           }
         } catch (e) {
+          // Do not catch errors if the table does not exist and proceed to the next step
           isDbConfigured = false;
         } finally {
           try {
-            const DBusers = await app.client.query(`SELECT * FROM users`);
+            const DBusers = await app.pool.query(`SELECT * FROM users`);
 
             if (DBusers.rowCount) {
               firstUserConfigured = true;
             }
           } catch (e) {
+            console.trace(e);
             firstUserConfigured = false;
           } finally {
             res.render('login.ejs', {
@@ -64,7 +67,7 @@ module.exports = function(app, io) {
             if (!firstUserConfigured || !isDbConfigured) {
               io.once('connection', io => {
                 io.on('append data', async data => {
-                  const users = await app.client.query('SELECT * FROM users');
+                  const users = await app.pool.query('SELECT * FROM users');
                   try {
                     // Only append a new user if there is not any users recorded in the DB yet
                     if (users.rows.length === 0) {
@@ -74,13 +77,13 @@ module.exports = function(app, io) {
                       io.emit('first user added');
                     }
                   } catch (e) {
-                    console.trace(e);
+                    console.trace(`An error occurred when trying to add the first user : ${e}`);
                   }
                 });
 
                 io.on('append settings', async settings => {
                   try {
-                    const locations = await app.client.query(`SELECT * FROM locations`);
+                    const locations = await app.pool.query(`SELECT * FROM locations`);
 
                     // Append locations only if there is no row to prevent duplicates
                     if (!locations.rowCount) {
@@ -95,25 +98,26 @@ module.exports = function(app, io) {
                           });
                         });
 
-                      createSettingsTable(app.client, settings)
-                        .then(() => {
-                          notify(io, 'success');
+                      createSettingsTable(app.pool, settings)
+                        .then(settings => {
+                          app.open_planner_instance_name = settings.instance_name;
+                          app.open_planner_instance_description = settings.instance_description;
+
                           io.emit('settings import', true);
+                          io.emit('first user created');
                         })
                         .catch(() => {
-                          notify(io, 'failure');
                           io.emit('settings import', false);
                         });
                     }
                   } catch (e) {
-                    notify(io, 'failure');
                     console.trace(`Error appending settings : ${e}`);
                   }
 
                 });
 
                 io.on('get locations', async () => {
-                  const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+                  const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
                   io.emit('locations retrieved', locations.rows[0]);
                 });
               });

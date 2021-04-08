@@ -1,6 +1,7 @@
-module.exports = function createTasksTable(client) {
+module.exports = function createTasksTable(pool) {
   let table = `tasks`;
-  client.query(`CREATE TABLE IF NOT EXISTS ${table} (
+  return new Promise(function(resolve, reject) {
+    pool.query(`CREATE TABLE IF NOT EXISTS ${table} (
       task_id SERIAL PRIMARY KEY,
       applicant_name TEXT,
       applicant_firstname TEXT,
@@ -20,10 +21,11 @@ module.exports = function createTasksTable(client) {
     	   REFERENCES users(user_id)
     	    ON DELETE CASCADE
   )`, (err, res) => {
-    if (err) {
-      console.error(`Une erreur est survenue lors de la création de la table ${table} : ${err}`);
-    } else {
-      console.log(`La table ${table} existe déjà...`);
-    }
+      if (err) {
+        reject(`Une erreur est survenue lors de la création de la table ${table} : ${err}`);
+      } else {
+        resolve(`La table ${table} existe déjà...`);
+      }
+    });
   });
 }

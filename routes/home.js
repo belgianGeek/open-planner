@@ -16,15 +16,15 @@ module.exports = function(app, io) {
   const passport = require('passport');
 
   app.get('/', checkAuth, async (req, res) => {
-    let userSettings = await getSettings(app.client);
-    const response = await app.client.query(`SELECT * FROM users`);
+    let userSettings = await getSettings(app.pool);
+    const response = await app.pool.query(`SELECT * FROM users`);
     let isFirstUserConfigured = false;
     if (response.rowCount) {
       isFirstUserConfigured = true;
     }
 
-    let locations = await app.client.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
-  
+    let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
+
     res.render('index.ejs', {
       currentVersion: app.tag,
       isFirstUserConfigured: isFirstUserConfigured,
@@ -67,12 +67,12 @@ module.exports = function(app, io) {
       });
 
       io.on('get users', async () => {
-        const users = await app.client.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+        const users = await app.pool.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
         io.emit('users retrieved', users.rows);
       });
 
       io.on('get locations', async () => {
-        const locations = await app.client.query(`SELECT * FROM locations ORDER BY location_name`);
+        const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
         io.emit('locations retrieved', locations.rows);
       });
 
@@ -99,7 +99,7 @@ module.exports = function(app, io) {
               let data2write = 'Identifiant de la tâche,Demandeur,Date de la demande,Implantation concernée par la demande,Utilisateur chargé de la tâche,Objet de la demande,Statut\n';
 
               for (const [i, row] of res.rows.entries()) {
-                const location = await app.client.query(`SELECT location_name FROM locations WHERE location_id = ${row.location_fk}`);
+                const location = await app.pool.query(`SELECT location_name FROM locations WHERE location_id = ${row.location_fk}`);
 
                 let status = '';
                 if (row.status === 'done') {
@@ -144,11 +144,11 @@ module.exports = function(app, io) {
       io.on('settings', settings => {
         query = ['UPDATE settings SET'];
         if (settings.instance_name !== undefined) {
-          query.push(`instance_name = ${settings.instance_name},`);
+          query.push(`instance_name = '${settings.instance_name}',`);
         }
 
         if (settings.instance_description !== undefined) {
-          query.push(`instance_description = ${settings.instance_description},`);
+          query.push(`instance_description = '${settings.instance_description}',`);
         }
 
         if (settings.sendmail !== undefined) {
