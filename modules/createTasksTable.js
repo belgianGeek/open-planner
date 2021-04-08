@@ -10,7 +10,7 @@ module.exports = function createTasksTable(pool) {
       user_fk INT,
       comment TEXT,
       status TEXT,
-      attachment TEXT,
+      attachment BOOLEAN,
       attachment_src TEXT,
       CONSTRAINT location_fk
         FOREIGN KEY(location_fk)

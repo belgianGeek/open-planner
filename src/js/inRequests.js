@@ -122,7 +122,7 @@ const inRequests = () => {
           data2send.values.push(applicantLocation.val());
 
           // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
-          data2send.mail.title = "🔥 Une nouvelle demande a été introduite dans le tableau d'intervention 🔥";
+          data2send.mail.title = `🔥 ${globalSettings.instance_name} - Une nouvelle demande a été enregistrée 🔥`;
           data2send.mail.status = 'waiting';
 
           // Default task status
@@ -156,7 +156,7 @@ const inRequests = () => {
           handleAttachment();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
-          toggleBlur();
+          $('.wrapper').removeClass('blur');
 
           socket.emit('update', data2send);
 
@@ -192,7 +192,11 @@ const inRequests = () => {
 
         confirmation();
 
+        $('.inRequests img').removeClass('hidden');
+
         data2send.values = [];
+
+        toggleBlur();
       }, 5000);
     } else {
       if (!$('form .warning').length) {
