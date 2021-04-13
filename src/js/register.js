@@ -96,11 +96,11 @@ const register = () => {
           password.attr('placeholder', 'Insérez le mot magique');
         }
 
-        // Remove the 'blur' class if the user submit the 'my account' form
-        if ($('.register__title').hasClass('myAccountTitle')) {
-          $('.register').toggleClass('blur');
-        } else {
-          // Do not empty the input fields in the 'My account' form
+        // Remove the 'blur' class if the user submit the form
+        $('.register').toggleClass('blur');
+
+        // Do not empty the input fields in the 'My account' form
+        if (!$('.register__title').hasClass('myAccountTitle')) {
           $('.register input').not('.radio').val('');
         }
 
@@ -128,14 +128,12 @@ const register = () => {
       if (window.location.pathname === '/') {
         confirmation();
 
-        // Blur the form when the user submit the 'my account' form
-        if ($('.register__title').hasClass('myAccountTitle')) {
-          $('.register').toggleClass('blur');
-        }
+        // Blur the form when the user submit the form
+        $('.register').toggleClass('blur');
 
         registerTimeout = setTimeout(function() {
           sendAccountInfo();
-          $('.users, .wrapper').removeClass('blur backgroundColor');
+          $('.users, .wrapper, .header').removeClass('blur backgroundColor');
         }, 5000);
       } else {
         // Avoid timeout on the login page
@@ -170,11 +168,11 @@ const register = () => {
     clearTimeout(registerTimeout);
 
     if ($('.register').hasClass('absolute')) {
-      $('.wrapper').addClass('blur');
-
       if ($('.register__title').hasClass('myAccountTitle')) {
-        $('.register').removeClass('blur');
+        $('.wrapper, .header').addClass('blur');
       }
+
+      $('.register').removeClass('blur');
     }
   });
 }
