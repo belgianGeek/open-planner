@@ -109,7 +109,7 @@ const manageUsers = () => {
           .removeClass('absolute zero flex')
           .addClass('hidden');
 
-        $(`.${childElt}`).removeClass('blur backgroundColor');
+        $(`.${childElt}, .header`).removeClass('blur backgroundColor');
 
         // Hide the button to hide the form
         $(this).addClass('hidden');
@@ -119,7 +119,7 @@ const manageUsers = () => {
 
   const handleAdding = (parentMenuClassname, childMenuClassname) => {
     $(`.${childMenuClassname}__header__addBtn`).click(function() {
-      $(`.${childMenuClassname}`).addClass('blur backgroundColor');
+      $(`.${childMenuClassname}, .header`).addClass('blur backgroundColor');
 
       // Set all the input fields to their default value
       $(`.${parentMenuClassname} input`).not('.radio').val('');
@@ -143,8 +143,6 @@ const manageUsers = () => {
       $(`.${parentMenuClassname}`)
         .removeClass('absolute zero flex')
         .addClass('hidden');
-
-      // $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
     });
   }
 
@@ -257,13 +255,13 @@ const manageUsers = () => {
             // Update the password field placeholder
             $('.register.absolute .register__form__password input').attr('placeholder', 'Laisser vide pour un mot de passe inchangé');
 
-            $('.users').addClass('blur backgroundColor');
+            $('.users, .header').addClass('blur backgroundColor');
           } else if ($('.locations').hasClass('flex')) {
             $(`.addLocation`)
               .addClass('absolute zero flex')
               .removeClass('hidden');
 
-            $('.locations').addClass('blur backgroundColor');
+            $('.locations, .header').addClass('blur backgroundColor');
           }
 
           // Modify the title
@@ -398,9 +396,11 @@ const manageUsers = () => {
 
   $('.confirmation__body__cancel').click(() => {
     clearTimeout(recordDelTimeOut);
+
     $(`.${parent}`)
       .removeClass('hidden')
       .addClass('flex');
+      
     recordDelTimeOut = undefined;
 
     // Reset the deletionKey

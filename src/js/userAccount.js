@@ -3,7 +3,7 @@ $('.accountLink').click(() => {
     .text('Mon compte')
     .addClass('myAccountTitle');
 
-  $('.wrapper').addClass('blur');
+  $('.wrapper, .header').addClass('blur');
 
   $('.register')
     .addClass('absolute flex')
@@ -14,7 +14,7 @@ $('.accountLink').click(() => {
       .removeClass('absolute zero flex')
       .addClass('hidden');
 
-    $(`.wrapper`).removeClass('blur');
+    $(`.wrapper, .header`).removeClass('blur');
 
     // Hide the button to hide the form
     $(this).addClass('hidden');
