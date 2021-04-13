@@ -70,6 +70,12 @@
   </span>
   <%- include('settings'); %>
   <% } %>
+  <% if (user.type !== 'admin' && allowPasswordUpdate) { %>
+    <%- include('register', {
+      registerClass: 'hidden',
+      locations: locations
+    }); %>
+  <% } %>
   <%- include('about'); %>
   <%- include('contextMenu'); %>
   <%- include('confirmation'); %>

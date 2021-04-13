@@ -47,6 +47,10 @@ const settings = () => {
         updatedSettings.smtp_passwd = $('.settings__child__mailContainer__smtpPasswdLabel__input').val();
       }
 
+      if (globalSettings.allowpasswordupdate !== $('.toggleUserPasswordUpdate__Input').prop('checked')) {
+        updatedSettings.allowpasswordupdate = globalSettings.allowpasswordupdate = $('.toggleUserPasswordUpdate__Input').prop('checked');
+      }
+
       if (Object.keys(updatedSettings).length > 0) {
         socket.emit('settings', updatedSettings);
       }
