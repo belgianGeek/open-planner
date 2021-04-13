@@ -2,10 +2,6 @@ let initialPibNb, initialBarcode;
 const inRequests = () => {
   let inRequestsTimeOut, attachment;
 
-  // autocomplete('.inRequests__form__readerInfo__container__name', '.inRequests__form__readerInfo__container__autocomplete');
-  // autocomplete('.inRequests__step4__container__reader', '.inRequests__step4__container__autocomplete');
-
-  // let dataset = '.inRequests__form__readerInfo__container__autocomplete';
   let applicantName = $('.inRequests__form__applicantInfo__name');
   let applicantFirstname = $('.inRequests__form__applicantInfo__firstname');
   let requestDate = $('.inRequests__form__requestInfo__row1__requestDate');

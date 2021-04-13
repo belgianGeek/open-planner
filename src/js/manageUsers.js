@@ -100,9 +100,6 @@ const appendLocationRow = (i, data) => {
     .appendTo(row);
 }
 
-// Hide the header to prevent users from going back to the home page
-const toggleHeader = () => $('.header__container').toggleClass('hidden flex');
-
 const manageUsers = () => {
   // Hide the form on btn click
   const hideForm = (parentElt, childElt) => {
@@ -122,8 +119,6 @@ const manageUsers = () => {
 
   const handleAdding = (parentMenuClassname, childMenuClassname) => {
     $(`.${childMenuClassname}__header__addBtn`).click(function() {
-      toggleHeader();
-
       $(`.${childMenuClassname}`).addClass('blur backgroundColor');
 
       // Set all the input fields to their default value
@@ -133,8 +128,10 @@ const manageUsers = () => {
       // Make sure the title is correct
       if (childMenuClassname === 'users') {
         $('.register__title').text('Ajouter un utilisateur');
+        $('.register__title').addClass('addUserTitle');
       } else {
         $('.addLocation__title').text('Ajouter une implantation');
+        $('.addLocation__title').addClass('newLocationTitle');
       }
 
       $(`.${parentMenuClassname}`)
@@ -143,13 +140,11 @@ const manageUsers = () => {
     });
 
     $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(function() {
-      toggleHeader();
-
       $(`.${parentMenuClassname}`)
         .removeClass('absolute zero flex')
         .addClass('hidden');
 
-      $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
+      // $(`.${childMenuClassname}`).removeClass('blur backgroundColor');
     });
   }
 
@@ -271,18 +266,20 @@ const manageUsers = () => {
             $('.locations').addClass('blur backgroundColor');
           }
 
-          toggleHeader();
-
           // Modify the title
-          let sectionTitle;
+          let sectionTitle, sectionClass;
           if (childMenuClassname === 'users') {
             sectionTitle = `Modification de l'utilisateur`;
+            sectionClass = 'updateUserTitle';
           } else {
             sectionTitle = `Modification de l'implantation`;
+            sectionClass = 'updateLocationTitle';
           }
 
-          $(`.${parentMenuClassname}__title`).text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
-            ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`);
+          $(`.${parentMenuClassname}__title`)
+            .text(`${sectionTitle} ${$(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text()}
+            ${$(`.${parent} .${childMenuClassname}__container__row__item--name`).text()}`)
+            .addClass(sectionClass);
 
           // Fill in all the fields with the selected record data
           $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__userID`).val($(`.${parent} .${childMenuClassname}__container__row__item--id`).text());

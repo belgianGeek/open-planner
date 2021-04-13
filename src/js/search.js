@@ -1,5 +1,4 @@
 const search = () => {
-  let recordDelTimeOut, recordUpdateTimeOut, inRequestsTimeOut;
   let updatedRecord = {};
   let searchData = {
     table: '',
@@ -7,18 +6,7 @@ const search = () => {
     getApplicant: false
   };
 
-  const copyText = (elt, parent, text2copy, temporaryReplacementText) => {
-    let text = document.querySelector(`.${parent} ${text2copy}`);
-    text.select();
-    text.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-
-    let contextItemClass = elt.attr('class').split(' ');
-
-    setTimeout(() => {
-      $(`.${contextItemClass[1]} p`).text(temporaryReplacementText);
-    }, 1500);
-  }
+  const wrapperBlur = () => $('.wrapper').toggleClass('blur');
 
   const wrapperBlur = () => $('.wrapper').toggleClass('blur');
 

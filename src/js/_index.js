@@ -6,7 +6,7 @@ let data2send = {
   values: []
 };
 
-let inRequestsReaderGender;
+let inRequestsReaderGender, recordDelTimeOut, recordUpdateTimeOut, inRequestsTimeOut;
 
 const toggleSwitch = (input, slider, check) => {
   if (check) {
@@ -27,6 +27,7 @@ let globalSettings = {};
 // Get settings from the server-side
 socket.on('settings', settings => {
   // Update the global object with the retrieved settings
+  globalSettings.allowpasswordupdate = settings.allowpasswordupdate;
   globalSettings.instance_name = settings.instance_name;
   globalSettings.instance_description = settings.instance_description;
   globalSettings.sendcc = settings.sendcc;
@@ -55,6 +56,12 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', true);
   } else {
     toggleSwitch('.toggleAttachments__Input', '.toggleAttachments__Slider', false);
+  }
+
+  if (settings.allowpasswordupdate) {
+    toggleSwitch('.toggleUserPasswordUpdate__Input', '.toggleUserPasswordUpdate__Slider', true);
+  } else {
+    toggleSwitch('.toggleUserPasswordUpdate__Input', '.toggleUserPasswordUpdate__Slider', false);
   }
 
   $('.settings__child__instanceNameContainer__label__input').val(globalSettings.instance_name);

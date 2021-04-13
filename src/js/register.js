@@ -8,9 +8,14 @@ const register = () => {
   $('.register__form__btnContainer__submit').click(event => {
     event.preventDefault();
     data2send.table = 'users';
+    data2send.setType = false;
     let gender = '';
     let location = $('.register__form__location option:selected').val();
-    let type = $('.register__form__type option:selected').val();
+    let type;
+
+    if ($('.register__form__type').length) {
+      type = $('.register__form__type option:selected').val();
+    }
 
     // Get the user gender
     $('.register__form__gender input.radio').each(function() {
@@ -32,7 +37,7 @@ const register = () => {
     }
 
     // Make the password field not required if a user is being updated
-    if (!$('.register').hasClass('absolute') || !$('.register__title').text().match('Modification')) {
+    if (!$('.register').hasClass('absolute') || $('.register__title').hasClass('addUserTitle')) {
       if (password.val() === '') {
         invalid(password);
       }
@@ -42,8 +47,11 @@ const register = () => {
       invalid(mail);
     }
 
-    if (type === 'default') {
-      invalid($('.register__form__type .input'));
+    if ($('.register__form__type').length) {
+      data2send.setType = true;
+      if (type === 'default') {
+        invalid($('.register__form__type .input'));
+      }
     }
 
     if (gender === '') {
@@ -57,15 +65,19 @@ const register = () => {
           capitalizeFirstLetter(userFirstname.val()),
           mail.val(),
           location,
-          gender,
-          type
+          gender
         ];
+
+        if ($('.register__form__type').length) {
+          data2send.values.push(type);
+        }
+
         data2send.setPassword = true;
 
         // Push the password last because it will be extracted on the server
 
-        // Handle modifications and user adding differently based on the form title
-        if (!$('.register__title').text().match('Modification')) {
+        // Handle modifications and user adding differently based on the form title class
+        if ($('.register__title').hasClass('addUserTitle')) {
           data2send.values.push(password.val());
           socket.emit('append data', data2send);
         } else {
@@ -84,20 +96,21 @@ const register = () => {
           password.attr('placeholder', 'Insérez le mot magique');
         }
 
-        $('.register')
-          .removeAttr('style')
-          .toggleClass('hidden flex');
+        // Remove the 'blur' class if the user submit the 'my account' form
+        if ($('.register__title').hasClass('myAccountTitle')) {
+          $('.register').toggleClass('blur');
+        } else {
+          // Do not empty the input fields in the 'My account' form
+          $('.register input').not('.radio').val('');
+        }
 
-        $('.register input').not('.radio').val('');
+        $('.register').toggleClass('hidden flex');
 
         if (window.location.pathname === '/') {
           confirmation();
 
-          $('.users').removeClass('blur backgroundColor');
-
-          $('.header__container__icon, .header__container__msg').toggleClass('hidden');
-
           data2send.values = [];
+          clearRegisterTitleClasses();
         }
       }
 
@@ -110,8 +123,14 @@ const register = () => {
       if (window.location.pathname === '/') {
         confirmation();
 
+        // Blur the form when the user submit the 'my account' form
+        if ($('.register__title').hasClass('myAccountTitle')) {
+          $('.register').toggleClass('blur');
+        }
+
         registerTimeout = setTimeout(function() {
           sendAccountInfo();
+          $('.users, .wrapper').removeClass('blur backgroundColor');
         }, 5000);
       } else {
         // Avoid timeout on the login page
@@ -144,6 +163,14 @@ const register = () => {
 
   $('.confirmation__body__cancel').click(() => {
     clearTimeout(registerTimeout);
+
+    if ($('.register').hasClass('absolute')) {
+      $('.wrapper').addClass('blur');
+
+      if ($('.register__title').hasClass('myAccountTitle')) {
+        $('.register').removeClass('blur');
+      }
+    }
   });
 }
 
