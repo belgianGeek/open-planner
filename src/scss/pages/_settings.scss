@@ -26,7 +26,8 @@
       // .backgroundImageUploadForm__InputUrl
       .toggleAttachments__Input,
       .toggleMailCc__Input,
-      .toggleMail__input {
+      .toggleMail__input,
+      .toggleUserPasswordUpdate__Input {
         margin-top: 1.5em;
       }
     }
@@ -114,13 +115,15 @@
     }
 
     .toggleAttachments,
-    .toggleMailCc {
+    .toggleMailCc,
+    .toggleUserPasswordUpdate {
       margin-top: 2em;
     }
 
     .toggleAttachments,
     .toggleMail,
-    .toggleMailCc {
+    .toggleMailCc,
+    .toggleUserPasswordUpdate {
       justify-content: space-between;
       width: 100%;
       align-items: baseline;
@@ -171,17 +174,13 @@
 
         &:checked + .toggleAttachments__Slider,
         &:checked + .toggleMailCc__Slider,
-        &:checked + .toggleMail__Slider {
+        &:checked + .toggleMail__Slider,
+        &:checked + .toggleUserPasswordUpdate__Slider {
           &:before {
             left: 0;
+            transform: translateX(22px);
           }
           background-color: $green;
-        }
-
-        &:checked + .toggleAttachments__Slider:before,
-        &:checked + .toggleMailCc__Slider:before,
-        &:checked + .toggleMail__Slider:before {
-          transform: translateX(22px);
         }
       }
     }

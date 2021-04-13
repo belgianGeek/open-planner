@@ -19,8 +19,8 @@ const manageLocations = () => {
         data2send.values.push(capitalizeFirstLetter(name.val()))
         data2send.values.push(mail.val());
 
-        // Handle modifications and user adding differently based on the form title
-        if (!$('.addLocation__title').text().match('Modification')) {
+        // Handle modifications and user adding differently based on the form title class
+        if ($('.addLocation__title').hasClass('newLocationTitle')) {
           socket.emit('append data', data2send);
         } else {
           data2send.id = $('.addLocation.absolute .addLocation__form__userID').val();
@@ -39,7 +39,7 @@ const manageLocations = () => {
 
         $('.locations').removeClass('blur backgroundColor');
 
-        $('.header__container__icon, .header__container__msg').toggleClass('hidden');
+        clearAddLocationTitleClasses();
       }
 
       $('.input').removeClass('invalid');

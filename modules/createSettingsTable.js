@@ -10,6 +10,7 @@ const createSettingsTable = (pool, data) => {
       smtp_host TEXT,
       smtp_passwd TEXT,
       wallpaper TEXT,
+      allowpasswordupdate BOOLEAN,
       sendattachments BOOLEAN,
       sendcc BOOLEAN,
       sendmail BOOLEAN

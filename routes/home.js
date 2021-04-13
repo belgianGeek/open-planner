@@ -26,6 +26,7 @@ module.exports = function(app, io) {
     let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
 
     res.render('index.ejs', {
+      allowPasswordUpdate: userSettings.allowpasswordupdate,
       currentVersion: app.tag,
       isFirstUserConfigured: isFirstUserConfigured,
       isSearchPage: false,
@@ -143,6 +144,10 @@ module.exports = function(app, io) {
 
       io.on('settings', settings => {
         query = ['UPDATE settings SET'];
+        if (settings.allowpasswordupdate !== undefined) {
+          query.push(`allowpasswordupdate = '${settings.allowpasswordupdate}',`);
+        }
+
         if (settings.instance_name !== undefined) {
           query.push(`instance_name = '${settings.instance_name}',`);
         }
@@ -186,16 +191,19 @@ module.exports = function(app, io) {
 
       io.on('update', async record => {
         if (record.table === 'users') {
-          if (record.setPassword) {
+          if (record.setPassword && record.setType) {
             query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
-          } else {
+          } else if (!record.setPassword && record.setType) {
             query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}' WHERE user_id = ${record.id}`;
+          } else if (record.setPassword && !record.setType) {
+            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', password = '${await bcrypt.hash(record.values[5], 10)}' WHERE user_id = ${record.id}`;
+          } else {
+            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}' WHERE user_id = ${record.id}`;
           }
         } else {
           query = `UPDATE ${record.table} SET location_name = '${record.values[0]}', location_mail = '${record.values[1]}' WHERE location_id = ${record.id}`;
         }
 
-        console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {
           text: query
         }).then(() => getUsers(app, passport));
