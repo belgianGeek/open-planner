@@ -52,6 +52,8 @@ module.exports = function(app, io) {
             console.trace(e);
             firstUserConfigured = false;
           } finally {
+            getUsers(app, passport);
+            
             res.render('login.ejs', {
               isFirstUserConfigured: firstUserConfigured,
               locations: locations.rows,
