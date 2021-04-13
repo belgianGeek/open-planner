@@ -14,6 +14,7 @@ module.exports = function(app, io) {
   const notify = require('../modules/notify');
   const path = require('path');
   const passport = require('passport');
+  const updateSession = require('../modules/updateSession');
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
@@ -206,7 +207,14 @@ module.exports = function(app, io) {
 
         DBquery(app, io, 'UPDATE', record.table, {
           text: query
-        }).then(() => getUsers(app, passport));
+        }).then(() => {
+          getUsers(app, passport);
+
+          // Only update the user session if he's not an admin (an admin can edit other users' info)
+          if (req.user.type !== 'admin') {
+            updateSession(io, req, record);
+          }
+        });
       });
     });
   })

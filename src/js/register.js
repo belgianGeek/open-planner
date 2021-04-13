@@ -109,6 +109,11 @@ const register = () => {
         if (window.location.pathname === '/') {
           confirmation();
 
+          // Update the user greeting on the homepage only after a non-admin user has updated its profile and if it is allowed
+          if ($('.register').length && $('.register__title').hasClass('myAccountTitle')) {
+            $('.greetings').text(`Bonjour ${$('.register__form__userFirstName input').val()} ${$('.register__form__name input').val()} !`);
+          }
+
           data2send.values = [];
           clearRegisterTitleClasses();
         }

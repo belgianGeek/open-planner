@@ -8,8 +8,6 @@ const search = () => {
 
   const wrapperBlur = () => $('.wrapper').toggleClass('blur');
 
-  const wrapperBlur = () => $('.wrapper').toggleClass('blur');
-
   $('.search__container').submit(event => {
     event.preventDefault();
     searchData.getApplicant = false;
