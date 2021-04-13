@@ -1,5 +1,4 @@
 const search = () => {
-  let recordDelTimeOut, recordUpdateTimeOut, inRequestsTimeOut;
   let updatedRecord = {};
   let searchData = {
     table: '',
