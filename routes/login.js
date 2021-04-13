@@ -47,13 +47,14 @@ module.exports = function(app, io) {
 
             if (DBusers.rowCount) {
               firstUserConfigured = true;
+
+              // Initialize Passport with the users saved in the database
+              getUsers(app, passport);
             }
           } catch (e) {
             console.trace(e);
             firstUserConfigured = false;
           } finally {
-            getUsers(app, passport);
-            
             res.render('login.ejs', {
               isFirstUserConfigured: firstUserConfigured,
               locations: locations.rows,
