@@ -56,6 +56,7 @@ module.exports = function(app, io) {
             firstUserConfigured = false;
           } finally {
             res.render('login.ejs', {
+              allowPasswordUpdate: true,
               isFirstUserConfigured: firstUserConfigured,
               locations: locations.rows,
               instanceName: app.open_planner_instance_name,
@@ -89,7 +90,7 @@ module.exports = function(app, io) {
                     const locations = await app.pool.query(`SELECT * FROM locations`);
 
                     // Append locations only if there is no row to prevent duplicates
-                    if (!locations.rowCount) {
+                    if (locations.rowCount === 0) {
                       DBquery(app, io, 'INSERT INTO', 'locations', {
                           text: `INSERT INTO locations(location_name, location_mail) VALUES($1, $2) RETURNING location_name, location_id`,
                           values: [settings.location_name, settings.location_mail]

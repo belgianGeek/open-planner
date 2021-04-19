@@ -30,14 +30,14 @@ const manageLocations = () => {
         data2send.values = [];
 
         $('.addLocation')
-          .removeAttr('style')
-          .toggleClass('hidden flex');
+          .toggleClass('hidden flex')
+          .removeClass('blur');
 
         $('.addLocation input').val('');
 
         confirmation();
 
-        $('.locations').removeClass('blur backgroundColor');
+        $('.locations, .header').removeClass('blur backgroundColor');
 
         clearAddLocationTitleClasses();
       }
@@ -46,6 +46,8 @@ const manageLocations = () => {
       $('form .warning').addClass('hidden');
 
       confirmation();
+
+      $('.addLocation').addClass('blur');
 
       addLocationTimeout = setTimeout(function() {
         sendAccountInfo();
@@ -72,6 +74,7 @@ const manageLocations = () => {
 
   $('.confirmation__body__cancel').click(() => {
     clearTimeout(addLocationTimeout);
+    $('.addLocation').removeClass('blur');
   });
 }
 
