@@ -6,7 +6,7 @@ const cp = require('child_process').exec;
 
 module.exports = function update(io, tag) {
   axios({
-      url: 'https://api.github.com/repos/belgianGeek/node-planner',
+      url: 'https://api.github.com/repos/belgianGeek/open-planner',
       method: 'GET'
     })
     .then(res => {

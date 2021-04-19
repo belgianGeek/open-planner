@@ -36,8 +36,8 @@ const register = () => {
       invalid($('.register__form__location .input'));
     }
 
-    // Make the password field not required if a user is being updated
-    if (!$('.register').hasClass('absolute') || $('.register__title').hasClass('addUserTitle')) {
+    // Make the password field not required if a user is being updated or during the intro (when there is no form title)
+    if (!$('.register').hasClass('absolute') || $('.register__title').hasClass('addUserTitle') || !$('.register__title').length) {
       if (password.val() === '') {
         invalid(password);
       }
@@ -77,7 +77,8 @@ const register = () => {
         // Push the password last because it will be extracted on the server
 
         // Handle modifications and user adding differently based on the form title class
-        if ($('.register__title').hasClass('addUserTitle')) {
+        // During the intro, there is no form title
+        if ($('.register__title').hasClass('addUserTitle') || !$('.register__title').length) {
           data2send.values.push(password.val());
           socket.emit('append data', data2send);
         } else {
@@ -96,11 +97,11 @@ const register = () => {
           password.attr('placeholder', 'Insérez le mot magique');
         }
 
-        // Remove the 'blur' class if the user submit the 'my account' form
-        if ($('.register__title').hasClass('myAccountTitle')) {
-          $('.register').toggleClass('blur');
-        } else {
-          // Do not empty the input fields in the 'My account' form
+        // Remove the 'blur' class if the user submit the form
+        $('.register').toggleClass('blur');
+
+        // Do not empty the input fields in the 'My account' form
+        if (!$('.register__title').hasClass('myAccountTitle')) {
           $('.register input').not('.radio').val('');
         }
 
@@ -128,23 +129,16 @@ const register = () => {
       if (window.location.pathname === '/') {
         confirmation();
 
-        // Blur the form when the user submit the 'my account' form
-        if ($('.register__title').hasClass('myAccountTitle')) {
-          $('.register').toggleClass('blur');
-        }
+        // Blur the form when the user submit the form
+        $('.register').toggleClass('blur');
 
         registerTimeout = setTimeout(function() {
           sendAccountInfo();
-          $('.users, .wrapper').removeClass('blur backgroundColor');
+          $('.users, .wrapper, .header').removeClass('blur backgroundColor');
         }, 5000);
       } else {
         // Avoid timeout on the login page
         sendAccountInfo();
-
-        // Reload the page to show the login portal
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       }
     } else {
       if (!$('form .warning').length) {
@@ -170,11 +164,11 @@ const register = () => {
     clearTimeout(registerTimeout);
 
     if ($('.register').hasClass('absolute')) {
-      $('.wrapper').addClass('blur');
-
       if ($('.register__title').hasClass('myAccountTitle')) {
-        $('.register').removeClass('blur');
+        $('.wrapper, .header').addClass('blur');
       }
+
+      $('.register').removeClass('blur');
     }
   });
 }

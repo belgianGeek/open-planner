@@ -8,16 +8,16 @@
     <% postURL = '/'; %>
     <% title = 'Ajouter un utilisateur'; %>
   <% } %>
-  <% if(title !== '') { %><h2 class="register__title title"><%= title %></h2> <% } %>
+  <% if (title !== '') { %><h2 class="register__title title"><%= title %></h2> <% } %>
   <form class="register__form flex" action="<%= postURL %>" method="post">
-    <input class="hidden register__form__userID" type="text" <% if (allowPasswordUpdate) { %> value="<%= user.user_id %>" <% } %>>
+    <input class="hidden register__form__userID" type="text" <% if (allowPasswordUpdate && typeof user !== 'undefined') { %> value="<%= user.user_id %>" <% } %>>
     <label class="register__form__name flex">
       Nom
-      <input class="input" type="text" placeholder="Nom" <% if (allowPasswordUpdate) { %> value="<%= user.name %>"<% } %> required>
+      <input class="input" type="text" placeholder="Nom" <% if (allowPasswordUpdate && typeof user !== 'undefined') { %> value="<%= user.name %>"<% } %> required>
     </label>
     <label class="register__form__userFirstName flex">
       Prénom
-      <input class="input" type="text" placeholder="Prénom" <% if (allowPasswordUpdate) { %> value="<%= user.firstname %>"<% } %> required>
+      <input class="input" type="text" placeholder="Prénom" <% if (allowPasswordUpdate && typeof user !== 'undefined') { %> value="<%= user.firstname %>"<% } %> required>
     </label>
     <label class="register__form__location flex">
       Implantation
@@ -26,7 +26,7 @@
         <% for(const [i, location] of locations.entries()) { %>
           <option
             value="<%= location.location_id %>"
-            <% if (allowPasswordUpdate && user.location === location.location_id) { %> selected <% } %>
+            <% if (allowPasswordUpdate && typeof user !== 'undefined' && user.location === location.location_id) { %> selected <% } %>
             ><%= location.location_name %></option>
         <% } %>
       </select>
@@ -37,14 +37,14 @@
     </label>
     <label class="register__form__email flex">
       Adresse email
-      <input class="input" type="email" placeholder="Adresse email" <% if (allowPasswordUpdate) { %> value="<%= user.email %>"<% } %> required>
+      <input class="input" type="email" placeholder="Adresse email" <% if (allowPasswordUpdate && typeof user !== 'undefined') { %> value="<%= user.email %>"<% } %> required>
     </label>
-    <% if (allowPasswordUpdate && user.type === 'admin') { %>
+    <% if (allowPasswordUpdate && (typeof user === 'undefined' || user.type === 'admin')) { %>
       <label class="register__form__type flex">
         Type de compte
         <select class="input">
           <option value="default">Choisissez un type de compte...</option>
-          <option value="admin" <% if (allowPasswordUpdate && user.type === "admin") { %> selected <% } %>>Administrateur</option>
+          <option value="admin" <% if (allowPasswordUpdate && (typeof user === 'undefined' || user.type === "admin")) { %> selected <% } %>>Administrateur</option>
           <% if (isFirstUserConfigured) { %>
             <option value="user" <% if (allowPasswordUpdate && user.type === "user") { %> selected <% } %>>Utilisateur</option>
             <option value="guest" <% if (allowPasswordUpdate && user.type === "guest") { %> selected <% } %>>Visiteur</option>
@@ -55,11 +55,11 @@
     <h3 class="register__form__title title">Sexe</h3>
     <span class="register__form__gender flex">
       <label class="register__form__male">
-        <input class="input radio" name="gender" type="radio" value="m" <% if (allowPasswordUpdate && user.gender === "m") { %> checked <% } %>>
+        <input class="input radio" name="gender" type="radio" value="m" <% if (allowPasswordUpdate && typeof user !== 'undefined' && user.gender === "m") { %> checked <% } %>>
         Masculin
       </label>
       <label class="register__form__female">
-        <input class="input radio" name="gender" type="radio" value="f" <% if (allowPasswordUpdate && user.gender === "f") { %> checked <% } %>>
+        <input class="input radio" name="gender" type="radio" value="f" <% if (allowPasswordUpdate && typeof user !== 'undefined' && user.gender === "f") { %> checked <% } %>>
         Féminin
       </label>
     </span>

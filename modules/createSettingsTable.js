@@ -28,8 +28,8 @@ const createSettingsTable = (pool, data) => {
               console.log('Remplissage initial de la table \'settings\'...');
               let mailContent;
               pool.query({
-                  text: `INSERT INTO settings(instance_name, instance_description, sender, mail_address, smtp_user, smtp_host, smtp_passwd, wallpaper, sendattachments, sendcc, sendmail) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
-                  values: [data.instance, data.instance_description, data.sender, data.smtp_user, data.smtp_user, data.smtp_host, data.smtp_passwd, '../src/scss/wallpaper.jpg', true, true, true]
+                  text: `INSERT INTO settings(instance_name, instance_description, sender, mail_address, smtp_user, smtp_host, smtp_passwd, wallpaper, allowpasswordupdate, sendattachments, sendcc, sendmail) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+                  values: [data.instance, data.instance_description, data.sender, data.smtp_user, data.smtp_user, data.smtp_host, data.smtp_passwd, '../src/scss/wallpaper.jpg', true, true, true, true]
                 })
                 .then(res => {
                   msg = 'Remplissage de la table \'settings\' effectué avec succès !';
