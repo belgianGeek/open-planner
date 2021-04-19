@@ -36,8 +36,8 @@ const register = () => {
       invalid($('.register__form__location .input'));
     }
 
-    // Make the password field not required if a user is being updated
-    if (!$('.register').hasClass('absolute') || $('.register__title').hasClass('addUserTitle')) {
+    // Make the password field not required if a user is being updated or during the intro (when there is no form title)
+    if (!$('.register').hasClass('absolute') || $('.register__title').hasClass('addUserTitle') || !$('.register__title').length) {
       if (password.val() === '') {
         invalid(password);
       }
@@ -77,7 +77,8 @@ const register = () => {
         // Push the password last because it will be extracted on the server
 
         // Handle modifications and user adding differently based on the form title class
-        if ($('.register__title').hasClass('addUserTitle')) {
+        // During the intro, there is no form title
+        if ($('.register__title').hasClass('addUserTitle') || !$('.register__title').length) {
           data2send.values.push(password.val());
           socket.emit('append data', data2send);
         } else {
@@ -138,11 +139,6 @@ const register = () => {
       } else {
         // Avoid timeout on the login page
         sendAccountInfo();
-
-        // Reload the page to show the login portal
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       }
     } else {
       if (!$('form .warning').length) {
