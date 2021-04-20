@@ -22,10 +22,7 @@ server.listen(8000);
 const Pool = require('pg').Pool;
 
 let config = {
-  user: process.env.DB_USER,
-  database: process.env.DB,
-  password: process.env.DB_USER_PASSWD,
-  host: process.env.DB_HOST
+  connectionString: process.env.DATABASE_URL
 };
 const initClient = new Pool(config);
 
