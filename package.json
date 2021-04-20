@@ -1,14 +1,14 @@
 {
-  "name": "pib-manager",
-  "version": "0.1.0-1",
-  "description": "A simple interlibrary loan manager",
+  "name": "open-planner",
+  "version": "0.1.0",
+  "description": "A simple but powerful open source task manager",
   "main": "index.js",
   "author": "Maxime Vanderwegen",
   "license": "MIT",
   "browserslist": "last 4 versions",
   "scripts": {
-    "dev": "yarn sass && yarn prefix && yarn minify && node index.js",
-    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "sass": "sass ./src/scss/index.scss:./src/scss/index.css --style compressed",
     "prefix": "postcss ./src/scss/index.css --use autoprefixer -d ./src/scss/prefixed",
     "minify": "node minify.js"
