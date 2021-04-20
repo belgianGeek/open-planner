@@ -17,7 +17,7 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
 
-server.listen(8000);
+server.listen(process.env.PORT);
 
 const Pool = require('pg').Pool;
 
