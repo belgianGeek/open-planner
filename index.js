@@ -22,9 +22,9 @@ server.listen(8000);
 const Pool = require('pg').Pool;
 
 let config = {
-  user: 'postgres',
-  database: 'postgres',
-  host: 'localhost'
+  user: process.env.DB_USER,
+  database: process.env.DB,
+  host: process.env.DB_HOST
 };
 const initClient = new Pool(config);
 
@@ -42,7 +42,7 @@ const createSessionTable = require('./modules/createSessionTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
 
-const createDB = (config, DBname = 'planner') => {
+const createDB = (config, DBname = process.env.DB) => {
   const createTables = () => {
     console.log(`Base de données ${DBname} créée avec succès, création des tables en cours...`);
     app.pool = new Pool(config);
@@ -77,7 +77,7 @@ const createDB = (config, DBname = 'planner') => {
 
   const reconnect = () => {
     // Disconnect from the 'postgres' DB and connect to the newly created 'node-planner' DB
-    config.database = 'planner';
+    config.database = process.env.DB;
 
     initClient
       .end()
@@ -144,7 +144,7 @@ app.use(flash());
 app.use(session({
   store: new pgSession({
     pool: app.pool,
-    conString: `postgresql://${config.user}@${config.host}:5432/${config.database}`
+    conString: process.env.DATABASE_URL
   }),
   secret: randomBytes(256).toString('hex'),
   resave: false,
