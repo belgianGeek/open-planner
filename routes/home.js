@@ -103,7 +103,7 @@ module.exports = function(app, io) {
               for (const [i, row] of res.rows.entries()) {
                 const location = await app.pool.query(`SELECT location_name FROM locations WHERE location_id = ${row.location_fk}`);
 
-                let status = '';
+                let status, applicant = '';
                 if (row.status === 'done') {
                   status = 'Terminée';
                 } else if (row.status === 'wip') {
@@ -112,7 +112,14 @@ module.exports = function(app, io) {
                   status = 'Aucune attribution';
                 }
 
-                data2write += `${row.task_id},${row.applicant_firstname} ${row.applicant_name.toUpperCase()},${row.request_date.toLocaleDateString('fr-BE')},${location.rows[0].location_name},${row.firstname} ${row.name.toUpperCase()},${row.comment.replace(/\'\'/, "'")},${status}\n`;
+                // Check if the task has been assigned
+                if (row.firstname !== null && row.name !== null) {
+                  applicant = `${row.firstname} ${row.name.toUpperCase()}`;
+                } else {
+                  applicant = 'Aucun';
+                }
+
+                data2write += `${row.task_id},${row.applicant_firstname} ${row.applicant_name.toUpperCase()},${row.request_date.toLocaleDateString('fr-BE')},${location.rows[0].location_name},${applicant},${row.comment.replace(/\'\'/, "'")},${status}\n`;
 
                 if (i === res.rows.length - 1) {
                   fs.writeFile(path.join(__dirname, '../exports/' + filename), data2write, (err) => {
