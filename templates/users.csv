@@ -1,0 +1,4 @@
+name,firstname,email,gender,password,type
+User,Demo,demo@user.com,m,demouser,user
+Admin,Demo,demo@admin.com,f,demoadmin,admin
+Guest,Demo,demo@guest.com,m,demoguest,guest

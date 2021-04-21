@@ -68,6 +68,27 @@
       </section>
     </span>
   </span>
+  <% if (user.type === 'admin') { %>
+    <span class="import hidden">
+      <span class="import__child flex">
+        <h2 class="import__child__title title">Importer des utilisateurs</h2>
+        <section class="import__child__container flex">
+          <form action="/upload" method="post" class="import__child__container__file flex" enctype="multipart/form-data">
+            <label class="import__child__container__file__upload">
+              Sélectionner le fichier à importer :
+              <input class="import__child__container__file__upload__input input" name="dataUpload" type="file">
+              ou téléchargez le <a href="/template">modèle</a>
+            </label>
+            <span class="import__child__container__notification flex"></span>
+            <span class="import__child__container__btnContainer flex">
+              <button class="import__child__container__btnContainer__btn btn btn--submit" type="submit">Importer</button>
+              <button class="import__child__container__btnContainer__btn btn btn--reset" type="button">Annuler</button>
+            </span>
+          </form>
+        </section>
+      </span>
+    </span>
+  <% } %>
   <%- include('settings'); %>
   <% } %>
   <% if (user.type !== 'admin' && allowPasswordUpdate) { %>

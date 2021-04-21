@@ -27,7 +27,7 @@ const appendData = async (app, data, io) => {
         if (data.table === 'users') {
           getUsers(app, passport);
 
-          const users = await app.pool.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+          const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
           io.emit('users retrieved', users.rows);
         } else if (data.table === 'locations') {
           const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
