@@ -1,6 +1,8 @@
-const notify = (io, type) => {
+const notify = (io, type, isImport = false, usersNb) => {
   io.emit('notification', {
-    type: type
+    isImport: isImport,
+    type: type,
+    usersNb: usersNb
   });
 }
 

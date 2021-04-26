@@ -3,5 +3,5 @@ module.exports = function(app, io) {
     res.download(app.file2download.path, app.file2download.name, err => {
       if (err) console.log(JSON.stringify(err, null, 2));
     });
-  })
+  });
 }

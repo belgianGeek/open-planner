@@ -47,8 +47,13 @@ const appendUserRow = (i, data) => {
 
   let location = $('<span></span>')
     .addClass('users__container__row__item users__container__row__item--location')
-    .append(data.location_name)
     .appendTo(row);
+
+  if (data.location_name !== null) {
+    location.append(data.location_name);
+  } else {
+    location.append('Aucune');
+  }
 
   let locationID = $('<span></span>')
     .addClass('users__container__row__item users__container__row__item--location_id hidden')
@@ -400,7 +405,7 @@ const manageUsers = () => {
     $(`.${parent}`)
       .removeClass('hidden')
       .addClass('flex');
-      
+
     recordDelTimeOut = undefined;
 
     // Reset the deletionKey
