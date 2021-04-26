@@ -104,6 +104,7 @@ const createDB = (config, DBname = 'planner') => {
 
 existPath('./backups/');
 existPath('./exports/');
+existPath('./templates/');
 
 // Exporter une sauvegarde de la DB toutes les douze heures
 setInterval(() => {
@@ -165,6 +166,8 @@ require('./routes/home')(app, io);
 require('./routes/login')(app, io);
 require('./routes/logout')(app, io);
 require('./routes/search')(app, io);
+require('./routes/template')(app, io);
+require('./routes/upload')(app, io);
 require('./routes/notFound')(app, io);
 
 module.exports = app;

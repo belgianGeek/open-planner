@@ -69,7 +69,7 @@ module.exports = function(app, io) {
       });
 
       io.on('get users', async () => {
-        const users = await app.pool.query(`SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id ORDER BY name`);
+        const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
         io.emit('users retrieved', users.rows);
       });
 
