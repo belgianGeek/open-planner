@@ -9,7 +9,7 @@ module.exports = function(app, io) {
   const notify = require('../modules/notify');
   const passport = require('passport');
 
-  app.get('/search', checkAuth, async(req, res) => {
+  app.get('/search', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
     let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
     app.pool.query(`SELECT user_id, name, firstname FROM users`)
@@ -35,8 +35,13 @@ module.exports = function(app, io) {
       io.emit('settings', userSettings);
 
       io.on('search', data => {
-        if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
-        else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' AND location_fk = ${data.location} ORDER BY tasks.task_id`;
+        if (data.location !== undefined) {
+          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
+          else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' AND location_fk = ${data.location} ORDER BY tasks.task_id`;
+        } else {
+          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id LEFT JOIN users ON tasks.user_fk = users.user_id ORDER BY tasks.task_id`;
+          else query = `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' ORDER BY tasks.task_id`;
+        }
 
         // Disable automatic notifications for the first request in case it does not return any results
         DBquery(app, io, 'SELECT', 'tasks', {
