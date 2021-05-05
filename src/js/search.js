@@ -1,7 +1,7 @@
 const search = () => {
   let updatedRecord = {};
   let searchData = {
-    table: '',
+    table: 'tasks',
     applicant_name: '',
     getApplicant: false
   };
@@ -14,17 +14,18 @@ const search = () => {
 
     if ($('.search__container__select').val() !== 'default') {
       searchData.location = $('.search__container__select').val();
-
-      if ($('.search__container__readerInput').val() !== '') {
-        searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
-        searchData.getApplicant = true;
-      }
-
-      socket.emit('search', searchData);
-
-      searchData.location = searchData.applicant_name = '';
-      searchData.getApplicant = false;
     }
+
+    if ($('.search__container__readerInput').val() !== '') {
+      searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
+      searchData.getApplicant = true;
+    }
+
+    socket.emit('search', searchData);
+
+    searchData.location = undefined;
+    searchData.applicant_name = '';
+    searchData.getApplicant = false;
   });
 
   socket.on('search results', results => {
@@ -54,6 +55,9 @@ const search = () => {
             break;
           case 'task_id':
             columnTitle = 'N° de demande';
+            break;
+          case 'location_name':
+            columnTitle = 'Implantation';
             break;
           case 'applicant_name':
             columnTitle = 'Nom du demandeur';
@@ -191,6 +195,18 @@ const search = () => {
           }
 
           attachment.appendTo(row);
+        }
+
+        if ($('.search__container__select').val() === 'default') {
+          let location_name = $('<span></span>').addClass('search__results__container__row__item  rowItem search__results__container__row__item--location');
+
+          if (data.location_name !== null) {
+            location_name.append(data.location_name);
+          } else {
+            location_name.append(`Problème d'affichage...`);
+          }
+
+          location_name.appendTo(row);
         }
       }
 
