@@ -59,6 +59,9 @@ const search = () => {
           case 'location_name':
             columnTitle = 'Implantation';
             break;
+          case 'location_name':
+            columnTitle = 'Implantation';
+            break;
           case 'applicant_name':
             columnTitle = locales.request.applicant_name;
             break;
