@@ -14,7 +14,7 @@
       <form class="search__container flex" method="GET" action="/">
         <label for="search__container__select">Effectuer une recherche</label>
         <select class="search__container__select input" name="search__select">
-          <option value="default">Choisissez un site</option>
+          <option value="default">Tous les sites</option>
           <% for(const [i, location] of locations.entries()) { %>
           <option value="<%= location.location_id %>"><%= location.location_name %></option>
           <% } %>
