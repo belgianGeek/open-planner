@@ -2,7 +2,9 @@ const unzip = require('adm-zip');
 const fs = require('fs-extra');
 const axios = require('axios');
 const path = require('path');
-const cp = require('child_process').exec;
+const cp = require('child_process');
+const os = require('os');
+const process = require('process');
 
 module.exports = function update(io, tag) {
   axios({
@@ -52,13 +54,13 @@ module.exports = function update(io, tag) {
                           if (i === files.length - 1) {
                             console.log('Update successfully extracted !');
                             console.log('Checking for dependencies updates...');
-                            cp('npm install', (err, stdout, stderr) => {
+                            cp.exec('npm install', (err, stdout, stderr) => {
                               if (err) {
                                 console.error(`Error checking for dependencies updates : ${err}`);
                               } else {
                                 if (!stderr) {
                                   console.log(stdout);
-                                  cp('npm prune', (err, stdout, stderr) => {
+                                  cp.exec('npm prune', (err, stdout, stderr) => {
                                     if (err) {
                                       console.log(`Error removing unused dependencies : ${err}`);
                                     } else {
@@ -79,8 +81,16 @@ module.exports = function update(io, tag) {
                             fs.remove(unzippedDir, () => {
                               io.emit('update progress', 'Terminé !');
 
-                              if (os.platfrom() === 'linux') {
+                              if (os.platform() === 'linux') {
+                                process.on('exit', () => {
+                                  cp.spawn(process.argv.shift(), process.argv, {
+                                    cwd: process.cwd(),
+                                    detached: true,
+                                    stdio: 'inherit'
+                                  });
+                                });
 
+                                process.exit();
                               } else {
                                 io.emit('update progress', 'Redémarrez node-planner');
                               }
