@@ -19,3 +19,17 @@
     }
   }
 }
+
+.loginHeader {
+  position: absolute;
+  bottom: 0.7em;
+  right: 2vw;
+  font-size: 1em;
+  width: 12em;
+
+  .lang {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+}
