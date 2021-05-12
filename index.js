@@ -127,7 +127,7 @@ existPath('./templates/');
 // Exporter une sauvegarde de la DB toutes les douze heures
 setInterval(() => {
   console.log('DB backup on ' + Date.now());
-  exportDB(`./backups/planner_${Date.now()}.pgsql`);
+  exportDB(config.connectionString, `./backups/planner_${Date.now()}.pgsql`);
 }, 12 * 60 * 60 * 1000);
 
 
@@ -180,7 +180,7 @@ app.use(methodOverride('_method'));
 
 require('./routes/createDB')(app, io);
 require('./routes/download')(app, io);
-require('./routes/home')(app, io);
+require('./routes/home')(app, io, config.connectionString);
 require('./routes/login')(app, io);
 require('./routes/logout')(app, io);
 require('./routes/search')(app, io);
