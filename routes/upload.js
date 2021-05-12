@@ -21,6 +21,7 @@ module.exports = function(app, io) {
         // Read the file and add the imported users to the DB
         fs.readFile(req.file.path, 'utf-8', async (err, data) => {
           const rows = data.split('\r\n');
+          let usersNb = 0;
           // Set the iterator to 1 to avoid processing the file header
           for (let i = 1; i < rows.length; i++) {
             // Avoid empty rows
@@ -34,7 +35,8 @@ module.exports = function(app, io) {
                     values: [row[0].trim(), row[1].trim(), row[2].trim(), row[3].trim(), await bcrypt.hash(row[4].trim(), 10), row[5].trim()]
                   })
                   .then(async res => {
-                    notify(io, 'success', true, users.rows);
+                    usersNb++;
+                    notify(io, 'success', true, usersNb);
                     getUsers(app, passport);
 
                     const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
