@@ -28,22 +28,6 @@ let config = {
   }
 };
 
-const checkForPassword = () => {
-  if (fs.existsSync('.passwd')) {
-    config.password = fs.readFileSync('.passwd', {
-      encoding: 'utf-8'
-    });
-
-    config.password = config.password.replace(/[\n\r\s]/g, '');
-
-    config.connectionString = `postgresql://${config.user}:${config.password}@${config.host}:5432/${config.database}`;
-  } else {
-    config.connectionString = `postgresql://${config.user}@${config.host}:5432/${config.database}`;
-  }
-}
-
-checkForPassword();
-
 const initClient = new Pool(config);
 
 // Define a variable to store the settings retrieved from the DB
