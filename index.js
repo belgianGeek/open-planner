@@ -26,6 +26,23 @@ let config = {
   database: 'postgres',
   host: 'localhost'
 };
+
+const checkForPassword = () => {
+  if (fs.existsSync('.passwd')) {
+    config.password = fs.readFileSync('.passwd', {
+      encoding: 'utf-8'
+    });
+
+    config.password = config.password.replace(/[\n\r\s]/g, '');
+
+    config.connectionString = `postgresql://${config.user}:${config.password}@${config.host}:5432/${config.database}`;
+  } else {
+    config.connectionString = `postgresql://${config.user}@${config.host}:5432/${config.database}`;
+  }
+}
+
+checkForPassword();
+
 const initClient = new Pool(config);
 
 // Define a variable to store the settings retrieved from the DB
@@ -62,24 +79,24 @@ const createDB = (config, DBname = 'planner') => {
     app.pool.connect()
       .then(() => {
         createLocationsTable(app.pool)
-        .then(res => {
-          console.log(res);
-
-          createUsersTable(app.pool)
           .then(res => {
             console.log(res);
 
-            getUsers(app, passport);
+            createUsersTable(app.pool)
+              .then(res => {
+                console.log(res);
 
-            createTasksTable(app.pool)
-            .then(res => {
-              console.log(res);
-              console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
-            });
+                getUsers(app, passport);
+
+                createTasksTable(app.pool)
+                  .then(res => {
+                    console.log(res);
+                    console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
+                  });
+              })
+              .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
       })
       .catch(err => {
         console.trace(`Pool connection error : ${err}`);
@@ -89,6 +106,7 @@ const createDB = (config, DBname = 'planner') => {
   const reconnect = () => {
     // Disconnect from the 'postgres' DB and connect to the newly created 'node-planner' DB
     config.database = 'planner';
+    checkForPassword();
 
     initClient
       .end()
@@ -157,7 +175,7 @@ app.use(flash());
 app.use(session({
   store: new pgSession({
     pool: app.pool,
-    conString: `postgresql://${config.user}@${config.host}:5432/${config.database}`
+    conString: config.connectionString
   }),
   secret: randomBytes(256).toString('hex'),
   resave: false,

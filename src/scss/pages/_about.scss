@@ -65,10 +65,14 @@
         &__item.dev,
         &__item.license {
           justify-content: space-between;
-          width: 55%;
-          @media(max-width: 720px) {
-            width: 60%;
-          }
+        }
+
+        &__item.dev {
+          width: 21em;
+        }
+
+        &__item.license {
+          width: 9em;
         }
 
         &__item.links {

@@ -32,3 +32,6 @@ node_modules/
 backups/
 exports/
 tmp/
+
+
+.passwd
