@@ -1,7 +1,7 @@
 const search = () => {
   let updatedRecord = {};
   let searchData = {
-    table: '',
+    table: 'tasks',
     applicant_name: '',
     getApplicant: false
   };
@@ -14,17 +14,18 @@ const search = () => {
 
     if ($('.search__container__select').val() !== 'default') {
       searchData.location = $('.search__container__select').val();
-
-      if ($('.search__container__readerInput').val() !== '') {
-        searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
-        searchData.getApplicant = true;
-      }
-
-      socket.emit('search', searchData);
-
-      searchData.location = searchData.applicant_name = '';
-      searchData.getApplicant = false;
     }
+
+    if ($('.search__container__readerInput').val() !== '') {
+      searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
+      searchData.getApplicant = true;
+    }
+
+    socket.emit('search', searchData);
+
+    searchData.location = undefined;
+    searchData.applicant_name = '';
+    searchData.getApplicant = false;
   });
 
   socket.on('search results', results => {
@@ -47,31 +48,37 @@ const search = () => {
           case 'attachment':
             // Hide the attachments column is attachments sending is forbidden
             if (globalSettings.sendattachments) {
-              columnTitle = 'Pièce jointe';
+              columnTitle = locales.search.attachment;
             } else {
               columnTitle = '';
             }
             break;
           case 'task_id':
-            columnTitle = 'N° de demande';
+            columnTitle = locales.search.request_number;
+            break;
+          case 'location_name':
+            columnTitle = 'Implantation';
+            break;
+          case 'location_name':
+            columnTitle = 'Implantation';
             break;
           case 'applicant_name':
-            columnTitle = 'Nom du demandeur';
+            columnTitle = locales.request.applicant_name;
             break;
           case 'applicant_firstname':
-            columnTitle = 'Prénom du demandeur';
+            columnTitle = locales.request.applicant_firstname;
             break;
           case 'request_date':
             columnTitle = 'Date';
             break;
           case 'comment':
-            columnTitle = 'Contenu de la demande';
+            columnTitle = locales.search.request_content;
             break;
           case 'status':
-            columnTitle = 'Statut';
+            columnTitle = locales.search.status;
             break;
           case 'user_fk':
-            columnTitle = 'Attribution';
+            columnTitle = locales.search.assignment;
             break;
           default:
             columnTitle = '';
@@ -113,7 +120,7 @@ const search = () => {
           date.append(new Date(data.request_date).toLocaleDateString());
           timestamp.append(data.request_date.split('T')[0]);
         } else {
-          date.append(`Problème d'affichage...`);
+          date.append(locales.search.display_error);
         }
 
         timestamp.appendTo(row);
@@ -143,9 +150,9 @@ const search = () => {
             .append(data.user_fk)
             .appendTo(row);
 
-        } else if (data.user_fk === null) assignedWorker.append('Non attribué');
+        } else if (data.user_fk === null) assignedWorker.append(locales.request.status_waiting);
         else {
-          assignedWorker.append('Problème d\'affichage :((');
+          assignedWorker.append(locales.search.display_error);
           console.trace(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
         }
 
@@ -163,19 +170,19 @@ const search = () => {
             .removeClass('done wip')
             .addClass('waiting');
 
-          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En attente d\'attribution');
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.waiting);
         } else if (data.status === 'done') {
           status
             .removeClass('waiting wip')
             .addClass('done');
 
-          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('Terminée');
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.done);
         } else {
           status
             .removeClass('done waiting')
             .addClass('wip');
 
-          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text('En cours de traitement');
+          $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.wip);
         }
 
         // Same comment as in the switch up ahead
@@ -191,6 +198,18 @@ const search = () => {
           }
 
           attachment.appendTo(row);
+        }
+
+        if ($('.search__container__select').val() === 'default') {
+          let location_name = $('<span></span>').addClass('search__results__container__row__item  rowItem search__results__container__row__item--location');
+
+          if (data.location_name !== null) {
+            location_name.append(data.location_name);
+          } else {
+            location_name.append(`Problème d'affichage...`);
+          }
+
+          location_name.appendTo(row);
         }
       }
 
@@ -278,7 +297,7 @@ const search = () => {
             if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
               $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
             } else {
-              $(`.${parent} .search__results__container__row__item--aw`).text('Non attribué');
+              $(`.${parent} .search__results__container__row__item--aw`).text(locales.request.status_waiting);
             }
 
             $(`.${parent} .search__results__container__row__item--status`)

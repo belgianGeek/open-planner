@@ -1,3 +1,13 @@
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes slide {
   15%, 85% {
     transform: translateX(-62vw);

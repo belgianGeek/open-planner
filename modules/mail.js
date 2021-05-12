@@ -98,7 +98,7 @@ const mail = (app, io) => {
     let applicant = data.applicant;
 
     DBquery(app, io, 'SELECT', 'users', {
-        text: `SELECT * FROM users INNER JOIN locations ON users.location = locations.location_id`
+        text: `SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id`
       })
       .then(res => {
         receiver.mail = res.rows[0].location_mail;

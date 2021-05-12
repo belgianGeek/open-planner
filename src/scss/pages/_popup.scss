@@ -1,5 +1,6 @@
 .confirmation,
-.export {
+.export,
+.import {
   width: 100vw;
   height: 100vh;
   font-size: 1em;
@@ -12,6 +13,7 @@
 }
 
 .confirmation,
-.export {
+.export,
+.import {
   background-color: $translucent-black;
 }

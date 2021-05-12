@@ -27,6 +27,23 @@ let config = {
     rejectUnauthorized: false
   }
 };
+
+const checkForPassword = () => {
+  if (fs.existsSync('.passwd')) {
+    config.password = fs.readFileSync('.passwd', {
+      encoding: 'utf-8'
+    });
+
+    config.password = config.password.replace(/[\n\r\s]/g, '');
+
+    config.connectionString = `postgresql://${config.user}:${config.password}@${config.host}:5432/${config.database}`;
+  } else {
+    config.connectionString = `postgresql://${config.user}@${config.host}:5432/${config.database}`;
+  }
+}
+
+checkForPassword();
+
 const initClient = new Pool(config);
 
 // Define a variable to store the settings retrieved from the DB
@@ -38,6 +55,17 @@ const exportDB = require('./modules/exportDB');
 const getUsers = require('./modules/getUsers');
 const existPath = require('./modules/existPath');
 
+const i18n = require('i18n');
+i18n.configure({
+  autoReload: true,
+  locales: ['en', 'fr'],
+  directory: path.join(__dirname, '/locales'),
+  defaultLocale: 'fr',
+  objectNotation: true,
+  queryParameter: 'lang',
+  updateFiles: false
+});
+
 const createLocationsTable = require('./modules/createLocationsTable');
 const createSessionTable = require('./modules/createSessionTable');
 const createTasksTable = require('./modules/createTasksTable');
@@ -45,11 +73,12 @@ const createUsersTable = require('./modules/createUsersTable');
 
 existPath('./backups/');
 existPath('./exports/');
+existPath('./templates/');
 
 // Exporter une sauvegarde de la DB toutes les douze heures
 setInterval(() => {
   console.log('DB backup on ' + Date.now());
-  exportDB(`./backups/planner_${Date.now()}.pgsql`);
+  exportDB(config.connectionString, `./backups/planner_${Date.now()}.pgsql`);
 }, 12 * 60 * 60 * 1000);
 
 
@@ -105,6 +134,7 @@ initClient.connect()
   });
 
 app.set('view engine', 'ejs');
+app.use("/locales", express.static(__dirname + "/locales"));
 app.use("/src", express.static(__dirname + "/src"));
 app.use(express.urlencoded({
   extended: false
@@ -123,6 +153,8 @@ app.use(session({
   }
 }));
 
+app.use(i18n.init);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -130,10 +162,12 @@ app.use(methodOverride('_method'));
 
 require('./routes/createDB')(app, io);
 require('./routes/download')(app, io);
-require('./routes/home')(app, io);
+require('./routes/home')(app, io, config.connectionString);
 require('./routes/login')(app, io);
 require('./routes/logout')(app, io);
 require('./routes/search')(app, io);
+require('./routes/template')(app, io);
+require('./routes/upload')(app, io);
 require('./routes/notFound')(app, io);
 
 module.exports = app;
