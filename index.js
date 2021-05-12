@@ -28,6 +28,22 @@ let config = {
   }
 };
 
+const checkForPassword = () => {
+  if (fs.existsSync('.passwd')) {
+    config.password = fs.readFileSync('.passwd', {
+      encoding: 'utf-8'
+    });
+
+    config.password = config.password.replace(/[\n\r\s]/g, '');
+
+    config.connectionString = `postgresql://${config.user}:${config.password}@${config.host}:5432/${config.database}`;
+  } else {
+    config.connectionString = `postgresql://${config.user}@${config.host}:5432/${config.database}`;
+  }
+}
+
+checkForPassword();
+
 const initClient = new Pool(config);
 
 // Define a variable to store the settings retrieved from the DB
@@ -54,6 +70,67 @@ const createLocationsTable = require('./modules/createLocationsTable');
 const createSessionTable = require('./modules/createSessionTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
+
+const createDB = (config, DBname = 'planner') => {
+  const createTables = () => {
+    console.log(`Base de données ${DBname} créée avec succès, création des tables en cours...`);
+    app.pool = new Pool(config);
+
+    // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
+    app.pool.connect()
+      .then(() => {
+        createLocationsTable(app.pool)
+          .then(res => {
+            console.log(res);
+
+            createUsersTable(app.pool)
+              .then(res => {
+                console.log(res);
+
+                getUsers(app, passport);
+
+                createTasksTable(app.pool)
+                  .then(res => {
+                    console.log(res);
+                    console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
+                  });
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => {
+        console.trace(`Pool connection error : ${err}`);
+      });
+  }
+
+  const reconnect = () => {
+    // Disconnect from the 'postgres' DB and connect to the newly created 'node-planner' DB
+    config.database = 'planner';
+    checkForPassword();
+
+    initClient
+      .end()
+      .catch(err => console.error('Une erreur est survenue lors de la tentative de reconnexion à la base de données', err));
+  }
+
+  console.log(`Création de la base de données ${DBname}...`);
+  initClient.query(`CREATE DATABASE ${DBname} WITH ENCODING = 'UTF-8'`)
+    .then(res => {
+      reconnect();
+
+      createTables();
+    })
+    .catch(err => {
+      if (!err.message.match('exist')) {
+        console.error(`Erreur lors de la création de la base de données ${DBname} : ${err}`);
+      } else {
+        console.log(`La base de données ${DBname} existe déjà !`);
+        reconnect();
+        createTables();
+      }
+    });
+}
 
 existPath('./backups/');
 existPath('./exports/');
@@ -127,7 +204,7 @@ app.use(flash());
 app.use(session({
   store: new pgSession({
     pool: app.pool,
-    conString: process.env.DATABASE_URL
+    conString: config.connectionString
   }),
   secret: randomBytes(256).toString('hex'),
   resave: false,
