@@ -1,4 +1,4 @@
-module.exports = function(app, io) {
+module.exports = function(app, io, connString) {
   const appendData = require('../modules/appendData');
   const bcrypt = require('bcrypt');
   const check4updates = require('../modules/check4updates');
@@ -142,7 +142,7 @@ module.exports = function(app, io) {
         } else if (format === 'pgsql') {
           app.file2download.path = `exports/planner-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
           app.file2download.name = `planner-${new Date().toUTCString().replace(/\s/g, '-')}.pgsql`;
-          exportDB(app.file2download.path);
+          exportDB(connString, app.file2download.path);
 
           io.emit('export successfull');
         }
