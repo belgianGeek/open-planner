@@ -78,6 +78,15 @@ module.exports = function(app, io, connString) {
         io.emit('locations retrieved', locations.rows);
       });
 
+      io.on('get history', async () => {
+        const history = await app.pool.query(`SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id WHERE tasks.applicant_name ILIKE '${req.user.name}' AND tasks.applicant_firstname ILIKE '${req.user.firstname}' ORDER BY tasks.request_date`);
+        io.emit('history retrieved', history.rows);
+
+        if (history.rowCount === 0) {
+          notify(io, 'info');
+        }
+      });
+
       check4updates(io, app.tag);
 
       io.on('delete data', data => {

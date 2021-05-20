@@ -110,8 +110,8 @@ $('.returnIcon').click(() => {
   }
 
   const goBack = (elt1, elt2) => {
-    if (elt1.match(/(step1|users|locations)/gi)) {
-      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|users|locations/gi)) {
+    if (elt1.match(/(step1|users|locations|history)/gi)) {
+      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|users|locations|history/gi)) {
         backHome(elt1);
       }
     } else {
@@ -130,11 +130,5 @@ $('.returnIcon').click(() => {
   goBack('.users');
   goBack('.locations');
   goBack('.inRequests__step1');
-});
-
-$('.menu__item').click(() => {
-  // Hide the sidebar on item click if it is currently shown
-  if ($('.header__menu__switch').prop('checked')) {
-    $('.header__menu__switch').prop('checked', false);
-  }
+  goBack('.history');
 });
