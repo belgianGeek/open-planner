@@ -41,10 +41,18 @@ module.exports = function(app, io, connString) {
     });
 
     io.once('connection', io => {
-      io.emit('username', {
-        firstname: req.user.firstname,
-        location: req.user.location,
-        name: req.user.name
+      const sendUserData = () => {
+        io.emit('user data', {
+          firstname: req.user.firstname,
+          location: req.user.location,
+          name: req.user.name
+        });
+      }
+
+      sendUserData();
+
+      io.on('user data', () => {
+        sendUserData();
       });
 
       io.emit('settings', userSettings);
@@ -53,12 +61,14 @@ module.exports = function(app, io, connString) {
         if (data.table === 'tasks') {
           if (!data.sendattachment) {
             DBquery(app, io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status, attachment) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment,
+                request_date, location_fk, status, user_fk, attachment) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
               values: data.values
             });
           } else {
             DBquery(app, io, 'INSERT INTO', data.table, {
-              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment, request_date, location_fk, status, attachment, attachment_src) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+              text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment,
+                request_date, location_fk, status, user_fk, attachment, attachment_src) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
               values: data.values
             });
           }
@@ -70,13 +80,27 @@ module.exports = function(app, io, connString) {
       });
 
       io.on('get users', async () => {
-        const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
+        const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations
+          ON users.location = locations.location_id ORDER BY name`);
         io.emit('users retrieved', users.rows);
       });
 
       io.on('get locations', async () => {
         const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
         io.emit('locations retrieved', locations.rows);
+      });
+
+      io.on('get history', async () => {
+        const history = await app.pool.query(
+          `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id WHERE
+          tasks.applicant_name ILIKE $1 AND tasks.applicant_firstname ILIKE $2 ORDER BY tasks.request_date`,
+          [req.user.name, req.user.firstname]
+        );
+        io.emit('history retrieved', history.rows);
+
+        if (history.rowCount === 0) {
+          notify(io, 'info');
+        }
       });
 
       check4updates(io, app.tag);
@@ -102,7 +126,7 @@ module.exports = function(app, io, connString) {
               let data2write = 'Identifiant de la tâche,Demandeur,Date de la demande,Implantation concernée par la demande,Utilisateur chargé de la tâche,Objet de la demande,Statut\n';
 
               for (const [i, row] of res.rows.entries()) {
-                const location = await app.pool.query(`SELECT location_name FROM locations WHERE location_id = ${row.location_fk}`);
+                const location = await app.pool.query(`SELECT location_name FROM locations WHERE location_id = $1`, [row.location_fk]);
 
                 let status, applicant = '';
                 if (row.status === 'done') {
@@ -152,12 +176,17 @@ module.exports = function(app, io, connString) {
       mail(app, io);
 
       io.on('settings', settings => {
+        // let values = [];
         query = ['UPDATE settings SET'];
         if (settings.allowpasswordupdate !== undefined) {
+          // values.push(settings.allowpasswordupdate);
+          // query.push(`allowpasswordupdate = '$${values.indexOf(settings.allowpasswordupdate) + 1}',`);
           query.push(`allowpasswordupdate = '${settings.allowpasswordupdate}',`);
         }
 
         if (settings.instance_name !== undefined) {
+          // values.push(settings.instance_name);
+          // query.push(`instance_name = '$${values.indexOf(settings.instance_name) + 1}',`);
           query.push(`instance_name = '${settings.instance_name}',`);
         }
 
@@ -208,6 +237,12 @@ module.exports = function(app, io, connString) {
             query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', password = '${await bcrypt.hash(record.values[5], 10)}' WHERE user_id = ${record.id}`;
           } else {
             query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}' WHERE user_id = ${record.id}`;
+          }
+        } else if (record.table === 'tasks') {
+          if (!record.sendattachment) {
+            query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
+          } else {
+            query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]}, attachment = ${record.values[5]}, attachment_src = '${record.values[6]}' WHERE task_id = ${record.id}`;
           }
         } else {
           query = `UPDATE ${record.table} SET location_name = '${record.values[0]}', location_mail = '${record.values[1]}' WHERE location_id = ${record.id}`;

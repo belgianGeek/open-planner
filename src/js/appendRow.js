@@ -192,8 +192,7 @@ const appendHistoryRow = (i, data, classname) => {
     attachment.appendTo(row);
   }
 
-  // Display the location name either when searching requests for all locations or when using the history feature
-  if ($('.search__container__select').val() === 'default' || $('.history').length) {
+  // if ($('.search__container__select').val() === 'default') {
     let location_name = $('<span></span>').addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--location`);
 
     if (data.location_name !== null) {
@@ -203,5 +202,5 @@ const appendHistoryRow = (i, data, classname) => {
     }
 
     location_name.appendTo(row);
-  }
+  // }
 }
