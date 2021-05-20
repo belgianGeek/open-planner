@@ -69,6 +69,9 @@
 		"applicant_name": "Vous pouvez remplir le champ pour filtrer votre recherche avec le nom de famille d'un demandeur",
 		"search_results": "Vous pouvez agir sur les demandes en effectuant un clic-droit sur chacune d'elles"
 	},
+	"history": {
+		"hide_btn": "Retour à l'historique"
+	},
 	"home": {
 		"call_to_action": "Que veux-tu faire ?",
 		"new_request": "Rentrer une nouvelle demande",
@@ -172,6 +175,7 @@
 		"about": "À propos",
 		"account": "Mon compte",
 		"export": "Exporter des données",
+		"history": "Mes demandes",
 		"home": "Accueil",
 		"import_users": "Importer des utilisateurs",
 		"lang_title": "Langue",

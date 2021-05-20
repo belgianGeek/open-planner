@@ -119,10 +119,27 @@ const inRequests = () => {
 
           // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
           data2send.mail.title = `🔥 ${globalSettings.instance_name} - Une nouvelle demande a été enregistrée 🔥`;
-          data2send.mail.status = 'waiting';
 
-          // Default task status
-          data2send.values.push('waiting');
+          if ($('.inRequests__form__requestInfo__row1__status').length) {
+            let status = $('.inRequests__form__requestInfo__row1__status').val();
+            data2send.mail.status = status;
+            data2send.values.push(status);
+
+            // Check for default values to avoid errors when encoding in the DB
+            if ($('.inRequests__form__requestInfo__row1__assignedWorker').val() !== 'default') {
+              data2send.values.push(assignedWorker.val());
+            } else {
+              // Set the assignment value to null if no worker is selected
+              data2send.values.push(null);
+            }
+          } else {
+            // Default task status
+            data2send.mail.status = 'waiting';
+            data2send.values.push('waiting');
+
+            // Set the assignment value to null if no worker is selected
+            data2send.values.push(null);
+          }
 
           handleAttachment();
 
@@ -137,6 +154,7 @@ const inRequests = () => {
 
           data2send.mail.id = data2send.id = $('.inRequests.absolute .inRequests__id').text();
           data2send.mail.creationDate = new Date(requestDate.val()).toLocaleDateString();
+
           // Check the task status to adapt the mail sent to the user
           if ($('.inRequests__form__requestInfo__row1__status option:selected').val() === 'done') {
             data2send.mail.title = `🏁 La demande n°${data2send.mail.id} est traitée 🏁`;
@@ -146,18 +164,25 @@ const inRequests = () => {
             data2send.mail.status = 'wip';
           }
 
-          data2send.values.push($('.inRequests__form__requestInfo__row1__status option:selected').val());
-          data2send.values.push(assignedWorker.val());
+          // Check if the task is being updated by the user
+          if (data2send.userUpdate) {
+            // Those values are assigned in the 'handleRequestModification' function :-)
+            data2send.values.push(data2send.status);
+            data2send.values.push(data2send.assignedWorker);
+          } else {
+            data2send.values.push(data2send.mail.status);
+            data2send.values.push(assignedWorker.val());
+          }
 
           handleAttachment();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper').removeClass('blur');
+          $('.wrapper, .history, .header').removeClass('blur backgroundColor');
 
           socket.emit('update', data2send);
 
           // Hide the button to hide the form
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden');
+          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden flex');
         }
 
         // If the user want to send a notification email to the workers team

@@ -33,6 +33,7 @@
     @include align(flex-start, center);
     @include box-shadow;
     overflow-y: auto;
+    overflow-x: clip;
 
     .hide {
       opacity: 0;

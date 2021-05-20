@@ -1,5 +1,6 @@
 let iDataRow = 0;
 let parent;
+
 function userTypeSwitch(inputValue) {
   let returnValue = '';
 
@@ -18,91 +19,6 @@ function userTypeSwitch(inputValue) {
   }
 
   return returnValue;
-}
-
-const appendUserRow = (i, data) => {
-  let row = $('<span></span>')
-    .addClass(`users__container__row users__container__row--${i} flex`)
-    .appendTo('.users__container');
-
-  let id = $('<span></span>')
-    .addClass(`users__container__row__item users__container__row__item--id hidden`)
-    .append(data.user_id)
-    .appendTo(row);
-
-  let name = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--name')
-    .append(data.name.replace(/\'\'/g, "'"))
-    .appendTo(row);
-
-  let firstname = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--firstname')
-    .append(data.firstname.replace(/\'\'/g, "'"))
-    .appendTo(row);
-
-  let email = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--email')
-    .append(data.email)
-    .appendTo(row);
-
-  let location = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--location')
-    .appendTo(row);
-
-  if (data.location_name !== null) {
-    location.append(data.location_name);
-  } else {
-    location.append('Aucune');
-  }
-
-  let locationID = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--location_id hidden')
-    .append(data.location_id)
-    .appendTo(row);
-
-  let gender = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--gender hidden')
-    .append(data.gender)
-    .appendTo(row);
-
-  let password = $('<input>')
-    .attr('type', 'password')
-    .addClass('users__container__row__item users__container__row__item--pwd input noInput')
-    .val('12345678')
-    .appendTo(row);
-
-  // Translate the user type shown in the interface
-  let typeDisplayed = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--type')
-    .append(userTypeSwitch(data.type))
-    .appendTo(row);
-
-  // Keep the original version to fill the management forms
-  let type = $('<span></span>')
-    .addClass('users__container__row__item users__container__row__item--hiddenType hidden')
-    .append(data.type)
-    .appendTo(row);
-}
-
-const appendLocationRow = (i, data) => {
-  let row = $('<span></span>')
-    .addClass(`locations__container__row locations__container__row--${i} flex`)
-    .appendTo('.locations__container');
-
-  let id = $('<span></span>')
-    .addClass(`locations__container__row__item locations__container__row__item--id hidden`)
-    .append(data.location_id)
-    .appendTo(row);
-
-  let name = $('<span></span>')
-    .addClass('locations__container__row__item locations__container__row__item--name')
-    .append(data.location_name.replace(/\'\'/g, "'"))
-    .appendTo(row);
-
-  let email = $('<span></span>')
-    .addClass('locations__container__row__item locations__container__row__item--email')
-    .append(data.location_mail)
-    .appendTo(row);
 }
 
 const manageUsers = () => {
@@ -189,7 +105,7 @@ const manageUsers = () => {
             default:
               columnTitle = '';
           }
-        } else {
+        } else if (childMenuClassname === 'locations') {
           switch (column) {
             // Locations rows
             case 'location_name':
@@ -197,6 +113,40 @@ const manageUsers = () => {
               break;
             case 'location_mail':
               columnTitle = locales.form.mail_generic;
+              break;
+            default:
+              columnTitle = '';
+          }
+        } else if (childMenuClassname === 'history__results') {
+          switch (column) {
+            case 'attachment':
+              // Hide the attachments column is attachments sending is forbidden
+              if (globalSettings.sendattachments) {
+                columnTitle = locales.search.attachment;
+              } else {
+                columnTitle = '';
+              }
+              break;
+            case 'task_id':
+              columnTitle = locales.search.request_number;
+              break;
+            case 'location_name':
+              columnTitle = 'Implantation';
+              break;
+            case 'location_name':
+              columnTitle = 'Implantation';
+              break;
+            case 'request_date':
+              columnTitle = 'Date';
+              break;
+            case 'comment':
+              columnTitle = locales.search.request_content;
+              break;
+            case 'status':
+              columnTitle = locales.search.status;
+              break;
+            case 'user_fk':
+              columnTitle = locales.search.assignment;
               break;
             default:
               columnTitle = '';
@@ -215,8 +165,10 @@ const manageUsers = () => {
       for (const [i, info] of data.entries()) {
         if (childMenuClassname === 'users') {
           appendUserRow(i, info);
-        } else {
+        } else if (childMenuClassname === 'locations') {
           appendLocationRow(i, info);
+        } else if (childMenuClassname === 'history__results') {
+          appendHistoryRow(i, info, 'history__results');
         }
 
         if (i === data.length - 1) {
@@ -267,6 +219,17 @@ const manageUsers = () => {
               .removeClass('hidden');
 
             $('.locations, .header').addClass('blur backgroundColor');
+          } else if ($('.history__results').hasClass('flex')) {
+            $('.history, .header').addClass('blur backgroundColor');
+
+            $('.inRequests__form__btnContainer__hide')
+              .text(locales.history.hide_btn)
+              .removeClass('hidden')
+              .addClass('flex');
+
+            socket.emit('user data');
+
+            handleRequestModification(parent, '.history__results');
           }
 
           // Modify the title
@@ -305,18 +268,23 @@ const manageUsers = () => {
           // The users form submit is handled in the register function !
           $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
-            $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+            const updateFields = () => {
+              $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+            }
 
             if (childMenuClassname === 'users') {
               // Update the password field placeholder
               $('.register.absolute .register__form__password input').attr('placeholder', locales.form.passwd_generic);
 
+              updateFields();
               $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--hiddenType`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
 
               $(`.${parent} .${childMenuClassname}__container__row__item--type`).text(userTypeSwitch($(`.${parentMenuClassname}__form__type option:selected`).val()));
+            } else if (childMenuClassname === 'locations') {
+              updateFields();
             }
           });
         });
@@ -353,29 +321,33 @@ const manageUsers = () => {
   }
 
   // Show the right menu if the user click on another link of the sidebar while the other menu is visible
-  const displayManagementMenu = (elt1, elt2) => {
-    $(`.${elt1}Link`).click(() => {
-      hideMenu('inRequests');
-      hideMenu(elt2);
-      showMenu(elt1);
+  const displayManagementMenu = (elts) => {
+    for (const elt of elts) {
 
-      socket.emit(`get ${elt1}`);
-    });
+      $(`.${elt}Link`).click(() => {
+        hideMenu('inRequests');
+
+        for (const menu of elts) {
+          if (menu !== elt) {
+            hideMenu(menu);
+          } else {
+            showMenu(menu);
+          }
+        }
+
+        $(`.home`)
+          .removeClass('flex')
+          .addClass('hidden');
+
+        showMenu('returnIcon');
+        showMenu('header__container__msg');
+
+        socket.emit(`get ${elt}`);
+      });
+    }
   }
 
-  displayManagementMenu('users', 'locations');
-  displayManagementMenu('locations', 'users');
-
-  $(`.locationsLink, .usersLink`).click(function() {
-    if ($(`.locations`).hasClass('hidden') || $('.users').hasClass('hidden')) {
-      $(`.home`)
-        .removeClass('flex')
-        .addClass('hidden');
-    }
-
-    showMenu('returnIcon');
-    showMenu('header__container__msg');
-  });
+  displayManagementMenu(['users', 'locations', 'history']);
 
   socket.on(`users retrieved`, data => {
     handleData(data, 'register', 'users');
@@ -386,6 +358,10 @@ const manageUsers = () => {
     if (window.location.pathname === '/') {
       handleData(data, 'addLocation', 'locations');
     }
+  });
+
+  socket.on('history retrieved', history => {
+    handleData(history, 'inRequests', 'history__results');
   });
 
   $('.context__list__item').click(() => {
