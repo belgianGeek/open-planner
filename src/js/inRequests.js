@@ -184,7 +184,11 @@ const inRequests = () => {
           socket.emit('send mail', options);
         }
 
-        $('.inRequests__form .input').not('.inRequests__form__requestInfo__row1__requestDate').val('');
+        // Empty the request subject and file attachment input fields
+        $('.inRequests__form__requestInfo__comment, .inRequests__form__requestInfo__row1__file').val('');
+
+        // Select the default location option
+        $('.inRequests__form__applicantInfo__location option:selected').val('default');
 
         confirmation();
 
