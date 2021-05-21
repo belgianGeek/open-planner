@@ -266,7 +266,7 @@ const search = () => {
           if ($(`.${parent} .search__results__container__row__item--fileSrc`).length) {
             $('.inRequests img').attr('src', $(`.${parent} .search__results__container__row__item--fileSrc`).text());
           } else {
-            $('.inRequests img').addClass('hidden');
+            $('.inRequests img').attr('src', '/src/scss/icons/empty.svg');
           }
 
           // Fill in all the fields with the selected record data

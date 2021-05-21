@@ -32,6 +32,7 @@
     box-sizing: content-box;
     @include align(flex-start, center);
     @include box-shadow;
+    overflow-y: auto;
 
     .hide {
       opacity: 0;
@@ -166,6 +167,10 @@
     top: 0.55rem;
     left: 7em;
     font-size: 1.1em;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0.5em;
+    border-radius: 0.5em;
+    @include box-shadow;
 
     &__icon {
       margin-right: 1.5em;
