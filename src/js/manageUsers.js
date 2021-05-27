@@ -219,6 +219,12 @@ const manageUsers = () => {
               .removeClass('hidden');
 
             $('.locations, .header').addClass('blur backgroundColor');
+          } else if ($('.history__results').hasClass('flex')) {
+            $('.history, .header').addClass('blur backgroundColor');
+
+            socket.emit('user data');
+
+            handleRequestModification('wrapper', '.history__results');
           }
 
           // Modify the title

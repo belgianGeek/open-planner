@@ -131,77 +131,14 @@ const search = () => {
         });
 
         $('.context__list__item--modify').click(function() {
-          // Format the date to be year, Month (0-indexed) and the day
-          let date = $(`.${parent} .search__results__container__row__item--timestamp`).text();
-
           $('.wrapper').addClass('blur');
 
-          $('.inRequests')
-            .addClass('absolute flex')
-            .removeClass('hidden');
+          $('.inRequests.absolute .inRequests__form__applicantInfo__location').val($(`.search__container__select`).val());
 
           // Block all the user-related fields to prevent modifications
           $('.inRequests.absolute .inRequests__form__applicantInfo__name, .inRequests.absolute .inRequests__form__applicantInfo__firstname, .inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').attr('disabled', true);
 
-          // Append the attachment if any
-          if ($(`.${parent} .search__results__container__row__item--fileSrc`).length) {
-            $('.inRequests img').attr('src', $(`.${parent} .search__results__container__row__item--fileSrc`).text());
-          } else {
-            $('.inRequests img').addClass('hidden');
-          }
-
-          // Fill in all the fields with the selected record data
-          $('.inRequests.absolute .inRequests__id').text($(`.${parent} .search__results__container__row__item--id`).text());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__location').val($(`.search__container__select`).val());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__name').val($(`.${parent} .search__results__container__row__item--name`).text());
-          $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val($(`.${parent} .search__results__container__row__item--firstname`).text());
-          $('.inRequests.absolute .inRequests__form__requestInfo__row1__requestDate').val(date);
-          $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} .search__results__container__row__item--body`).html().replace(/<br>/g, '\n\n'));
-
-          // Check if the assigned worker ID is defined
-          if ($(`${parent} .search__results__container__row__item--awid`).length) {
-            $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker option:selected').val($(`.${parent} .search__results__container__row__item--awid`).text());
-          }
-
-          // Request status
-          if ($(`.${parent} .search__results__container__row__item--status`).hasClass('wip')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('wip');
-          else if ($(`.${parent} .search__results__container__row__item--status`).hasClass('waiting')) $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('waiting');
-          else $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('done');
-
-          // The form submit is handled in the inRequests function !
-          $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(() => {
-            // Update the web interface with the changes
-            $(`.${parent} .search__results__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--date`).text(new Date($('.inRequests__form__requestInfo__row1__requestDate').val()).toLocaleDateString());
-            $(`.${parent} .search__results__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text().replace(/\'\'/g, "'"));
-            $(`.${parent} .search__results__container__row__item--body`).html($('.inRequests__form__requestInfo__comment').val().replace(/\n\n/g, '<br>'));
-
-            // Check for default values
-            if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
-              $(`.${parent} .search__results__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
-            } else {
-              $(`.${parent} .search__results__container__row__item--aw`).text(locales.request.status_waiting);
-            }
-
-            $(`.${parent} .search__results__container__row__item--status`)
-              .removeClass('waiting wip done')
-              .addClass($('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val());
-          });
-
-          // Hide the form on btn click
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide').click(function() {
-            $('.inRequests')
-              .removeClass('absolute flex')
-              .addClass('hidden');
-
-            $('.wrapper').removeClass('blur backgroundColor');
-
-            // Hide the button to hide the form
-            $(this).addClass('hidden');
-
-            $('.inRequests img').removeClass('hidden');
-          });
+          handleRequestModification(parent, '.search__results');
         });
 
         $('.context__list__item--del').click(function() {

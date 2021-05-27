@@ -157,7 +157,7 @@ const inRequests = () => {
           socket.emit('update', data2send);
 
           // Hide the button to hide the form
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden');
+          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden flex');
         }
 
         // If the user want to send a notification email to the workers team

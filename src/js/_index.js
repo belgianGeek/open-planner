@@ -84,9 +84,15 @@ socket.on('settings', settings => {
   $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
 });
 
-socket.on('username', userData => {
+socket.on('user data', userData => {
   $('.inRequests__form__applicantInfo__name').val(userData.name);
   $('.inRequests__form__applicantInfo__firstname').val(userData.firstname);
+
+  if ($('.history').hasClass('flex')) {
+    $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val(userData.firstname);
+    $('.inRequests.absolute .inRequests__form__applicantInfo__name').val(userData.name);
+    $('.inRequests.absolute .inRequests__form__applicantInfo__location').val(userData.location);
+  }
 });
 
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
