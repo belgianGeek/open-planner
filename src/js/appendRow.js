@@ -93,7 +93,7 @@ const appendHistoryRow = (i, data, classname) => {
     .append(data.task_id)
     .appendTo(row);
 
-  if (classname === 'search') {
+  if (classname === 'search__results') {
     let applicantName = $('<span></span>')
       .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--name`)
       .append(data.applicant_name.replace(/\'\'/g, "'"))

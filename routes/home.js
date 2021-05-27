@@ -41,9 +41,18 @@ module.exports = function(app, io, connString) {
     });
 
     io.once('connection', io => {
-      io.emit('username', {
-        firstname: req.user.firstname,
-        name: req.user.name
+      const sendUserData = () => {
+        io.emit('user data', {
+          firstname: req.user.firstname,
+          location: req.user.location,
+          name: req.user.name
+        });
+      }
+
+      sendUserData();
+
+      io.on('user data', () => {
+        sendUserData();
       });
 
       io.emit('settings', userSettings);
