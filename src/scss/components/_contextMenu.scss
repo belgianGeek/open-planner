@@ -2,7 +2,7 @@
   flex-direction: column;
   position: absolute;
   width: max-content;
-  background-color: $red;
+  background-color: $input-border;
   border-radius: 0.5em;
   @include box-shadow;
 
@@ -40,11 +40,11 @@
         background-color: black;
 
         p {
-          color: $red;
+          color: $input-border;
         }
 
         svg {
-          stroke: $red;
+          stroke: $input-border;
         }
       }
     }

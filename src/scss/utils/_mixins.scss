@@ -51,7 +51,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    stroke: $red;
+    stroke: $input-border;
     opacity: 0;
     z-index: -1;
     transition: opacity 250ms;
@@ -91,7 +91,7 @@
       text-align: center;
       flex: 1;
       padding: 1em;
-      border: 2px solid $red;
+      border: 2px solid $input-border;
     }
   }
 
@@ -101,7 +101,7 @@
     align-items: center;
 
     &:hover {
-      background-color: transparentize($red, 0.3);
+      background-color: transparentize($input-border, 0.3);
       transition: background-color 500ms cubic-bezier(0,.43,.08,.92);
 
       .rowItem {
