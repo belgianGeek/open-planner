@@ -20,7 +20,7 @@
 
     &:hover {
       color: black;
-      background-color: $input-border;
+      background-color: $red;
       cursor: pointer;
     }
   }
@@ -51,14 +51,14 @@
     right: 0;
     bottom: 0;
     left: 0;
-    stroke: $electric-blue;
+    stroke: $input-border;
     opacity: 0;
     z-index: -1;
     transition: opacity 250ms;
   }
 }
 @mixin input {
-  border: 2px solid $input-border;
+  border: 2px solid $red;
   background-color: rgba(0,0,0,.4);
   border-radius: 0.2em;
   padding: 0.5em;
@@ -91,7 +91,7 @@
       text-align: center;
       flex: 1;
       padding: 1em;
-      border: 2px solid $electric-blue;
+      border: 2px solid $input-border;
     }
   }
 
@@ -101,7 +101,7 @@
     align-items: center;
 
     &:hover {
-      background-color: transparentize($electric-blue, 0.3);
+      background-color: transparentize($input-border, 0.3);
       transition: background-color 500ms cubic-bezier(0,.43,.08,.92);
 
       .rowItem {
