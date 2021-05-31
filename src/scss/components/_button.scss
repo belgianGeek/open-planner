@@ -29,20 +29,20 @@
 }
 
 .home-btn {
-  border: 2px solid $input-border;
+  border: 2px solid $red;
   border-radius: 0.5em;
   padding: 0.5em;
   margin-top: 1.5em;
   font-size: 1em;
 
   &:hover {
-    background-color: $input-border;
+    background-color: $red;
     border: 2px solid transparent;
-    color: black;
+    color: white;
   }
 }
 
 .home-btn:hover a,
 .home-btn a:hover {
-  color: black;
+  color: white;
 }
