@@ -20,7 +20,7 @@
 
     &:hover {
       color: black;
-      background-color: $red;
+      background-color: $input-border;
       cursor: pointer;
     }
   }
@@ -58,7 +58,7 @@
   }
 }
 @mixin input {
-  border: 2px solid $red;
+  border: 2px solid $input-border;
   background-color: rgba(0,0,0,.4);
   border-radius: 0.2em;
   padding: 0.5em;
