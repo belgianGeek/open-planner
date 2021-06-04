@@ -87,6 +87,7 @@ socket.on('settings', settings => {
 socket.on('username', userData => {
   $('.inRequests__form__applicantInfo__name').val(userData.name);
   $('.inRequests__form__applicantInfo__firstname').val(userData.firstname);
+  $('.inRequests__form__applicantInfo__location option:selected').val(userData.location);
 });
 
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
