@@ -43,6 +43,7 @@ module.exports = function(app, io, connString) {
     io.once('connection', io => {
       io.emit('username', {
         firstname: req.user.firstname,
+        location: req.user.location,
         name: req.user.name
       });
 
