@@ -1,6 +1,6 @@
 {
   "name": "open-planner",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A simple but powerful open source task manager",
   "main": "index.js",
   "author": "Maxime Vanderwegen",
