@@ -192,7 +192,9 @@ const inRequests = () => {
 
         confirmation();
 
-        $('.inRequests img').removeClass('hidden');
+        $('.inRequests img')
+          .attr('src', '/src/scss/icons/empty.svg')
+          .removeClass('hidden');
 
         data2send.values = [];
 
