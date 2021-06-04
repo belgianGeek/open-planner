@@ -48,7 +48,7 @@ const initClient = new Pool(config);
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
 
-app.tag = '0.1.0';
+app.tag = '0.1.2';
 
 const exportDB = require('./modules/exportDB');
 const getUsers = require('./modules/getUsers');
