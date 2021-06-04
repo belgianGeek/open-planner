@@ -21,7 +21,14 @@
 
   &__step1 {
     justify-content: space-around;
-    @include simple-step();
+    font-size: 1em;
+    width: 100%;
+    margin-top: 10vh;
+    align-self: flex-start;
+    margin: 0 auto;
+    height: 100vh;
+    align-items: center;
+    overflow: auto;
 
     img {
       object-fit: contain;
