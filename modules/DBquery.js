@@ -2,7 +2,7 @@ const notify = require('./notify');
 
 const DBquery = (app, io, action, table, query, displayNotification = true) => {
   return new Promise((fullfill, reject) => {
-    app.pool.query(query)
+    app.pool.query(query.text, query.values)
       .then(res => {
         if (res.rowCount === 0 || res.rowCount === null) {
           if (io !== null && displayNotification) {

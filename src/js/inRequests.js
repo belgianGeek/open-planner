@@ -137,6 +137,7 @@ const inRequests = () => {
 
           data2send.mail.id = data2send.id = $('.inRequests.absolute .inRequests__id').text();
           data2send.mail.creationDate = new Date(requestDate.val()).toLocaleDateString();
+
           // Check the task status to adapt the mail sent to the user
           if ($('.inRequests__form__requestInfo__row1__status option:selected').val() === 'done') {
             data2send.mail.title = `🏁 La demande n°${data2send.mail.id} est traitée 🏁`;
@@ -146,13 +147,20 @@ const inRequests = () => {
             data2send.mail.status = 'wip';
           }
 
-          data2send.values.push($('.inRequests__form__requestInfo__row1__status option:selected').val());
-          data2send.values.push(assignedWorker.val());
+          // Check if the task is being updated by the user
+          if (data2send.userUpdate) {
+            // Those values are assigned in the 'handleRequestModification' function :-)
+            data2send.values.push(data2send.status);
+            data2send.values.push(data2send.assignedWorker);
+          } else {
+            data2send.values.push(data2send.mail.status);
+            data2send.values.push(assignedWorker.val());
+          }
 
           handleAttachment();
 
           $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper').removeClass('blur');
+          $('.wrapper, .history, .header').removeClass('blur backgroundColor');
 
           socket.emit('update', data2send);
 

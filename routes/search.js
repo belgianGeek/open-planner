@@ -36,11 +36,16 @@ module.exports = function(app, io) {
 
       io.on('search', data => {
         if (data.location !== undefined) {
-          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE location_fk = ${data.location} ORDER BY tasks.task_id`;
-          else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' AND location_fk = ${data.location} ORDER BY tasks.task_id`;
+          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id
+          WHERE location_fk = $1 ORDER BY tasks.task_id`, [data.location];
+          else query = `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id
+          WHERE applicant_name ILIKE '%$1%' AND location_fk = $2 ORDER BY tasks.task_id`, [data.applicant_name, data.location];
         } else {
-          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id LEFT JOIN users ON tasks.user_fk = users.user_id ORDER BY tasks.task_id`;
-          else query = `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%${data.applicant_name}%' ORDER BY tasks.task_id`;
+          if (!data.getApplicant) query = `SELECT * FROM tasks LEFT JOIN locations
+          ON tasks.location_fk = locations.location_id LEFT JOIN users ON tasks.user_fk = users.user_id
+          ORDER BY tasks.task_id`;
+          else query = `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id
+          LEFT JOIN users ON tasks.user_fk = users.user_id WHERE applicant_name ILIKE '%$1%' ORDER BY tasks.task_id`, [data.applicant_name];
         }
 
         // Disable automatic notifications for the first request in case it does not return any results
@@ -51,8 +56,8 @@ module.exports = function(app, io) {
             if (res.rowCount > 0) {
               io.emit('search results', res.rows);
             } else if (res.rowCount === 0) {
-              if (!data.getApplicant) query = `SELECT * FROM tasks WHERE location_fk = ${data.location} ORDER BY task_id`;
-              else query = `SELECT * FROM tasks WHERE applicant_name ILIKE '%${data.applicant_name}%' ORDER BY task_id`;
+              if (!data.getApplicant) query = `SELECT * FROM tasks WHERE location_fk = $1 ORDER BY task_id`, [data.location];
+              else query = `SELECT * FROM tasks WHERE applicant_name ILIKE '%$1%' ORDER BY task_id`, data.applicant_name;
 
               DBquery(app, io, 'SELECT', 'tasks', {
                   text: query
@@ -69,13 +74,12 @@ module.exports = function(app, io) {
       check4updates(io, app.tag);
 
       io.on('update', record => {
-        if (!record.attachments) {
+        if (!record.sendattachment) {
           query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
         } else {
           query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]}, attachment = ${record.values[5]}, attachment_src = '${record.values[6]}' WHERE task_id = ${record.id}`;
         }
 
-        console.log(`\n${query}`);
         DBquery(app, io, 'UPDATE', record.table, {
           text: query
         });
