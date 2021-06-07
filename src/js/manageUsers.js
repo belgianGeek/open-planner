@@ -222,9 +222,14 @@ const manageUsers = () => {
           } else if ($('.history__results').hasClass('flex')) {
             $('.history, .header').addClass('blur backgroundColor');
 
+            $('.inRequests__form__btnContainer__hide')
+              .text(locales.history.hide_btn)
+              .removeClass('hidden')
+              .addClass('flex');
+
             socket.emit('user data');
 
-            handleRequestModification('wrapper', '.history__results');
+            handleRequestModification(parent, '.history__results');
           }
 
           // Modify the title
@@ -263,18 +268,23 @@ const manageUsers = () => {
           // The users form submit is handled in the register function !
           $(`.${parentMenuClassname}.absolute .${parentMenuClassname}__form__btnContainer__submit`).click(() => {
             // Update the web interface with the changes
-            $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
-            $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+            const updateFields = () => {
+              $(`.${parent} .${childMenuClassname}__container__row__item--name`).text($(`.${parentMenuClassname}__form__name input`).val().replace(/\'\'/g, "'"));
+              $(`.${parent} .${childMenuClassname}__container__row__item--email`).text($(`.${parentMenuClassname}__form__email input`).val());
+            }
 
             if (childMenuClassname === 'users') {
               // Update the password field placeholder
               $('.register.absolute .register__form__password input').attr('placeholder', locales.form.passwd_generic);
 
+              updateFields();
               $(`.${parent} .${childMenuClassname}__container__row__item--firstname`).text($(`.${parentMenuClassname}__form__userFirstName input`).val().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--location`).text($(`.${parentMenuClassname}__form__location option:selected`).text().replace(/\'\'/g, "'"));
               $(`.${parent} .${childMenuClassname}__container__row__item--hiddenType`).text($(`.${parentMenuClassname}__form__type option:selected`).val());
 
               $(`.${parent} .${childMenuClassname}__container__row__item--type`).text(userTypeSwitch($(`.${parentMenuClassname}__form__type option:selected`).val()));
+            } else if (childMenuClassname === 'locations') {
+              updateFields();
             }
           });
         });

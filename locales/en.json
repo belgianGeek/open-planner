@@ -69,6 +69,9 @@
 		"applicant_name": "You can fill in the field to filter your search with an applicant's name",
 	  "search_results": "You can act on requests by make a right-click to each one of them"
 	},
+  "history": {
+    "hide_btn": "Back to history"
+  },
   "home": {
 		"call_to_action": "What do you want to do ?",
 	  "new_request": "Make a new request",

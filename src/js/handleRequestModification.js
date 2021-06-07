@@ -10,7 +10,7 @@ const handleRequestModification = (parent, containerClass) => {
   if ($(`.${parent} ${containerClass}__container__row__item--fileSrc`).length) {
     $('.inRequests img').attr('src', $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text());
   } else {
-    $('.inRequests img').addClass('hidden');
+    $('.inRequests img').attr('src', '/src/scss/icons/empty.svg');
   }
 
   // Fill in all the fields with the selected record data
@@ -39,16 +39,29 @@ const handleRequestModification = (parent, containerClass) => {
     $(`.${parent} ${containerClass}__container__row__item--location`).text($('.inRequests__form__applicantInfo__location option:selected').text().replace(/\'\'/g, "'"));
     $(`.${parent} ${containerClass}__container__row__item--body`).html($('.inRequests__form__requestInfo__comment').val().replace(/\n\n/g, '<br>'));
 
-    // Check for default values
-    if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
-      $(`.${parent} ${containerClass}__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
-    } else {
-      $(`.${parent} ${containerClass}__container__row__item--aw`).text(locales.request.status_waiting);
+    if ($(`.${parent} ${containerClass}__container__row__item--fileSrc`).length) {
+      $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text($('.inRequests img').attr('src'));
     }
 
-    $(`.${parent} ${containerClass}__container__row__item--status`)
-      .removeClass('waiting wip done')
-      .addClass($('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val());
+    // Check for default values if the user can modify the task assignment
+    if ($('.inRequests__form__requestInfo__row1__assignedWorker').length) {
+      if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
+        $(`.${parent} ${containerClass}__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
+      } else {
+        $(`.${parent} ${containerClass}__container__row__item--aw`).text(locales.request.status_waiting);
+      }
+    }
+
+    // Check for default values if the user can modify the task status
+    if ($('.inRequests.absolute .inRequests__form__requestInfo__row1__status').length) {
+      $(`.${parent} ${containerClass}__container__row__item--status`)
+        .removeClass('waiting wip done')
+        .addClass($('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val());
+
+      $('.inRequests__form__btnContainer__hide')
+        .addClass('hidden')
+        .removeClass('flex');
+    }
   });
 
   // Hide the form on btn click
@@ -57,7 +70,11 @@ const handleRequestModification = (parent, containerClass) => {
       .removeClass('absolute flex')
       .addClass('hidden');
 
-    $('.wrapper').removeClass('blur backgroundColor');
+    $('.inRequests__form__btnContainer__hide')
+      .addClass('hidden')
+      .removeClass('flex');
+
+    $('.wrapper, .history, .header').removeClass('blur backgroundColor');
 
     // Hide the button to hide the form
     $(this).addClass('hidden');
