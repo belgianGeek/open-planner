@@ -165,14 +165,24 @@ initClient.connect()
     return;
   });
 
-app.set('view engine', 'ejs');
-app.use("/locales", express.static(__dirname + "/locales"));
-app.use("/src", express.static(__dirname + "/src"));
-app.use(express.urlencoded({
+app.set('view engine', 'ejs')
+  .use("/locales", express.static(__dirname + "/locales"))
+  .use("/src", express.static(__dirname + "/src"))
+  .use(express.urlencoded({
   extended: false
-}));
-app.use(flash());
-app.use(session({
+}))
+.use((req, res, next) => {
+    // Set some security headers
+    res.setHeader('X-XSS-Protection', '1;mode=block');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Feature-Policy', "accelerometer 'none'; ambient-light-sensor 'none'; autoplay 'none'; camera 'none'; encrypted-media 'none'; fullscreen 'self'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none';  picture-in-picture 'none'; speaker 'none'; sync-xhr 'none'; usb 'none'; vr 'none';");
+    res.setHeader('Content-Security-Policy', " default-src 'none'; connect-src 'self'; font-src https://fonts.gstatic.com; form-action 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/;");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    return next();
+  })
+  .use(flash())
+  .use(session({
   store: new pgSession({
     pool: app.pool,
     conString: config.connectionString
@@ -183,14 +193,11 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 30 * 30 // Set the session lifetime to thirty minutes
   }
-}));
-
-app.use(i18n.init);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(methodOverride('_method'));
+}))
+  .use(i18n.init)
+  .use(passport.initialize())
+  .use(passport.session())
+  .use(methodOverride('_method'));
 
 require('./routes/createDB')(app, io);
 require('./routes/download')(app, io);
