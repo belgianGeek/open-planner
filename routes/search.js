@@ -74,15 +74,22 @@ module.exports = function(app, io) {
       check4updates(io, app.tag);
 
       io.on('update', record => {
+        query.name = 'update-task';
+
         if (!record.sendattachment) {
-          query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
+          query = {
+            text: `UPDATE ${record.table} SET applicant_name = $1, applicant_firstname = $2, comment = $3, status = $4, user_fk = $5, attachment = $6 WHERE task_id = $7`,
+            values: record.values.concat(record.id)
+          }
+          console.log(query);
         } else {
-          query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]}, attachment = ${record.values[5]}, attachment_src = '${record.values[6]}' WHERE task_id = ${record.id}`;
+          query = {
+            text: `UPDATE ${record.table} SET applicant_name = $1, applicant_firstname = $2, comment = $3, status = $4, user_fk = $5, attachment = $6, attachment_src = $7 WHERE task_id = $8`,
+            values: record.values.concat(record.id)
+          }
         }
 
-        DBquery(app, io, 'UPDATE', record.table, {
-          text: query
-        });
+        DBquery(app, io, 'UPDATE', record.table, query);
       });
 
       deleteData(app, io, 'task_id', passport);
