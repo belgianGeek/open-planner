@@ -15,10 +15,21 @@ module.exports = function(app, io, connString) {
   const path = require('path');
   const passport = require('passport');
   const updateSession = require('../modules/updateSession');
+  const updateTask = require('../modules/updateTask');
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
-    const response = await app.pool.query(`SELECT * FROM users`);
+    const response = await app.pool.query(`
+      SELECT
+        u.user_id,
+        u.name,
+        u.firstname,
+        u.gender,
+        u.email,
+        u.location,
+        u.type
+      FROM users u`);
+
     let isFirstUserConfigured = false;
     if (response.rowCount) {
       isFirstUserConfigured = true;
@@ -80,22 +91,55 @@ module.exports = function(app, io, connString) {
       });
 
       io.on('get users', async () => {
-        const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations
-          ON users.location = locations.location_id ORDER BY name`);
+        const users = await app.pool.query(`
+          SELECT
+            u.name,
+            u.firstname,
+            u.email,
+            u.location,
+            u.gender,
+            u.type
+           FROM users u
+           LEFT JOIN locations l
+           ON u.location = l.location_id ORDER BY u.name`);
         io.emit('users retrieved', users.rows);
       });
 
       io.on('get locations', async () => {
-        const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
+        const locations = await app.pool.query(`
+          SELECT
+            l.location_id,
+            l.location_name,
+            l.location_mail
+          FROM locations l ORDER BY l.location_name`);
         io.emit('locations retrieved', locations.rows);
       });
 
       io.on('get history', async () => {
         const history = await app.pool.query(
-          `SELECT * FROM tasks LEFT JOIN locations ON tasks.location_fk = locations.location_id WHERE
-          tasks.applicant_name ILIKE $1 AND tasks.applicant_firstname ILIKE $2 ORDER BY tasks.request_date`,
+          `SELECT
+            t.task_id,
+            t.applicant_name,
+            t.applicant_firstname,
+            t.request_date,
+            t.location_fk,
+            t.user_fk,
+            t.comment,
+            t.status,
+            t.attachment,
+            t.attachment_src,
+            u.user_id,
+            u.name,
+            u.firstname,
+            l.location_id,
+            l.location_name
+          FROM tasks t
+          LEFT JOIN locations l ON t.location_fk = l.location_id
+          LEFT JOIN users u ON t.user_fk = u.user_id
+          WHERE t.applicant_name ILIKE $1 AND t.applicant_firstname ILIKE $2 ORDER BY t.request_date`,
           [req.user.name, req.user.firstname]
         );
+
         io.emit('history retrieved', history.rows);
 
         if (history.rowCount === 0) {
@@ -120,7 +164,17 @@ module.exports = function(app, io, connString) {
           const table = 'tasks';
           const filename = table + '-' + new Date().toUTCString().replace(/[\s,]/g, '-') + '.csv';
           DBquery(app, io, 'SELECT', table, {
-              text: `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id ORDER BY tasks.task_id`
+              text: `
+                SELECT
+                 t.task_id,
+                 t.applicant_name,
+                 t.applicant_firstname,
+                 t.request_date,
+                 t.location_fk,
+                 t.user_fk,
+                 t.comment,
+                 t.status
+                FROM tasks t LEFT JOIN users u ON t.user_fk = u.user_id ORDER BY t.task_id`
             })
             .then(async res => {
               let data2write = 'Identifiant de la tâche,Demandeur,Date de la demande,Implantation concernée par la demande,Utilisateur chargé de la tâche,Objet de la demande,Statut\n';
@@ -176,88 +230,120 @@ module.exports = function(app, io, connString) {
       mail(app, io);
 
       io.on('settings', settings => {
-        // let values = [];
-        query = ['UPDATE settings SET'];
+        let values = [];
+        let query = ['UPDATE settings SET'];
+
         if (settings.allowpasswordupdate !== undefined) {
-          // values.push(settings.allowpasswordupdate);
-          // query.push(`allowpasswordupdate = '$${values.indexOf(settings.allowpasswordupdate) + 1}',`);
-          query.push(`allowpasswordupdate = '${settings.allowpasswordupdate}',`);
+          values.push(settings.allowpasswordupdate);
+          query.push(`allowpasswordupdate = $${values.indexOf(settings.allowpasswordupdate) + 1},`);
         }
 
         if (settings.instance_name !== undefined) {
-          // values.push(settings.instance_name);
-          // query.push(`instance_name = '$${values.indexOf(settings.instance_name) + 1}',`);
-          query.push(`instance_name = '${settings.instance_name}',`);
+          values.push(settings.instance_name);
+          query.push(`instance_name = $${values.indexOf(settings.instance_name) + 1},`);
         }
 
         if (settings.instance_description !== undefined) {
-          query.push(`instance_description = '${settings.instance_description}',`);
+          values.push(settings.instance_description);
+          query.push(`instance_description = $${values.indexOf(settings.instance_description) + 1},`);
         }
 
         if (settings.sendmail !== undefined) {
-          query.push(`sendmail = ${settings.sendmail},`);
+          values.push(settings.sendmail);
+          query.push(`sendmail = $${values.indexOf(settings.sendmail) + 1},`);
         }
 
         if (settings.sendcc !== undefined) {
-          query.push(`sendcc = ${settings.sendcc},`);
+          values.push(settings.sendcc);
+          query.push(`sendcc = $${values.indexOf(settings.sendcc) + 1},`);
         }
 
         if (settings.sendattachments !== undefined) {
-          query.push(`sendattachments = ${settings.sendattachments},`);
+          values.push(settings.sendattachments);
+          query.push(`sendattachments = $${values.indexOf(settings.sendattachments) + 1},`);
         }
 
         if (settings.sender !== undefined) {
-          query.push(`sender = '${settings.sender}',`);
+          values.push(settings.sender);
+          query.push(`sender = $${values.indexOf(settings.sender) + 1},`);
         }
 
         if (settings.smtp_passwd !== undefined) {
-          query.push(`smtp_passwd = '${settings.smtp_passwd}',`);
+          values.push(settings.smtp_passwd);
+          query.push(`smtp_passwd = $${values.indexOf(settings.smtp_passwd) + 1},`);
         }
 
         if (settings.smtp_user !== undefined) {
-          query.push(`smtp_user = '${settings.smtp_user}',`);
+          values.push(settings.smtp_user);
+          query.push(`smtp_user = $${values.indexOf(settings.smtp_user) + 1},`);
         }
 
         if (settings.smtp_host !== undefined) {
-          query.push(`smtp_host = '${settings.smtp_host}',`);
+          values.push(settings.smtp_host);
+          query.push(`smtp_host = $${values.indexOf(settings.smtp_host) + 1},`);
         }
 
         DBquery(app, io, 'UPDATE', 'settings', {
-          text: query.join(' ').replace(/,$/, '')
+          name: 'update-settings',
+          text: query.join(' ').replace(/,$/, ''),
+          values: values
         });
       });
 
       io.on('update', async record => {
+        let query = {};
+
         if (record.table === 'users') {
+          query.name = 'update-user';
+
           if (record.setPassword && record.setType) {
-            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}', password = '${await bcrypt.hash(record.values[6], 10)}' WHERE user_id = ${record.id}`;
+            query = {
+              text: `UPDATE ${record.table} SET name = $1, firstname = $2, email = $3, location = $4,
+              gender = $5, type = $6, password = $7 WHERE user_id = ${record.id}`,
+              values: [
+                record.values[0], record.values[1], record.values[2], record.values[3], record.values[4],
+                record.values[5], await bcrypt.hash(record.values[6], 10)
+              ]
+            };
           } else if (!record.setPassword && record.setType) {
-            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', type = '${record.values[5]}' WHERE user_id = ${record.id}`;
+            query = {
+              text: `UPDATE ${record.table} SET name = $1, firstname = $2, email = $3, location = $4, gender = $5, type = $6 WHERE user_id = ${record.id}`,
+              values: record.values
+            };
           } else if (record.setPassword && !record.setType) {
-            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}', password = '${await bcrypt.hash(record.values[5], 10)}' WHERE user_id = ${record.id}`;
+            query = {
+              text: `UPDATE ${record.table} SET name = $1, firstname = $2, email = $3, location = $4, gender = $5, password = $6 WHERE user_id = ${record.id}`,
+              values: [
+                record.values[0], record.values[1], record.values[2], record.values[3], record.values[4],
+                await bcrypt.hash(record.values[5], 10)
+              ]
+            };
           } else {
-            query = `UPDATE ${record.table} SET name = '${record.values[0]}', firstname = '${record.values[1]}', email = '${record.values[2]}', location = '${record.values[3]}', gender = '${record.values[4]}' WHERE user_id = ${record.id}`;
+            query = {
+              text: `UPDATE ${record.table} SET name = $1, firstname = $2, email = $3, location = $4, gender = $5 WHERE user_id = ${record.id}`,
+              values: [record.values[0], record.values[1], record.values[2], record.values[3], record.values[4]]
+            };
           }
         } else if (record.table === 'tasks') {
-          if (!record.sendattachment) {
-            query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]} WHERE task_id = ${record.id}`;
-          } else {
-            query = `UPDATE ${record.table} SET applicant_name = '${record.values[0]}', applicant_firstname = '${record.values[1]}', comment = '${record.values[2]}', status = '${record.values[3]}', user_fk = ${record.values[4]}, attachment = ${record.values[5]}, attachment_src = '${record.values[6]}' WHERE task_id = ${record.id}`;
-          }
+          query = await updateTask(query, record);
         } else {
-          query = `UPDATE ${record.table} SET location_name = '${record.values[0]}', location_mail = '${record.values[1]}' WHERE location_id = ${record.id}`;
+          query.name = 'update-location';
+
+          query = {
+            text: `UPDATE ${record.table} SET location_name = $1, location_mail = $2 WHERE location_id = ${record.id}`,
+            values: [record.values[0], record.values[1]]
+          }
         }
 
-        DBquery(app, io, 'UPDATE', record.table, {
-          text: query
-        }).then(() => {
-          getUsers(app, passport);
+        DBquery(app, io, 'UPDATE', record.table, query)
+          .then(() => {
+            getUsers(app, passport);
 
-          // Only update the user session if he's not an admin (an admin can edit other users' info)
-          if (req.user.type !== 'admin') {
-            updateSession(io, req, record);
-          }
-        });
+            // Only update the user session if he's not an admin (an admin can edit other users' info)
+            if (req.user.type !== 'admin') {
+              updateSession(io, req, record);
+            }
+          });
       });
     });
   })
