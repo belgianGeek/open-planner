@@ -10,6 +10,16 @@ const inRequests = () => {
   // Picture sending is optional
   data2send.sendattachment = false;
 
+  // Remove the selected image from the request
+  $('.inRequests__form__requestInfo__row1__emptyFile').click(function() {
+    if (!$('.inRequests').hasClass('absolute')) {
+      $(this).parents('form').siblings('img').attr('src', '/src/scss/icons/empty.svg');
+    }
+
+    $('.inRequests__form__requestInfo__row1__file').val('');
+    $(this).addClass('hidden');
+  });
+
   const toggleBlur = () => {
     if ($('.inRequests').hasClass('absolute')) {
       $('.inRequests').toggleClass('blur');
@@ -20,11 +30,15 @@ const inRequests = () => {
 
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
     if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
-      compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
-        $('.inRequests img').attr('src', compressedPic);
-        attachment = compressedPic;
-        data2send.sendattachment = true;
-      });
+      if ($(this).attr('src') !== '/src/scss/icons/empty.svg') {
+        $('.inRequests__form__requestInfo__row1__emptyFile').removeClass('hidden');
+
+        compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
+          $(this).parents('form').siblings('img').attr('src', compressedPic);
+          attachment = compressedPic;
+          data2send.sendattachment = true;
+        });
+      }
     } else {
       attachment = undefined;
       data2send.sendattachment = false;
