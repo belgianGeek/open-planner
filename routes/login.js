@@ -33,7 +33,21 @@ module.exports = function(app, io) {
         app.open_planner_instance_description = 'A simple but powerful open source task manager';
       } finally {
         try {
-          const settings = await app.pool.query(`SELECT * FROM settings`);
+          const settings = await app.pool.query(`
+            SELECT
+              s.instance_name,
+              s.instance_description,
+              s.sender,
+              s.mail_address,
+              s.smtp_user,
+              s.smtp_host,
+              s.smtp_passwd,
+              s.wallpaper,
+              s.allowpasswordupdate,
+              s.sendattachments,
+              s.sendcc,
+              s.sendmail
+            FROM settings s`);
 
           if (settings.rowCount) {
             isDbConfigured = true;
@@ -43,7 +57,16 @@ module.exports = function(app, io) {
           isDbConfigured = false;
         } finally {
           try {
-            const DBusers = await app.pool.query(`SELECT * FROM users`);
+            const DBusers = await app.pool.query(`
+              SELECT
+                u.user_id,
+                u.name,
+                u.firstname,
+                u.gender,
+                u.email,
+                u.location,
+                u.type
+              FROM users u`);
 
             if (DBusers.rowCount) {
               firstUserConfigured = true;
@@ -71,7 +94,16 @@ module.exports = function(app, io) {
             if (!firstUserConfigured || !isDbConfigured) {
               io.once('connection', io => {
                 io.on('append data', async data => {
-                  const users = await app.pool.query('SELECT * FROM users');
+                  const users = await app.pool.query(`
+                    SELECT
+                      u.user_id,
+                      u.name,
+                      u.firstname,
+                      u.gender,
+                      u.email,
+                      u.location,
+                      u.type
+                    FROM users u`);
                   try {
                     // Only append a new user if there is not any users recorded in the DB yet
                     if (users.rows.length === 0) {
@@ -87,7 +119,12 @@ module.exports = function(app, io) {
 
                 io.on('append settings', async settings => {
                   try {
-                    const locations = await app.pool.query(`SELECT * FROM locations`);
+                    const locations = await app.pool.query(`
+                      SELECT
+                        l.location_id,
+                        l.location_name,
+                        l.location_mail
+                      FROM locations l`);
 
                     // Append locations only if there is no row to prevent duplicates
                     if (locations.rowCount === 0) {
@@ -121,7 +158,12 @@ module.exports = function(app, io) {
                 });
 
                 io.on('get locations', async () => {
-                  const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
+                  const locations = await app.pool.query(`
+                    SELECT
+                      l.location_id,
+                      l.location_name,
+                      l.location_mail
+                    FROM locations l ORDER BY l.location_name`);
                   io.emit('locations retrieved', locations.rows[0]);
                 });
               });

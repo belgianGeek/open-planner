@@ -19,7 +19,17 @@ module.exports = function(app, io, connString) {
 
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
-    const response = await app.pool.query(`SELECT * FROM users`);
+    const response = await app.pool.query(`
+      SELECT
+        u.user_id,
+        u.name,
+        u.firstname,
+        u.gender,
+        u.email,
+        u.location,
+        u.type
+      FROM users u`);
+
     let isFirstUserConfigured = false;
     if (response.rowCount) {
       isFirstUserConfigured = true;
@@ -81,26 +91,55 @@ module.exports = function(app, io, connString) {
       });
 
       io.on('get users', async () => {
-        const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations
-          ON users.location = locations.location_id ORDER BY name`);
+        const users = await app.pool.query(`
+          SELECT
+            u.name,
+            u.firstname,
+            u.email,
+            u.location,
+            u.gender,
+            u.type
+           FROM users u
+           LEFT JOIN locations l
+           ON u.location = l.location_id ORDER BY u.name`);
         io.emit('users retrieved', users.rows);
       });
 
       io.on('get locations', async () => {
-        const locations = await app.pool.query(`SELECT * FROM locations ORDER BY location_name`);
+        const locations = await app.pool.query(`
+          SELECT
+            l.location_id,
+            l.location_name,
+            l.location_mail
+          FROM locations l ORDER BY l.location_name`);
         io.emit('locations retrieved', locations.rows);
       });
 
-      // TODO: à revoir pour ne pas envoyer le mot de passe utilisateur vers le client !
       io.on('get history', async () => {
         const history = await app.pool.query(
-          `SELECT t.task_id, t.applicant_name, t.applicant_firstname, t.request_date, t.location_fk, t.user_fk, t.comment,
-          t.status, t.attachment, t.attachment_src, u.user_id, u.name, u.firstname, l.location_id, l.location_name FROM tasks t
+          `SELECT
+            t.task_id,
+            t.applicant_name,
+            t.applicant_firstname,
+            t.request_date,
+            t.location_fk,
+            t.user_fk,
+            t.comment,
+            t.status,
+            t.attachment,
+            t.attachment_src,
+            u.user_id,
+            u.name,
+            u.firstname,
+            l.location_id,
+            l.location_name
+          FROM tasks t
           LEFT JOIN locations l ON t.location_fk = l.location_id
-          LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE $1 AND t.applicant_firstname ILIKE $2 ORDER BY t.request_date`,
+          LEFT JOIN users u ON t.user_fk = u.user_id
+          WHERE t.applicant_name ILIKE $1 AND t.applicant_firstname ILIKE $2 ORDER BY t.request_date`,
           [req.user.name, req.user.firstname]
         );
-        
+
         io.emit('history retrieved', history.rows);
 
         if (history.rowCount === 0) {
@@ -125,7 +164,17 @@ module.exports = function(app, io, connString) {
           const table = 'tasks';
           const filename = table + '-' + new Date().toUTCString().replace(/[\s,]/g, '-') + '.csv';
           DBquery(app, io, 'SELECT', table, {
-              text: `SELECT * FROM tasks LEFT JOIN users ON tasks.user_fk = users.user_id ORDER BY tasks.task_id`
+              text: `
+                SELECT
+                 t.task_id,
+                 t.applicant_name,
+                 t.applicant_firstname,
+                 t.request_date,
+                 t.location_fk,
+                 t.user_fk,
+                 t.comment,
+                 t.status
+                FROM tasks t LEFT JOIN users u ON t.user_fk = u.user_id ORDER BY t.task_id`
             })
             .then(async res => {
               let data2write = 'Identifiant de la tâche,Demandeur,Date de la demande,Implantation concernée par la demande,Utilisateur chargé de la tâche,Objet de la demande,Statut\n';
@@ -276,8 +325,7 @@ module.exports = function(app, io, connString) {
             };
           }
         } else if (record.table === 'tasks') {
-          query = await updateTask(query);
-          console.log(query);
+          query = await updateTask(query, record);
         } else {
           query.name = 'update-location';
 
@@ -287,15 +335,15 @@ module.exports = function(app, io, connString) {
           }
         }
 
-        // DBquery(app, io, 'UPDATE', record.table, query)
-        //   .then(() => {
-        //     getUsers(app, passport);
-        //
-        //     // Only update the user session if he's not an admin (an admin can edit other users' info)
-        //     if (req.user.type !== 'admin') {
-        //       updateSession(io, req, record);
-        //     }
-        //   });
+        DBquery(app, io, 'UPDATE', record.table, query)
+          .then(() => {
+            getUsers(app, passport);
+
+            // Only update the user session if he's not an admin (an admin can edit other users' info)
+            if (req.user.type !== 'admin') {
+              updateSession(io, req, record);
+            }
+          });
       });
     });
   })

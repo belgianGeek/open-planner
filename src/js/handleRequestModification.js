@@ -62,6 +62,15 @@ const handleRequestModification = (parent, containerClass) => {
         .addClass('hidden')
         .removeClass('flex');
     }
+
+    // Append the attachment, if any
+    if ($('.inRequests.absolute .inRequests__form__requestInfo__row1__file').length && $('.inRequests.absolute img').attr('src') !== '/src/scss/icons/empty.svg') {
+      $(`.${parent} ${containerClass}__container__row__item--file`).text('📎');
+      $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text($('.inRequests.absolute img').attr('src'));
+    }
+
+    $('.inRequests img').attr('src', '/src/scss/icons/empty.svg');
+    $('.inRequests__form__requestInfo__row1__file').val('');
   });
 
   // Hide the form on btn click
@@ -79,6 +88,12 @@ const handleRequestModification = (parent, containerClass) => {
     // Hide the button to hide the form
     $(this).addClass('hidden');
 
-    $('.inRequests img').removeClass('hidden');
+    if (globalSettings.sendattachments) {
+      $('.inRequests img')
+        .attr('src', '/src/scss/icons/empty.svg')
+        .removeClass('hidden');
+
+      $('.inRequests__form__requestInfo__row1__file').val('');
+    }
   });
 }
