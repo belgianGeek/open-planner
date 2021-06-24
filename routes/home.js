@@ -40,6 +40,7 @@ module.exports = function(app, io, connString) {
     res.render('index.ejs', {
       allowPasswordUpdate: userSettings.allowpasswordupdate,
       currentVersion: app.tag,
+      displayMyRequestsMenu: userSettings.displaymyrequestsmenu,
       isFirstUserConfigured: isFirstUserConfigured,
       isSearchPage: false,
       locations: locations.rows,
@@ -236,6 +237,11 @@ module.exports = function(app, io, connString) {
         if (settings.allowpasswordupdate !== undefined) {
           values.push(settings.allowpasswordupdate);
           query.push(`allowpasswordupdate = $${values.indexOf(settings.allowpasswordupdate) + 1},`);
+        }
+
+        if (settings.displaymyrequestsmenu !== undefined) {
+          values.push(settings.displaymyrequestsmenu);
+          query.push(`displaymyrequestsmenu = $${values.indexOf(settings.displaymyrequestsmenu) + 1},`);
         }
 
         if (settings.instance_name !== undefined) {

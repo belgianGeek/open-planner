@@ -40,6 +40,7 @@ let globalSettings = {};
 socket.on('settings', settings => {
   // Update the global object with the retrieved settings
   globalSettings.allowpasswordupdate = settings.allowpasswordupdate;
+  globalSettings.displaymyrequestsmenu = settings.displaymyrequestsmenu;
   globalSettings.instance_name = settings.instance_name;
   globalSettings.instance_description = settings.instance_description;
   globalSettings.sendcc = settings.sendcc;
