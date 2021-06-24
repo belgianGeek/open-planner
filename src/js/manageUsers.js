@@ -298,6 +298,14 @@ const manageUsers = () => {
           } else if (parent.match('locations')) {
             record2delete.key = $(`.${parent} .locations__container__row__item--id`).text();
             record2delete.table = 'locations';
+          } else if (parent.match('history') || parent.match('search')) {
+            record2delete.table = 'tasks';
+
+            if (parent.match('history')) {
+              record2delete.key = $(`.${parent} .history__results__container__row__item--id`).text();
+            } else {
+              record2delete.key = $(`.${parent} .search__results__container__row__item--id`).text();
+            }
           }
 
           confirmation();
@@ -307,6 +315,8 @@ const manageUsers = () => {
             $(`.${parent}`)
               .removeClass('flex')
               .addClass('hidden');
+
+              console.log(record2delete);
 
             confirmation();
             socket.emit('delete data', record2delete);
