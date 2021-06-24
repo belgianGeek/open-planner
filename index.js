@@ -92,6 +92,11 @@ const createDB = (config, DBname = 'planner') => {
                   .then(res => {
                     console.log(res);
                     console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
+
+                      if (fs.existsSync('update-db.js')) {
+                        const updatePlannerBackend = require('./update-db.js');
+                        updatePlannerBackend(app);
+                      }
                   });
               })
               .catch(err => console.log(err));
@@ -169,9 +174,9 @@ app.set('view engine', 'ejs')
   .use("/locales", express.static(__dirname + "/locales"))
   .use("/src", express.static(__dirname + "/src"))
   .use(express.urlencoded({
-  extended: false
-}))
-.use((req, res, next) => {
+    extended: false
+  }))
+  .use((req, res, next) => {
     // Set some security headers
     res.setHeader('X-XSS-Protection', '1;mode=block');
     res.setHeader('X-Frame-Options', 'DENY');
@@ -183,17 +188,17 @@ app.set('view engine', 'ejs')
   })
   .use(flash())
   .use(session({
-  store: new pgSession({
-    pool: app.pool,
-    conString: config.connectionString
-  }),
-  secret: randomBytes(256).toString('hex'),
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 30 * 30 // Set the session lifetime to thirty minutes
-  }
-}))
+    store: new pgSession({
+      pool: app.pool,
+      conString: config.connectionString
+    }),
+    secret: randomBytes(256).toString('hex'),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 30 * 30 // Set the session lifetime to thirty minutes
+    }
+  }))
   .use(i18n.init)
   .use(passport.initialize())
   .use(passport.session())
