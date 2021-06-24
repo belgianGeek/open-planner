@@ -155,6 +155,8 @@ module.exports = function(app, io, connString) {
           deleteData(app, io, 'user_id', data, passport);
         } else if (data.table === 'locations') {
           deleteData(app, io, 'location_id', data);
+        } else if (data.table === 'tasks') {
+          deleteData(app, io, 'task_id', data);
         }
       });
 
