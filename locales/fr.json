@@ -128,6 +128,7 @@
 		"assignedWorker_default": "Sélectionner l'utilisateur chargé de la tâche",
 		"attachment": "Joindre une image",
 		"attachment_alt": "Image jointe à la demande",
+		"attachment_removal": "Retirer l'image",
 		"date": "Date de la demande",
 		"location_default": "Sélectionnez une implantation",
 		"location_title": "Implantation concernée",

@@ -128,6 +128,7 @@
 	  "assignedWorker_default": "Select the assigned worker",
 	  "attachment": "Attach a picture",
 	  "attachment_alt": "Picture attached to the request",
+    "attachment_removal": "Remove selected picture",
 	  "date": "Request date",
 	  "location_default": "Select a location",
 	  "location_title": "Concerned location",
