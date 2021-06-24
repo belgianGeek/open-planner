@@ -165,6 +165,7 @@
     "mail_address_passwd": "Mail address password",
     "mail_comment": "When a new request is submitted, send an email to the team in charge of the task",
     "mailcc_comment": "When a request is submitted or modified, send an email to the applicant",
+    "my_requests_comment": "Enable \"My requests\" menu allowing users to update or delete their own requests",
     "permissions_title": "Permissions and notifications",
     "sender_mail_address": "Sender mail address",
     "sender_name": "Sender name",
