@@ -35,6 +35,7 @@ module.exports = function(app, io) {
       io.emit('settings', userSettings);
 
       io.on('search', data => {
+        console.log(data);
         if (data.location !== undefined) {
           if (!data.getApplicant) query = `SELECT
             t.task_id,
@@ -71,7 +72,8 @@ module.exports = function(app, io) {
           LEFT JOIN users u ON t.user_fk = u.user_id
           WHERE t.applicant_name ILIKE '%$1%' AND t.location_fk = $2 ORDER BY t.task_id`, [data.applicant_name, data.location];
         } else {
-          if (!data.getApplicant) query = `SELECT
+          if (!data.getApplicant) {
+            query = `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -91,7 +93,8 @@ module.exports = function(app, io) {
           LEFT JOIN locations l ON t.location_fk = l.location_id
           LEFT JOIN users u ON t.user_fk = u.user_id
           ORDER BY t.task_id`;
-          else query = `SELECT
+          } else {
+            query = `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -110,6 +113,7 @@ module.exports = function(app, io) {
           FROM tasks t
           LEFT JOIN locations l ON t.location_fk = l.location_id
           LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE '%$1%' ORDER BY t.task_id`, [data.applicant_name];
+          }
         }
 
         // Disable automatic notifications for the first request in case it does not return any results
@@ -120,39 +124,7 @@ module.exports = function(app, io) {
             if (res.rowCount > 0) {
               io.emit('search results', res.rows);
             } else if (res.rowCount === 0) {
-              if (!data.getApplicant) query = `SELECT
-                t.task_id,
-                t.applicant_name,
-                t.applicant_firstname,
-                t.request_date,
-                t.location_fk,
-                t.user_fk,
-                t.comment,
-                t.status,
-                t.attachment,
-                t.attachment_src
-              FROM tasks t WHERE t.location_fk = $1 ORDER BY t.task_id`, [data.location];
-              else query = `SELECT
-                t.task_id,
-                t.applicant_name,
-                t.applicant_firstname,
-                t.request_date,
-                t.location_fk,
-                t.user_fk,
-                t.comment,
-                t.status,
-                t.attachment,
-                t.attachment_src
-              FROM tasks t WHERE t.applicant_name ILIKE '%$1%' ORDER BY t.task_id`, data.applicant_name;
-
-              DBquery(app, io, 'SELECT', 'tasks', {
-                  text: query
-                })
-                .then(res => {
-                  if (res.rowCount !== 0 || res.rowCount !== null) {
-                    io.emit('search results', res.rows);
-                  }
-                });
+              notify(io, 'info');
             }
           });
       });
@@ -178,7 +150,9 @@ module.exports = function(app, io) {
         DBquery(app, io, 'UPDATE', record.table, query);
       });
 
-      deleteData(app, io, 'task_id', passport);
+      io.on('delete data', data => {
+        deleteData(app, io, 'task_id', data, passport);
+      });
 
       mail(app, io);
     });
