@@ -27,7 +27,8 @@
       .toggleAttachments__Input,
       .toggleMailCc__Input,
       .toggleMail__input,
-      .toggleUserPasswordUpdate__Input {
+      .toggleUserPasswordUpdate__Input,
+      .toggleMyRequests__Input {
         margin-top: 1.5em;
       }
     }
@@ -116,14 +117,16 @@
 
     .toggleAttachments,
     .toggleMailCc,
-    .toggleUserPasswordUpdate {
+    .toggleUserPasswordUpdate,
+    .toggleMyRequests {
       margin-top: 2em;
     }
 
     .toggleAttachments,
     .toggleMail,
     .toggleMailCc,
-    .toggleUserPasswordUpdate {
+    .toggleUserPasswordUpdate,
+    .toggleMyRequests {
       justify-content: space-between;
       width: 100%;
       align-items: baseline;
@@ -132,7 +135,7 @@
       }
 
       &__Comment {
-        width: 100%;
+        width: 90%;
       }
 
       &__Switch {
@@ -175,7 +178,8 @@
         &:checked + .toggleAttachments__Slider,
         &:checked + .toggleMailCc__Slider,
         &:checked + .toggleMail__Slider,
-        &:checked + .toggleUserPasswordUpdate__Slider {
+        &:checked + .toggleUserPasswordUpdate__Slider,
+        &:checked + .toggleMyRequests__Slider {
           &:before {
             left: 0;
             transform: translateX(22px);

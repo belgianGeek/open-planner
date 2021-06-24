@@ -41,7 +41,11 @@
         registerClass: 'hidden',
         locations: locations
       }); %>
-      <%- include('history'); %>
+
+      <% if (displayMyRequestsMenu) { %>
+        <%- include('history'); %>
+      <% } %>
+
       <%- include('addLocation'); %>
     <% } %>
   </main>
