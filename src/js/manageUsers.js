@@ -316,8 +316,6 @@ const manageUsers = () => {
               .removeClass('flex')
               .addClass('hidden');
 
-              console.log(record2delete);
-
             confirmation();
             socket.emit('delete data', record2delete);
 
