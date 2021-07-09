@@ -113,7 +113,7 @@ $('.returnIcon').click(() => {
       .removeClass('translateXbackwards')
       .toggleClass('translateXonwards hidden');
     $('.home').toggleClass('hidden flex');
-    $('.returnIcon, .header__container__msg')
+    $('.header__container')
       .addClass('hidden')
       .removeClass('flex');
 

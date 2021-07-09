@@ -15,8 +15,9 @@ const handleHomeBtnClick = (element, parent) => {
       .addClass('hidden')
       .removeClass('flex');
 
-    $('.returnIcon, .header__container__msg')
-      .removeClass('hidden');
+    $('.header__container')
+      .removeClass('hidden')
+      .addClass('flex');
   });
 }
 
