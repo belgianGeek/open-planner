@@ -51,6 +51,10 @@ const settings = () => {
         updatedSettings.allowpasswordupdate = globalSettings.allowpasswordupdate = $('.toggleUserPasswordUpdate__Input').prop('checked');
       }
 
+      if (globalSettings.displaymyrequestsmenu !== $('.toggleMyRequests__Input').prop('checked')) {
+        updatedSettings.displaymyrequestsmenu = globalSettings.displaymyrequestsmenu = $('.toggleMyRequests__Input').prop('checked');
+      }
+
       if (Object.keys(updatedSettings).length > 0) {
         socket.emit('settings', updatedSettings);
       }

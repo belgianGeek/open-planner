@@ -10,21 +10,27 @@ const inRequests = () => {
   // Picture sending is optional
   data2send.sendattachment = false;
 
-  const toggleBlur = () => {
-    if ($('.inRequests').hasClass('absolute')) {
-      $('.inRequests').toggleClass('blur');
-    } else {
-      $('.wrapper, .inRequests').toggleClass('blur');
+  // Remove the selected image from the request
+  $('.inRequests__form__requestInfo__row1__emptyFile').click(function() {
+    if (!$('.inRequests').hasClass('absolute')) {
+      $(this).parents('form').siblings('img').attr('src', '/src/scss/icons/empty.svg');
     }
-  }
+
+    $('.inRequests__form__requestInfo__row1__file').val('');
+    $(this).addClass('hidden');
+  });
 
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
     if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
-      compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
-        $('.inRequests img').attr('src', compressedPic);
-        attachment = compressedPic;
-        data2send.sendattachment = true;
-      });
+      if ($(this).attr('src') !== '/src/scss/icons/empty.svg') {
+        $('.inRequests__form__requestInfo__row1__emptyFile').removeClass('hidden');
+
+        compress(`.${$(this).attr('class').split(' ').join('.')}`, 'image/jpeg', compressedPic => {
+          $(this).parents('form').siblings('img').attr('src', compressedPic);
+          attachment = compressedPic;
+          data2send.sendattachment = true;
+        });
+      }
     } else {
       attachment = undefined;
       data2send.sendattachment = false;
@@ -86,7 +92,11 @@ const inRequests = () => {
 
       confirmation();
 
-      toggleBlur();
+      if ($('.inRequests').hasClass('absolute')) {
+        $('.inRequests').addClass('blur');
+      } else {
+        $('.wrapper, .inRequests').addClass('blur');
+      }
 
       inRequestsTimeOut = setTimeout(() => {
         // Escape apostrophes
@@ -130,13 +140,14 @@ const inRequests = () => {
 
           socket.emit('append data', data2send);
 
-          $('.home').toggleClass('hidden flex');
-          $('.header__container__icon, .header__container__msg').toggleClass('hidden');
+          $('.home, .header__container').toggleClass('hidden flex');
+          $('.wrapper, .inRequests').removeClass('blur');
         } else {
           // Else, update the existing record and hide the update form
 
           data2send.mail.id = data2send.id = $('.inRequests.absolute .inRequests__id').text();
           data2send.mail.creationDate = new Date(requestDate.val()).toLocaleDateString();
+
           // Check the task status to adapt the mail sent to the user
           if ($('.inRequests__form__requestInfo__row1__status option:selected').val() === 'done') {
             data2send.mail.title = `🏁 La demande n°${data2send.mail.id} est traitée 🏁`;
@@ -146,18 +157,25 @@ const inRequests = () => {
             data2send.mail.status = 'wip';
           }
 
-          data2send.values.push($('.inRequests__form__requestInfo__row1__status option:selected').val());
-          data2send.values.push(assignedWorker.val());
+          // Check if the task is being updated by the user
+          if (data2send.userUpdate) {
+            // Those values are assigned in the 'handleRequestModification' function :-)
+            data2send.values.push(data2send.status);
+            data2send.values.push(data2send.assignedWorker);
+          } else {
+            data2send.values.push(data2send.mail.status);
+            data2send.values.push(assignedWorker.val());
+          }
 
           handleAttachment();
 
-          $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper').removeClass('blur');
+          $('.inRequests').toggleClass('hidden flex');
+          $('.wrapper, .history, .header, .inRequests').removeClass('blur backgroundColor');
 
           socket.emit('update', data2send);
 
           // Hide the button to hide the form
-          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden');
+          $('.inRequests.absolute .inRequests__form__btnContainer__hide').toggleClass('hidden flex');
         }
 
         // If the user want to send a notification email to the workers team
@@ -197,15 +215,13 @@ const inRequests = () => {
           .removeClass('hidden');
 
         data2send.values = [];
-
-        toggleBlur();
       }, 5000);
     } else {
       if (!$('form .warning').length) {
         let warning = $('<span></span>')
           .addClass('warning')
           .text(locales.form.invalid)
-          .appendTo('.inRequests__form');
+          .insertBefore('.inRequests__form__btnContainer');
       };
 
       validationErr = false;
