@@ -40,6 +40,7 @@ let globalSettings = {};
 socket.on('settings', settings => {
   // Update the global object with the retrieved settings
   globalSettings.allowpasswordupdate = settings.allowpasswordupdate;
+  globalSettings.displaymyrequestsmenu = settings.displaymyrequestsmenu;
   globalSettings.instance_name = settings.instance_name;
   globalSettings.instance_description = settings.instance_description;
   globalSettings.sendcc = settings.sendcc;
@@ -84,10 +85,15 @@ socket.on('settings', settings => {
   $('.settings__child__mailContainer__smtpHostLabel__input').val(globalSettings.smtp_host);
 });
 
-socket.on('username', userData => {
+socket.on('user data', userData => {
   $('.inRequests__form__applicantInfo__name').val(userData.name);
   $('.inRequests__form__applicantInfo__firstname').val(userData.firstname);
-  $('.inRequests__form__applicantInfo__location option:selected').val(userData.location);
+
+  if ($('.history').hasClass('flex')) {
+    $('.inRequests.absolute .inRequests__form__applicantInfo__firstname').val(userData.firstname);
+    $('.inRequests.absolute .inRequests__form__applicantInfo__name').val(userData.name);
+    $('.inRequests.absolute .inRequests__form__applicantInfo__location').val(userData.location);
+  }
 });
 
 const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
@@ -101,7 +107,7 @@ $('.returnIcon').click(() => {
       .removeClass('translateXbackwards')
       .toggleClass('translateXonwards hidden');
     $('.home').toggleClass('hidden flex');
-    $('.returnIcon, .header__container__msg')
+    $('.header__container')
       .addClass('hidden')
       .removeClass('flex');
 
@@ -111,8 +117,8 @@ $('.returnIcon').click(() => {
   }
 
   const goBack = (elt1, elt2) => {
-    if (elt1.match(/(step1|users|locations)/gi)) {
-      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|users|locations/gi)) {
+    if (elt1.match(/(step1|users|locations|history)/gi)) {
+      if ($(elt1).is(':visible') && elt1.match(/inRequests__step1|users|locations|history/gi)) {
         backHome(elt1);
       }
     } else {
@@ -131,11 +137,5 @@ $('.returnIcon').click(() => {
   goBack('.users');
   goBack('.locations');
   goBack('.inRequests__step1');
-});
-
-$('.menu__item').click(() => {
-  // Hide the sidebar on item click if it is currently shown
-  if ($('.header__menu__switch').prop('checked')) {
-    $('.header__menu__switch').prop('checked', false);
-  }
+  goBack('.history');
 });

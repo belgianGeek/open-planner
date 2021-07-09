@@ -69,6 +69,9 @@
 		"applicant_name": "You can fill in the field to filter your search with an applicant's name",
 	  "search_results": "You can act on requests by make a right-click to each one of them"
 	},
+  "history": {
+    "hide_btn": "Back to history"
+  },
   "home": {
 		"call_to_action": "What do you want to do ?",
 	  "new_request": "Make a new request",
@@ -125,6 +128,7 @@
 	  "assignedWorker_default": "Select the assigned worker",
 	  "attachment": "Attach a picture",
 	  "attachment_alt": "Picture attached to the request",
+    "attachment_removal": "Remove selected picture",
 	  "date": "Request date",
 	  "location_default": "Select a location",
 	  "location_title": "Concerned location",
@@ -161,6 +165,7 @@
     "mail_address_passwd": "Mail address password",
     "mail_comment": "When a new request is submitted, send an email to the team in charge of the task",
     "mailcc_comment": "When a request is submitted or modified, send an email to the applicant",
+    "my_requests_comment": "Enable \"My requests\" menu allowing users to update or delete their own requests",
     "permissions_title": "Permissions and notifications",
     "sender_mail_address": "Sender mail address",
     "sender_name": "Sender name",
@@ -172,6 +177,7 @@
     "about": "About",
     "account": "My account",
     "export": "Export data",
+    "history": "My requests",
     "home": "Home",
     "import_users": "Import users",
     "lang_title": "Language",

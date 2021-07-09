@@ -61,17 +61,14 @@ const mail = (app, io) => {
 
             // Send a copy of the request to the applicant
             if (mailObject.sendcc) {
-              const cc = await app.pool.query(`SELECT email FROM users WHERE name ILIKE '${applicant.name}' AND firstname ILIKE '${applicant.firstname}'`);
+              const cc = await app.pool.query(
+                `SELECT email FROM users WHERE name ILIKE $1 AND firstname ILIKE $2`,
+                [applicant.name, applicant.firstname]
+              );
               options.cc = cc.rows[0].email;
             }
 
             mail.sendMail(options).catch(err => console.trace(err));
-
-            if (!mailObject.sendcc) {
-              console.log(`Mail envoyé à l'adresse ${receiver.mail} le ${new Date()}`);
-            } else {
-              console.log(`Mail envoyé aux adresses ${receiver.mail} et ${options.cc} le ${new Date()}`);
-            }
           } else {
             console.trace('Il semble que les paramètres SMTP spécifiés soient incorrects : ' + err);
           }

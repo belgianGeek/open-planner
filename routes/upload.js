@@ -39,7 +39,16 @@ module.exports = function(app, io) {
                     notify(io, 'success', true, usersNb);
                     getUsers(app, passport);
 
-                    const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
+                    const users = await app.pool.query(`
+                      SELECT
+                        u.user_id,
+                        u.name,
+                        u.firstname,
+                        u.gender,
+                        u.email,
+                        u.location,
+                        u.type
+                      FROM users u LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
                     io.emit('users retrieved', users.rows);
                   })
                   .catch(err => {
