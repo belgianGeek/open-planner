@@ -7,9 +7,7 @@
       font-size: 0.9em;
       flex-direction: column;
       width: 60%;
-      max-height: 80vh;
       flex: 2;
-      overflow: auto;
       align-self: baseline;
 
       &__applicantInfo,
@@ -25,15 +23,11 @@
     width: 100%;
     margin-top: 10vh;
     align-self: flex-start;
-    margin: 0 auto;
-    height: 100vh;
-    align-items: center;
-    overflow: auto;
 
     img {
       object-fit: contain;
       padding: 0 1.5em;
-      flex: 1;
+      flex: 0.75;
     }
   }
 
@@ -45,11 +39,11 @@
   }
 
   &__form {
-    font-size: 1.05em;
+    font-size: 1em;
     flex-direction: column;
     width: 60%;
-    max-height: 80vh;
     flex: 2;
+    overflow: auto;
 
     label {
       align-self: center;

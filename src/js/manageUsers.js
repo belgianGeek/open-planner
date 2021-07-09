@@ -189,7 +189,7 @@ const manageUsers = () => {
             .toggleClass('hidden flex');
 
           // Store the selected row in a variable
-          parent = $(this).attr('class').split(' ')[1];
+          parent = $(this).attr('class').split(' ').join('.');
 
           e.preventDefault();
 
@@ -204,7 +204,7 @@ const manageUsers = () => {
         });
 
         $('.context__list__item--modify').click(function() {
-          if ($('.users').hasClass('flex')) {
+          if (childMenuClassname === 'users') {
             $(`.register`)
               .addClass('absolute zero flex')
               .removeClass('hidden');
@@ -213,13 +213,13 @@ const manageUsers = () => {
             $('.register.absolute .register__form__password input').attr('placeholder', locales.form.passwd_empty);
 
             $('.users, .header').addClass('blur backgroundColor');
-          } else if ($('.locations').hasClass('flex')) {
+          } else if (childMenuClassname === 'locations') {
             $(`.addLocation`)
               .addClass('absolute zero flex')
               .removeClass('hidden');
 
             $('.locations, .header').addClass('blur backgroundColor');
-          } else if ($('.history__results').hasClass('flex')) {
+          } else if (childMenuClassname === 'history__results') {
             $('.history, .header').addClass('blur backgroundColor');
 
             $('.inRequests__form__btnContainer__hide')

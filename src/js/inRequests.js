@@ -20,14 +20,6 @@ const inRequests = () => {
     $(this).addClass('hidden');
   });
 
-  const toggleBlur = () => {
-    if ($('.inRequests').hasClass('absolute')) {
-      $('.inRequests').toggleClass('blur');
-    } else {
-      $('.wrapper, .inRequests').toggleClass('blur');
-    }
-  }
-
   $('.inRequests__form__requestInfo__row1__file').on('change', function() {
     if ($(`.${$(this).attr('class').split(' ').join('.')}`).val() !== '') {
       if ($(this).attr('src') !== '/src/scss/icons/empty.svg') {
@@ -100,7 +92,11 @@ const inRequests = () => {
 
       confirmation();
 
-      toggleBlur();
+      if ($('.inRequests').hasClass('absolute')) {
+        $('.inRequests').addClass('blur');
+      } else {
+        $('.wrapper, .inRequests').addClass('blur');
+      }
 
       inRequestsTimeOut = setTimeout(() => {
         // Escape apostrophes
@@ -161,8 +157,8 @@ const inRequests = () => {
 
           socket.emit('append data', data2send);
 
-          $('.home').toggleClass('hidden flex');
-          $('.header__container__icon, .header__container__msg').toggleClass('hidden');
+          $('.home, .header__container').toggleClass('hidden flex');
+          $('.wrapper, .inRequests').removeClass('blur');
         } else {
           // Else, update the existing record and hide the update form
 
@@ -190,8 +186,8 @@ const inRequests = () => {
 
           handleAttachment();
 
-          $('.inRequests.absolute').toggleClass('hidden flex');
-          $('.wrapper, .history, .header').removeClass('blur backgroundColor');
+          $('.inRequests').toggleClass('hidden flex');
+          $('.wrapper, .history, .header, .inRequests').removeClass('blur backgroundColor');
 
           socket.emit('update', data2send);
 
@@ -236,15 +232,13 @@ const inRequests = () => {
           .removeClass('hidden');
 
         data2send.values = [];
-
-        toggleBlur();
       }, 5000);
     } else {
       if (!$('form .warning').length) {
         let warning = $('<span></span>')
           .addClass('warning')
           .text(locales.form.invalid)
-          .appendTo('.inRequests__form');
+          .insertBefore('.inRequests__form__btnContainer');
       };
 
       validationErr = false;
