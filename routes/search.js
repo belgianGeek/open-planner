@@ -37,7 +37,9 @@ module.exports = function(app, io) {
       io.on('search', data => {
         console.log(data);
         if (data.location !== undefined) {
-          if (!data.getApplicant) query = `SELECT
+          if (!data.getApplicant) {
+            query = {
+              text: `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -53,8 +55,12 @@ module.exports = function(app, io) {
             u.firstname
           FROM tasks t
           LEFT JOIN users u ON t.user_fk = u.user_id
-          WHERE t.location_fk = $1 ORDER BY t.task_id`, [data.location];
-          else query = `SELECT
+          WHERE t.location_fk = $1 ORDER BY t.task_id`,
+              values: [data.location]
+            };
+          } else {
+            query = {
+              text: `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -70,10 +76,14 @@ module.exports = function(app, io) {
             u.firstname
           FROM tasks t
           LEFT JOIN users u ON t.user_fk = u.user_id
-          WHERE t.applicant_name ILIKE '%$1%' AND t.location_fk = $2 ORDER BY t.task_id`, [data.applicant_name, data.location];
+          WHERE t.applicant_name ILIKE '%$1%' AND t.location_fk = $2 ORDER BY t.task_id`,
+              values: [data.applicant_name, data.location]
+            };
+          }
         } else {
           if (!data.getApplicant) {
-            query = `SELECT
+            query = {
+              text: `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -92,9 +102,11 @@ module.exports = function(app, io) {
           FROM tasks t
           LEFT JOIN locations l ON t.location_fk = l.location_id
           LEFT JOIN users u ON t.user_fk = u.user_id
-          ORDER BY t.task_id`;
+          ORDER BY t.task_id`
+            };
           } else {
-            query = `SELECT
+            query = {
+              text: `SELECT
             t.task_id,
             t.applicant_name,
             t.applicant_firstname,
@@ -112,14 +124,14 @@ module.exports = function(app, io) {
             l.location_name
           FROM tasks t
           LEFT JOIN locations l ON t.location_fk = l.location_id
-          LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE '%$1%' ORDER BY t.task_id`, [data.applicant_name];
+          LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE '%$1%' ORDER BY t.task_id`,
+              values: [data.applicant_name]
+            }
           }
         }
 
         // Disable automatic notifications for the first request in case it does not return any results
-        DBquery(app, io, 'SELECT', 'tasks', {
-            text: query
-          }, false)
+        DBquery(app, io, 'SELECT', 'tasks', query, false)
           .then(res => {
             if (res.rowCount > 0) {
               io.emit('search results', res.rows);

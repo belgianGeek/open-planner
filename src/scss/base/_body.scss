@@ -19,7 +19,7 @@ body {
 
   .absolute {
     position: absolute;
-    top: 10%;
+    top: 0;
   }
 
   .zero {
@@ -79,6 +79,7 @@ body {
     height: 100vh;
     align-items: center;
     overflow: auto;
+    flex-direction: column;
 
     @media(max-width: 1000px) {
       height: 100vh;

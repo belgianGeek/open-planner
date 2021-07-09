@@ -2,9 +2,13 @@ const handleRequestModification = (parent, containerClass) => {
   // Format the date to be year, Month (0-indexed) and the day
   let date = $(`.${parent} ${containerClass}__container__row__item--timestamp`).text();
 
+  $('.inRequests__form__btnContainer__hide')
+    .addClass('flex')
+    .removeClass('hidden');
+
   $('.inRequests')
     .addClass('absolute flex')
-    .removeClass('hidden');
+    .removeClass('hidden blur');
 
   // Append the attachment if any
   if ($(`.${parent} ${containerClass}__container__row__item--fileSrc`).length) {
@@ -21,7 +25,7 @@ const handleRequestModification = (parent, containerClass) => {
   $('.inRequests.absolute .inRequests__form__requestInfo__comment').val($(`.${parent} ${containerClass}__container__row__item--body`).html().replace(/<br>/g, '\n\n'));
 
   // Check if the assigned worker ID is defined
-  if ($(`${parent} ${containerClass}__container__row__item--awid`).length) {
+  if ($(`.${parent} ${containerClass}__container__row__item--awid`).length) {
     $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker option:selected').val($(`.${parent} ${containerClass}__container__row__item--awid`).text());
   }
 
@@ -31,7 +35,7 @@ const handleRequestModification = (parent, containerClass) => {
   else $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('done');
 
   // The form submit is handled in the inRequests function !
-  $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(() => {
+  $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(function() {
     // Update the web interface with the changes
     $(`.${parent} ${containerClass}__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val().replace(/\'\'/g, "'"));
     $(`.${parent} ${containerClass}__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
@@ -41,6 +45,11 @@ const handleRequestModification = (parent, containerClass) => {
 
     if ($(`.${parent} ${containerClass}__container__row__item--fileSrc`).length) {
       $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text($('.inRequests img').attr('src'));
+    } else {
+      $('<span></span>')
+        .addClass(`.${parent} ${containerClass}__container__row__item--fileSrc`)
+        .text($('.inRequests img').attr('src'))
+        .appendTo(`.${parent} ${containerClass}`);
     }
 
     // Check for default values if the user can modify the task assignment
@@ -68,9 +77,6 @@ const handleRequestModification = (parent, containerClass) => {
       $(`.${parent} ${containerClass}__container__row__item--file`).text('📎');
       $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text($('.inRequests.absolute img').attr('src'));
     }
-
-    $('.inRequests img').attr('src', '/src/scss/icons/empty.svg');
-    $('.inRequests__form__requestInfo__row1__file').val('');
   });
 
   // Hide the form on btn click
