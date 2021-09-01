@@ -12,7 +12,7 @@ module.exports = function(app, io) {
   app.get('/search', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
     let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
-    app.pool.query(`SELECT user_id, name, firstname FROM users`)
+    app.pool.query(`SELECT user_id, name, firstname, type FROM users`)
       .then(data => {
         res.render('search.ejs', {
           currentVersion: app.tag,
@@ -52,7 +52,8 @@ module.exports = function(app, io) {
             t.attachment_src,
             u.user_id,
             u.name,
-            u.firstname
+            u.firstname,
+            u.type
           FROM tasks t
           LEFT JOIN users u ON t.user_fk = u.user_id
           WHERE t.location_fk = $1 ORDER BY t.task_id`,
@@ -73,7 +74,8 @@ module.exports = function(app, io) {
             t.attachment_src,
             u.user_id,
             u.name,
-            u.firstname
+            u.firstname,
+            u.type
           FROM tasks t
           LEFT JOIN users u ON t.user_fk = u.user_id
           WHERE t.applicant_name ILIKE '%$1%' AND t.location_fk = $2 ORDER BY t.task_id`,
@@ -97,6 +99,7 @@ module.exports = function(app, io) {
             u.user_id,
             u.name,
             u.firstname,
+            u.type,
             l.location_id,
             l.location_name
           FROM tasks t
@@ -120,6 +123,7 @@ module.exports = function(app, io) {
             u.user_id,
             u.name,
             u.firstname,
+            u.type,
             l.location_id,
             l.location_name
           FROM tasks t
