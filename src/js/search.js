@@ -144,7 +144,7 @@ const search = () => {
           handleRequestModification(parent, '.search__results');
         });
 
-        $('.context__list__item--del').click(function() {
+        $('.context__list__item--del').unbind('click.searchDel').bind('click.searchDel', function() {
           let record2delete = {
             key: $(`.${parent} .search__results__container__row__item--id`).text(),
             table: 'tasks'
@@ -159,7 +159,10 @@ const search = () => {
 
           recordDelTimeOut = setTimeout(() => {
             // Delete the record from the interface
-            $(`.${parent}`).remove();
+            $(`.${parent}`)
+              .removeClass('flex')
+              .addClass('hidden');
+
             confirmation();
 
             socket.emit('delete data', record2delete);
@@ -169,20 +172,20 @@ const search = () => {
 
             wrapperBlur();
           }, 5000);
-
-          $('.confirmation__body__cancel').click(() => {
-            clearTimeout(recordDelTimeOut);
-            $(`.${parent}`)
-              .removeClass('hidden')
-              .addClass('flex');
-            recordDelTimeOut = undefined;
-
-            // Reset the deletionKey
-            record2delete = {};
-          });
         });
       }
     }
+
+    $('.confirmation__body__cancel').click(() => {
+      clearTimeout(recordDelTimeOut);
+      $(`.${parent}`)
+        .removeClass('hidden')
+        .addClass('flex');
+      recordDelTimeOut = undefined;
+
+      // Reset the deletionKey
+      record2delete = {};
+    });
   });
 }
 
