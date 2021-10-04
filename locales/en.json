@@ -130,6 +130,7 @@
 	  "attachment_alt": "Picture attached to the request",
     "attachment_removal": "Remove selected picture",
 	  "date": "Request date",
+    "email-confirmation-label": "Confirm by email ?",
 	  "location_default": "Select a location",
 	  "location_title": "Concerned location",
 	  "status": "Request status",
