@@ -140,7 +140,7 @@ const inRequests = () => {
 
           socket.emit('append data', data2send);
 
-          $('.home, .header__container').toggleClass('hidden flex');
+          $('.home, .header__container, .inRequests').toggleClass('hidden flex');
           $('.wrapper, .inRequests').removeClass('blur');
         } else {
           // Else, update the existing record and hide the update form
@@ -199,7 +199,10 @@ const inRequests = () => {
             }];
           }
 
-          socket.emit('send mail', options);
+          // Only send a confirmation email if the user wants to
+          if ($('.inRequests__form__requestInfo__row1__confirmationEmail').prop('checked')) {
+            socket.emit('send mail', options);
+          }
         }
 
         // Empty the request subject and file attachment input fields
