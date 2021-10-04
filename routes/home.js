@@ -49,6 +49,8 @@ module.exports = function(app, io, connString) {
       page_type: 'Page d\'accueil',
       route: req.path,
       sendAttachments: userSettings.sendattachments,
+      sendcc: userSettings.sendcc,
+      sendmail: userSettings.sendmail,
       user: req.user
     });
 

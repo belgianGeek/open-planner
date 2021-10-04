@@ -130,6 +130,7 @@
 		"attachment_alt": "Image jointe à la demande",
 		"attachment_removal": "Retirer l'image",
 		"date": "Date de la demande",
+		"email-confirmation-label": "Confirmer par mail ?",
 		"location_default": "Sélectionnez une implantation",
 		"location_title": "Implantation concernée",
 		"status": "Statut de la demande",
