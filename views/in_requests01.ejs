@@ -23,7 +23,7 @@
     </span>
     <span class="inRequests__form__requestInfo flex">
       <span class="inRequests__form__requestInfo__row1 flex">
-        <% if (isSearchPage) { %>
+        <% if (isSearchPage || (!isSearchPage && user.type !== 'guest')) { %>
         <label class="flex flexColumn">
           <%= __('request.status') %>
           <select class="inRequests__form__requestInfo__row1__status input" type="text" placeholder="<%= __('request.status_placeholder') %>..." required="true">

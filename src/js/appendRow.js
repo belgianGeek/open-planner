@@ -134,16 +134,18 @@ const appendHistoryRow = (i, data, classname) => {
     }))
     .appendTo(row);
 
+  let assignedWorkerID = $('<span></span>')
+    .addClass(`${classname}__container__row__item--awid hidden`)
+    .appendTo(row);
+
   if (data.user_fk !== undefined && data.user_fk !== null) {
     assignedWorker.append(`${data.name.toUpperCase()}, ${data.firstname}`);
+    assignedWorkerID.append(data.user_fk);
 
-    let assignedWorkerID = $('<span></span>')
-      .addClass(`${classname}__container__row__item--awid hidden`)
-      .append(data.user_fk)
-      .appendTo(row);
-
-  } else if (data.user_fk === null) assignedWorker.append(locales.request.status_waiting);
-  else {
+  } else if (data.user_fk === null) {
+    assignedWorker.append(locales.request.status_waiting);
+    assignedWorkerID.append('default');
+  } else {
     assignedWorker.append(locales.search.display_error);
     console.trace(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
   }
