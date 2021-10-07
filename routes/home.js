@@ -17,8 +17,23 @@ module.exports = function(app, io, connString) {
   const updateSession = require('../modules/updateSession');
   const updateTask = require('../modules/updateTask');
 
+  const listUsers = async () => app.pool.query(`
+    SELECT
+      u.name,
+      u.firstname,
+      u.email,
+      u.location,
+      u.gender,
+      u.type,
+      u.user_id
+     FROM users u
+     LEFT JOIN locations l
+     ON u.location = l.location_id ORDER BY u.name`);
+
   app.get('/', checkAuth, async (req, res) => {
     let userSettings = await getSettings(app.pool);
+    const users = await listUsers();
+
     const response = await app.pool.query(`
       SELECT
         u.user_id,
@@ -37,6 +52,7 @@ module.exports = function(app, io, connString) {
 
     let locations = await app.pool.query(`SELECT location_name, location_id FROM locations ORDER BY location_name`);
 
+
     res.render('index.ejs', {
       allowPasswordUpdate: userSettings.allowpasswordupdate,
       currentVersion: app.tag,
@@ -51,7 +67,8 @@ module.exports = function(app, io, connString) {
       sendAttachments: userSettings.sendattachments,
       sendcc: userSettings.sendcc,
       sendmail: userSettings.sendmail,
-      user: req.user
+      user: req.user,
+      users: users.rows
     });
 
     io.once('connection', io => {
@@ -94,17 +111,7 @@ module.exports = function(app, io, connString) {
       });
 
       io.on('get users', async () => {
-        const users = await app.pool.query(`
-          SELECT
-            u.name,
-            u.firstname,
-            u.email,
-            u.location,
-            u.gender,
-            u.type
-           FROM users u
-           LEFT JOIN locations l
-           ON u.location = l.location_id ORDER BY u.name`);
+        let users = await listUsers();
         io.emit('users retrieved', users.rows);
       });
 

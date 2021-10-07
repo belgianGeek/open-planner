@@ -28,7 +28,9 @@
     <%- include('in_requests01', {
       locations: locations,
       sendcc: sendcc,
-      sendmail: sendmail
+      sendmail: sendmail,
+      user: user,
+      users: users
     }); %>
     <% if (user.type === 'admin') { %>
       <%- include('users', {
