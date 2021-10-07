@@ -26,7 +26,7 @@ const handleRequestModification = (parent, containerClass) => {
 
   // Check if the assigned worker ID is defined
   if ($(`.${parent} ${containerClass}__container__row__item--awid`).length) {
-    $('.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker option:selected').val($(`.${parent} ${containerClass}__container__row__item--awid`).text());
+    $(`.inRequests.absolute .inRequests__form__requestInfo__row1__assignedWorker`).val($(`.${parent} ${containerClass}__container__row__item--awid`).text());
   }
 
   // Request status
@@ -58,7 +58,7 @@ const handleRequestModification = (parent, containerClass) => {
 
     // Check for default values if the user can modify the task assignment
     if ($('.inRequests__form__requestInfo__row1__assignedWorker').length) {
-      if ($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').val() !== 'default') {
+      if ($('.inRequests__form__requestInfo__row1__assignedWorker').val() !== 'default') {
         $(`.${parent} ${containerClass}__container__row__item--aw`).text($('.inRequests__form__requestInfo__row1__assignedWorker option:selected').text().replace(/\'\'/g, "'"));
       } else {
         $(`.${parent} ${containerClass}__container__row__item--aw`).text(locales.request.status_waiting);
@@ -85,6 +85,7 @@ const handleRequestModification = (parent, containerClass) => {
 
   // Hide the form on btn click
   $('.inRequests.absolute .inRequests__form__btnContainer__hide').click(function() {
+
     $('.inRequests')
       .removeClass('absolute flex')
       .addClass('hidden');

@@ -209,7 +209,7 @@ const inRequests = () => {
         $('.inRequests__form__requestInfo__comment, .inRequests__form__requestInfo__row1__file').val('');
 
         // Select the default location option
-        $('.inRequests__form__applicantInfo__location option:selected').val('default');
+        $('.inRequests__form__applicantInfo__location').val('default');
 
         confirmation();
 
