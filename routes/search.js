@@ -23,6 +23,8 @@ module.exports = function(app, io) {
           page_type: 'Module de recherche',
           route: req.path,
           sendAttachments: userSettings.sendattachments,
+          sendcc: userSettings.sendcc,
+          sendmail: userSettings.sendmail,
           users: data.rows,
           user: req.user
         });
