@@ -77,6 +77,12 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleUserPasswordUpdate__Input', '.toggleUserPasswordUpdate__Slider', false);
   }
 
+  if (settings.displaymyrequestsmenu) {
+    toggleSwitch('.toggleMyRequests__Input', '.toggleMyRequests__Slider', true);
+  } else {
+    toggleSwitch('.toggleMyRequests__Input', '.toggleMyRequests__Slider', false);
+  }
+
   $('.settings__child__instanceNameContainer__label__input').val(globalSettings.instance_name);
   $('.settings__child__descriptionContainer__label__textarea').text(globalSettings.instance_description);
   $('.settings__child__senderContainer__senderLabel__input').val(globalSettings.sender);
