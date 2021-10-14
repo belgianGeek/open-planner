@@ -129,10 +129,27 @@ const inRequests = () => {
 
           // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
           data2send.mail.title = `🔥 ${globalSettings.instance_name} - Une nouvelle demande a été enregistrée 🔥`;
-          data2send.mail.status = 'waiting';
 
-          // Default task status
-          data2send.values.push('waiting');
+          if ($('.inRequests__form__requestInfo__row1__status').length) {
+            let status = $('.inRequests__form__requestInfo__row1__status').val();
+            data2send.mail.status = status;
+            data2send.values.push(status);
+
+            // Check for default values to avoid errors when encoding in the DB
+            if ($('.inRequests__form__requestInfo__row1__assignedWorker').val() !== 'default') {
+              data2send.values.push(assignedWorker.val());
+            } else {
+              // Set the assignment value to null if no worker is selected
+              data2send.values.push(null);
+            }
+          } else {
+            // Default task status
+            data2send.mail.status = 'waiting';
+            data2send.values.push('waiting');
+
+            // Set the assignment value to null if no worker is selected
+            data2send.values.push(null);
+          }
 
           handleAttachment();
 
