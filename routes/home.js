@@ -93,13 +93,13 @@ module.exports = function(app, io, connString) {
           if (!data.sendattachment) {
             DBquery(app, io, 'INSERT INTO', data.table, {
               text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment,
-                request_date, location_fk, status, attachment) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+                request_date, location_fk, status, user_fk, attachment) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
               values: data.values
             });
           } else {
             DBquery(app, io, 'INSERT INTO', data.table, {
               text: `INSERT INTO ${data.table}(applicant_name, applicant_firstname, comment,
-                request_date, location_fk, status, attachment, attachment_src) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+                request_date, location_fk, status, user_fk, attachment, attachment_src) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
               values: data.values
             });
           }
