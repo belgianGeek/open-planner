@@ -48,6 +48,7 @@ socket.on('settings', settings => {
   globalSettings.sendattachments = settings.sendattachments;
   globalSettings.mail_address = settings.mail_address;
   globalSettings.sender = settings.sender;
+  globalSettings.sendrequestdeletionmail = settings.sendrequestdeletionmail;
   globalSettings.smtp_user = settings.smtp_user;
   globalSettings.smtp_host = settings.smtp_host;
   globalSettings.smtp_passwd = settings.smtp_passwd;
@@ -81,6 +82,12 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleMyRequests__Input', '.toggleMyRequests__Slider', true);
   } else {
     toggleSwitch('.toggleMyRequests__Input', '.toggleMyRequests__Slider', false);
+  }
+
+  if (settings.sendrequestdeletionmail) {
+    toggleSwitch('.toggleRequestDeletionMail__Input', '.toggleRequestDeletionMail__Slider', true);
+  } else {
+    toggleSwitch('.toggleRequestDeletionMail__Input', '.toggleRequestDeletionMail__Slider', false);
   }
 
   $('.settings__child__instanceNameContainer__label__input').val(globalSettings.instance_name);

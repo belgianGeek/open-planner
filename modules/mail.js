@@ -30,7 +30,8 @@ const mail = (app, io) => {
         location: applicant.location,
         request: receiver.request.replace(/\'\'/g, "'"),
         sender: res.rows[0].sender,
-        status: mailObject.status
+        status: mailObject.status,
+        type: mailObject.type
       });
 
       const sendMail = () => {
@@ -82,6 +83,7 @@ const mail = (app, io) => {
 
   io.on('send mail', data => {
     data.mail.sendcc = data.sendcc;
+    data.mail.type = data.type;
 
     if (data.attachments !== undefined) {
       data.mail.attachments = data.attachments;
@@ -89,20 +91,99 @@ const mail = (app, io) => {
 
     let receiver = {
       mail: '',
-      request: data.request
+      request: ''
     };
 
-    let applicant = data.applicant;
+    if (data.type !== 'deletion') {
+      receiver.request = data.request;
+      let applicant = data.applicant;
 
-    DBquery(app, io, 'SELECT', 'users', {
-        text: `SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id`
-      })
-      .then(res => {
-        receiver.mail = res.rows[0].location_mail;
-        // Do not set the receiver gender
-        mail(receiver, applicant, data.mail);
-        notify(io, 'mail');
-      });
+      DBquery(app, io, 'SELECT', 'users', {
+          text: `SELECT
+            u.user_id,
+            u.name,
+            u.firstname,
+            u.email,
+            u.location,
+            u.gender,
+            u.type,
+            l.location_id,
+            l.location_name,
+            l.location_mail
+          FROM users u LEFT JOIN locations l ON u.location = l.location_id`
+        })
+        .then(res => {
+          receiver.mail = res.rows[0].location_mail;
+          // Do not set the receiver gender
+          mail(receiver, applicant, data.mail);
+          notify(io, 'mail');
+        });
+    } else {
+      data.table = 'tasks';
+      let id = data.id;
+
+      DBquery(app, io, 'SELECT', 'tasks', {
+          text: `SELECT
+          t.task_id,
+          t.applicant_name,
+          t.applicant_firstname,
+          t.request_date,
+          t.location_fk,
+          t.user_fk,
+          t.comment,
+          t.status,
+          t.attachment,
+          t.attachment_src,
+          l.location_name
+          FROM tasks t
+          LEFT JOIN locations l ON t.location_fk = l.location_id
+          WHERE t.task_id = $1`,
+          values: [data.id]
+        })
+        .then(res => {
+          receiver.request = res.rows[0].comment;
+          data.mail.creationDate = res.rows[0].request_date;
+          data.mail.id = res.rows[0].task_id;
+          data.mail.status = res.rows[0].status;
+          data.mail.title = `🗑 La demande n°${res.rows[0].task_id} a été supprimée 🗑`;
+
+          let applicant = {
+            name: res.rows[0].applicant_name,
+            firstname: res.rows[0].applicant_firstname,
+            location: res.rows[0].location_name
+          };
+
+          DBquery(app, io, 'SELECT', 'users', {
+              text: `SELECT
+                u.user_id,
+                u.name,
+                u.firstname,
+                u.email,
+                u.location,
+                u.gender,
+                u.type,
+                l.location_id,
+                l.location_name,
+                l.location_mail
+              FROM users u LEFT JOIN locations l ON u.location = l.location_id`
+            })
+            .then(res => {
+              receiver.mail = res.rows[0].location_mail;
+              // Do not set the receiver gender
+              mail(receiver, applicant, data.mail);
+              notify(io, 'mail');
+            })
+            .then(() => {
+              // Only delete the record after the mail notification was sent
+              query = {
+                text: `DELETE FROM ${data.table} WHERE task_id = $1`,
+                values: [id]
+              };
+
+              DBquery(app, io, 'SELECT', 'tasks', query);
+            });
+        })
+    };
   });
 }
 

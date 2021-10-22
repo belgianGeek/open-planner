@@ -26,7 +26,8 @@
       color: black;
     }
 
-    td, .underline {
+    td,
+    .underline {
       padding: 0.5em;
       border-bottom: 2px solid #00c0ff;
       border-right: 2px solid #00c0ff;
@@ -64,52 +65,60 @@
 <body>
   <article>
     <% if (gender === 'f') { %>
-    <p>Bonjour Madame,</p>
+      <p>Bonjour Madame,</p>
     <% } else if (gender === 'm') { %>
-    <p>Bonjour Monsieur,</p>
+      <p>Bonjour Monsieur,</p>
     <% } else { %>
-    <p>Bonjour Madame/Monsieur,</p>
+      <p>Bonjour Madame/Monsieur,</p>
     <% } %>
-    <% if (status === 'waiting') { %>
+    <% if (type === 'adding') { %>
       <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> concernant le site <strong><%= location %></strong>. En voici le détail :</p>
       <blockquote class="quote">
         <em><%= request %></em>
       </blockquote>
-    <% } else if (status === 'wip' || status === 'done') { %>
-      <% if (status === 'wip') { %>
-        <% status = 'En cours'; %>
-        <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
-      <% } else { %>
-        <% status = 'Terminée'; %>
-        <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
+    <% } else if (type === 'update') { %>
+      <% if (status === 'wip' || status === 'done') { %>
+          <% if (status === 'wip') { %>
+            <% status = 'En cours'; %>
+            <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
+          <% } else { %>
+            <% status = 'Terminée'; %>
+            <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
+          <% } %>
       <% } %>
-      <table>
-        <thead>
-          <th colspan="2">Détails</th>
-        </thead>
-        <tbody>
-          <tr>
-            <th class="underline">Date d'introduction</th>
-            <td><%= date %></td>
-          </tr>
-          <tr>
-            <th class="underline">Site</th>
-            <td><%= location %></td>
-          </tr>
-          <tr>
-            <th class="underline">Statut</th>
-            <td>
-              <em><%= status %></em>
-            </td>
-          </tr>
-          <tr>
-            <th class="underline">Objet</th>
-            <td>
-              <em><%= request %></em>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <% } else if (type === 'deletion') { %>
+      <% status = 'Supprimée'; %>
+      <p>La demande n°<%= id %> est désormais supprimée. 🗑 Vous trouverez son récapitulatif ci-dessous :</p>
+    <% } %>
+    <table>
+      <thead>
+        <th colspan="2">Détails</th>
+      </thead>
+      <tbody>
+        <tr>
+          <th class="underline">Date d'introduction</th>
+          <td><%= date %></td>
+        </tr>
+        <tr>
+          <th class="underline">Site</th>
+          <td><%= location %></td>
+        </tr>
+        <tr>
+          <th class="underline">Statut</th>
+          <td>
+            <em><%= status %></em>
+          </td>
+        </tr>
+        <tr>
+          <th class="underline">Objet</th>
+          <td>
+            <em><%= request %></em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <% if (type === 'deletion') { %>
+      <p>Si cette demande a été supprimée par erreur, vous pouvez en soumettre une nouvelle via le lien suivant : <a href="http://<%= host %>:8000">http://<%= host %>:8000</a>.</p>
     <% } %>
     <p>Bonne journée,</p>
     <p>Bien à vous,</p>
