@@ -301,6 +301,16 @@ const manageUsers = () => {
           } else if (parent.match('history')) {
             record2delete.table = 'tasks';
             record2delete.key = $(`.${parent} .history__results__container__row__item--id`).text();
+
+            // Send a deletion confirmation if allowed by the admin
+            if (globalSettings.sendrequestdeletionmail) {
+              socket.emit('send mail', {
+                type: 'deletion',
+                id: record2delete.key,
+                mail: {},
+                sendcc: globalSettings.sendcc
+              });
+            }
           }
 
           confirmation();

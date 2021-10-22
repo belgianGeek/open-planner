@@ -1,6 +1,7 @@
 const deleteData = (app, io, id, data, passport) => {
   const DBquery = require('./DBquery');
   const getUsers = require('./getUsers');
+  const mail = require('../modules/mail');
   const notify = require('./notify');
 
   if (data.key !== undefined && data.key !== '') {
@@ -9,10 +10,15 @@ const deleteData = (app, io, id, data, passport) => {
       values: [data.key]
     };
 
-    DBquery(app, io, 'DELETE FROM', data.table, query)
-      .then(() => {
-        if (data.table === 'users') getUsers(app, passport);
-      });
+    if (data.table !== 'tasks') {
+      DBquery(app, io, 'DELETE FROM', data.table, query)
+        .then(() => {
+            getUsers(app, passport);
+        });
+    } else if (data.table === 'tasks') {
+      mail(app, io);
+    }
+
   } else {
     notify(io, 'failure');
   }

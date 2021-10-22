@@ -168,6 +168,7 @@
     "mailcc_comment": "When a request is submitted or modified, send an email to the applicant",
     "my_requests_comment": "Enable \"My requests\" menu allowing users to update or delete their own requests",
     "permissions_title": "Permissions and notifications",
+    "request_deletion_mail_comment": "When a request gets deleted, notify the users and the assigners workers via email",
     "sender_mail_address": "Sender mail address",
     "sender_name": "Sender name",
     "smtp_address": "SMTP server",
