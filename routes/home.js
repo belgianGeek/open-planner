@@ -285,6 +285,11 @@ module.exports = function(app, io, connString) {
           query.push(`sender = $${values.indexOf(settings.sender) + 1},`);
         }
 
+        if (settings.sendrequestdeletionmail !== undefined) {
+          values.push(settings.sendrequestdeletionmail);
+          query.push(`sendrequestdeletionmail = $${values.indexOf(settings.sendrequestdeletionmail) + 1},`);
+        }
+
         if (settings.smtp_passwd !== undefined) {
           values.push(settings.smtp_passwd);
           query.push(`smtp_passwd = $${values.indexOf(settings.smtp_passwd) + 1},`);
@@ -299,6 +304,12 @@ module.exports = function(app, io, connString) {
           values.push(settings.smtp_host);
           query.push(`smtp_host = $${values.indexOf(settings.smtp_host) + 1},`);
         }
+
+        console.log({
+          name: 'update-settings',
+          text: query.join(' ').replace(/,$/, ''),
+          values: values
+        });
 
         DBquery(app, io, 'UPDATE', 'settings', {
           name: 'update-settings',

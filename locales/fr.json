@@ -168,6 +168,7 @@
 		"mailcc_comment": "Lors de l'introduction ou de la modification d'une demande, prévenir le demandeur par mail",
 		"my_requests_comment": "Activer le menu \"Mes demandes\" permettant aux utilisateurs de mettre à jour ou supprimer leurs propres demandes",
 		"permissions_title": "Permissions et notifications",
+		"request_deletion_mail_comment": "Prévenir par mail le demandeur et les travailleurs à la suppression d'une demande",
 		"sender_mail_address": "Adresse mail de l'expéditeur",
 		"sender_name": "Nom de l'expéditeur",
 		"smtp_address": "Serveur SMTP",

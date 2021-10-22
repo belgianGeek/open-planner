@@ -130,6 +130,9 @@ const inRequests = () => {
           // If the form do not have the class 'absolute', append data to the DB and proceed to the next step
           data2send.mail.title = `🔥 ${globalSettings.instance_name} - Une nouvelle demande a été enregistrée 🔥`;
 
+          // Define the mail type
+          data2send.mail.type = 'adding';
+
           if ($('.inRequests__form__requestInfo__row1__status').length) {
             let status = $('.inRequests__form__requestInfo__row1__status').val();
             data2send.mail.status = status;
@@ -164,6 +167,7 @@ const inRequests = () => {
 
           data2send.mail.id = data2send.id = $('.inRequests.absolute .inRequests__id').text();
           data2send.mail.creationDate = new Date(requestDate.val()).toLocaleDateString();
+          data2send.mail.type = 'update';
 
           // Check the task status to adapt the mail sent to the user
           if ($('.inRequests__form__requestInfo__row1__status option:selected').val() === 'done') {
@@ -205,6 +209,7 @@ const inRequests = () => {
               location: applicantLocation.text()
             },
             sendcc: globalSettings.sendcc,
+            type: data2send.mail.type,
             mail: data2send.mail
           }
 

@@ -167,6 +167,14 @@ const search = () => {
 
             socket.emit('delete data', record2delete);
 
+            // Send a deletion confirmation
+            socket.emit('send mail', {
+              type: 'deletion',
+              id: record2delete.key,
+              mail: {},
+              sendcc: globalSettings.sendcc
+            });
+
             // Reset the deletionKey
             record2delete = {};
 
