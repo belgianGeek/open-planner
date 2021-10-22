@@ -39,13 +39,14 @@
         <span class="toggleMyRequests__Slider"></span>
       </label>
     </span>
+    <span class="toggleRequestDeletionMail flex">
+      <span class="toggleRequestDeletionMail__Comment"><%= __('settings.request_deletion_mail_comment') %></span>
+      <label class="toggleRequestDeletionMail__Switch">
+        <input class="toggleRequestDeletionMail__Input" type="checkbox" name="toggleRequestDeletionMailInput" value="">
+        <span class="toggleRequestDeletionMail__Slider"></span>
+      </label>
+    </span>
     <h2 class="settings__child__heading2 settings__child__heading"><%= __('settings.customization_title') %></h2>
-    <!-- <form class="backgroundImageUploadForm flex" action="/" enctype="multipart/form.data" method="post">
-      <label for="backgroundImageUploadForm__label">Cet arrière-plan est moche !</label>
-      <button class="backgroundImageUploadForm__Btn btn" type="button" name="backgroundImageUploadBtn">Télécharger une image</button>
-      <input class="backgroundImageUploadForm__InputFile hidden" type="file" name="backgroundImageUploadInput" accept="image/png, image/jpg">
-      <input class="backgroundImageUploadForm__InputUrl input" type="text" name="backgroundImageUrl" value="" placeholder='Insérer un lien'>
-    </form> -->
     <span class="settings__child__instanceNameContainer flex">
       <label class="settings__child__instanceNameContainer__label flex">
         <%= __('config.instance_name') %>
@@ -63,8 +64,8 @@
     <h2 class="settings__child__heading2 settings__child__heading">Emailing</h2>
     <span class="settings__child__senderContainer flex">
       <label class="settings__child__senderContainer__senderLabel flex">
-        <%= __('settings.sender_mail_address') %>
-        <input class="settings__child__senderContainer__senderLabel__input input" type="text" placeholder="<%= __('settings.sender_mail_address') %>">
+        <%= __('settings.sender_name') %>
+        <input class="settings__child__senderContainer__senderLabel__input input" type="text" placeholder="<%= __('settings.sender_name') %>">
       </label>
       <span class="protip protip--noMargin"><%= __('protip.signature') %></span>
     </span>
