@@ -1,6 +1,4 @@
 {
-  "404_link": "Way to a more peaceful land",
-  "404_img_alt": "Picture illustrating a page not found",
   "about": {
 		"cover_picture_src_intro": "Cover photo by",
 	  "cover_picture_src_from": "on",
@@ -39,6 +37,11 @@
 		"delete": "Delete",
 	  "modify": "Modify"
 	},
+  "errorPage": {
+    "img_alt": "Picture illustrating a page not found",
+    "link": "Way to a more peaceful land",
+    "more_info": "Please get in touch with your system administrator for more information"
+  },
   "export": {
 		"btn": "Export",
 	  "csv": "CSV (Excel-friendly)",
@@ -162,6 +165,7 @@
     "allow_password_update": "Allow users to update their contact details and their password",
     "attachment_comment": "Allow users to join a picture to their request",
     "customization_title": "Customization",
+    "disable_search_page_access__comment": "Allow guests to access the search page",
     "emailing_title": "Emailing settings",
     "mail_address_passwd": "Mail address password",
     "mail_comment": "When a new request is submitted, send an email to the team in charge of the task",
