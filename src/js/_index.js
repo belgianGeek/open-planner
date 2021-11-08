@@ -40,6 +40,7 @@ let globalSettings = {};
 socket.on('settings', settings => {
   // Update the global object with the retrieved settings
   globalSettings.allowpasswordupdate = settings.allowpasswordupdate;
+  globalSettings.allowsearchpageaccess = settings.allowsearchpageaccess;
   globalSettings.displaymyrequestsmenu = settings.displaymyrequestsmenu;
   globalSettings.instance_name = settings.instance_name;
   globalSettings.instance_description = settings.instance_description;
@@ -76,6 +77,12 @@ socket.on('settings', settings => {
     toggleSwitch('.toggleUserPasswordUpdate__Input', '.toggleUserPasswordUpdate__Slider', true);
   } else {
     toggleSwitch('.toggleUserPasswordUpdate__Input', '.toggleUserPasswordUpdate__Slider', false);
+  }
+
+  if (settings.allowsearchpageaccess) {
+    toggleSwitch('.toggleSearchPageUserAccess__Input', '.toggleSearchPageUserAccess__Slider', true);
+  } else {
+    toggleSwitch('.toggleSearchPageUserAccess__Input', '.toggleSearchPageUserAccess__Slider', false);
   }
 
   if (settings.displaymyrequestsmenu) {

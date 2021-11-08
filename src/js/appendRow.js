@@ -43,12 +43,6 @@ const appendUserRow = (i, data) => {
     .append(data.gender)
     .appendTo(row);
 
-  let password = $('<input>')
-    .attr('type', 'password')
-    .addClass('users__container__row__item users__container__row__item--pwd input noInput')
-    .val('12345678')
-    .appendTo(row);
-
   // Translate the user type shown in the interface
   let typeDisplayed = $('<span></span>')
     .addClass('users__container__row__item users__container__row__item--type')
@@ -59,6 +53,12 @@ const appendUserRow = (i, data) => {
   let type = $('<span></span>')
     .addClass('users__container__row__item users__container__row__item--hiddenType hidden')
     .append(data.type)
+    .appendTo(row);
+
+  let password = $('<input>')
+    .attr('type', 'password')
+    .addClass('users__container__row__item users__container__row__item--pwd input noInput')
+    .val('12345678')
     .appendTo(row);
 }
 

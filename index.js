@@ -140,10 +140,23 @@ existPath('./backups/');
 existPath('./exports/');
 existPath('./templates/');
 
-// Exporter une sauvegarde de la DB toutes les douze heures
+// Export a copy of the database every twelve hours
 setInterval(() => {
-  console.log('DB backup on ' + Date.now());
-  exportDB(config.connectionString, `./backups/planner_${Date.now()}.pgsql`);
+  console.log('DB backup on ' + new Date().toLocaleString('FR-be'));
+
+  // Empty the 'backupsV directory to only keep 3 versions of the database before creating a new save
+  const dir = './backups/';
+  const backups = fs.readdirSync(dir).sort();
+
+  for (const [i, backup] of backups.entries()) {
+    if (i <= backups.length -3) {
+      fs.unlinkSync(`${dir}${backup}`);
+    } else if (i === backups.length -1) {
+      console.log('backups folder is now empty !');
+    }
+  }
+
+  exportDB(`./backups/planner_${Date.now()}.pgsql`);
 }, 12 * 60 * 60 * 1000);
 
 

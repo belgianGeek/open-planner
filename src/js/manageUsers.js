@@ -77,6 +77,9 @@ const manageUsers = () => {
         .addClass(`${childMenuClassname}__container__header flex`)
         .appendTo(`.${childMenuClassname}__container`);
 
+        // Set default values
+        data[0].password = '';
+
       // Création du titre du tableau
       for (const [i, column] of Object.keys(data[0]).entries()) {
         let columnTitle = column;
@@ -155,7 +158,7 @@ const manageUsers = () => {
 
         if (columnTitle !== '') {
           let title = $('<span></span>')
-            .addClass(`${childMenuClassname}__container__header__item`)
+            .addClass(`${childMenuClassname}__container__header__item ${column}`)
             .text(columnTitle)
             .appendTo(header);
         }
