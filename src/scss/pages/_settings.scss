@@ -27,7 +27,8 @@
       .toggleMailCc__Input,
       .toggleMail__input,
       .toggleMyRequests__Input,
-      .toggleUserPasswordUpdate__Input {
+      .toggleUserPasswordUpdate__Input,
+      .toggleSearchPageUserAccess__Input {
         margin-top: 1.5em;
       }
     }
@@ -118,7 +119,8 @@
     .toggleMailCc,
     .toggleMyRequests,
     .toggleUserPasswordUpdate,
-    .toggleRequestDeletionMail {
+    .toggleRequestDeletionMail,
+    .toggleSearchPageUserAccess {
       margin-top: 2em;
     }
 
@@ -127,7 +129,8 @@
     .toggleMailCc,
     .toggleMyRequests,
     .toggleUserPasswordUpdate,
-    .toggleRequestDeletionMail {
+    .toggleRequestDeletionMail,
+    .toggleSearchPageUserAccess {
       justify-content: space-between;
       width: 100%;
       align-items: baseline;
@@ -181,7 +184,8 @@
         &:checked + .toggleMail__Slider,
         &:checked + .toggleMyRequests__Slider,
         &:checked + .toggleUserPasswordUpdate__Slider,
-        &:checked + .toggleRequestDeletionMail__Slider {
+        &:checked + .toggleRequestDeletionMail__Slider,
+        &:checked + .toggleSearchPageUserAccess__Slider {
           &:before {
             left: 0;
             transform: translateX(22px);

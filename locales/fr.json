@@ -1,6 +1,4 @@
 {
-	"404_link": "Vers une terre moins hostile",
-	"404_img_alt": "Image illustrant la page non trouvée",
 	"about": {
 		"cover_picture_src_intro": "Photo de couverture par",
 		"cover_picture_src_from": "sur",
@@ -39,6 +37,11 @@
 		"delete": "Supprimer",
 		"modify": "Modifier"
 	},
+	"errorPage": {
+    "img_alt": "Image illustrant la page non trouvée",
+    "link": "Vers une terre moins hostile",
+    "more_info": "Prenez contact avec votre administrateur système pour plus d'informations"
+  },
 	"export": {
 		"btn": "Exporter",
 		"csv": "CSV (compatible Excel)",
@@ -162,6 +165,7 @@
 		"allow_password_update": "Autoriser les utilisateurs à modifier leurs coordonnées et leur mot de passe",
 		"attachment_comment": "Permettre au demandeur de joindre une image à sa demande",
 		"customization_title": "Personnalisation",
+		"disable_search_page_access__comment": "Autoriser les visiteurs à accéder à la page de recherche de requêtes",
 		"emailing_title": "Paramètres d'emailing",
 		"mail_address_passwd": "Mot de passe de l'adresse email",
 		"mail_comment": "Lors de l'introduction d'une demande, envoyer un mail à l'équipe chargée d'effectuer la tâche",
