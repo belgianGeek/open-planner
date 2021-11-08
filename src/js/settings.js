@@ -51,6 +51,10 @@ const settings = () => {
         updatedSettings.allowpasswordupdate = globalSettings.allowpasswordupdate = $('.toggleUserPasswordUpdate__Input').prop('checked');
       }
 
+      if (globalSettings.allowsearchpageaccess !== $('.toggleSearchPageUserAccess__Input').prop('checked')) {
+        updatedSettings.allowsearchpageaccess = globalSettings.allowsearchpageaccess = $('.toggleSearchPageUserAccess__Input').prop('checked');
+      }
+
       if (globalSettings.displaymyrequestsmenu !== $('.toggleMyRequests__Input').prop('checked')) {
         updatedSettings.displaymyrequestsmenu = globalSettings.displaymyrequestsmenu = $('.toggleMyRequests__Input').prop('checked');
       }

@@ -55,6 +55,7 @@ module.exports = function(app, io, connString) {
 
     res.render('index.ejs', {
       allowPasswordUpdate: userSettings.allowpasswordupdate,
+      allowsearchpageaccess: userSettings.allowsearchpageaccess,
       currentVersion: app.tag,
       displayMyRequestsMenu: userSettings.displaymyrequestsmenu,
       isFirstUserConfigured: isFirstUserConfigured,
@@ -244,78 +245,22 @@ module.exports = function(app, io, connString) {
       io.on('settings', settings => {
         let values = [];
         let query = ['UPDATE settings SET'];
+        let iSettings = 1;
 
-        if (settings.allowpasswordupdate !== undefined) {
-          values.push(settings.allowpasswordupdate);
-          query.push(`allowpasswordupdate = $${values.indexOf(settings.allowpasswordupdate) + 1},`);
+        for (const value in settings) {
+          if (settings.hasOwnProperty(value)) {
+            query.push(`${value} = $${iSettings++},`);
+            values.push(settings[value]);
+          }
         }
-
-        if (settings.displaymyrequestsmenu !== undefined) {
-          values.push(settings.displaymyrequestsmenu);
-          query.push(`displaymyrequestsmenu = $${values.indexOf(settings.displaymyrequestsmenu) + 1},`);
-        }
-
-        if (settings.instance_name !== undefined) {
-          values.push(settings.instance_name);
-          query.push(`instance_name = $${values.indexOf(settings.instance_name) + 1},`);
-        }
-
-        if (settings.instance_description !== undefined) {
-          values.push(settings.instance_description);
-          query.push(`instance_description = $${values.indexOf(settings.instance_description) + 1},`);
-        }
-
-        if (settings.sendmail !== undefined) {
-          values.push(settings.sendmail);
-          query.push(`sendmail = $${values.indexOf(settings.sendmail) + 1},`);
-        }
-
-        if (settings.sendcc !== undefined) {
-          values.push(settings.sendcc);
-          query.push(`sendcc = $${values.indexOf(settings.sendcc) + 1},`);
-        }
-
-        if (settings.sendattachments !== undefined) {
-          values.push(settings.sendattachments);
-          query.push(`sendattachments = $${values.indexOf(settings.sendattachments) + 1},`);
-        }
-
-        if (settings.sender !== undefined) {
-          values.push(settings.sender);
-          query.push(`sender = $${values.indexOf(settings.sender) + 1},`);
-        }
-
-        if (settings.sendrequestdeletionmail !== undefined) {
-          values.push(settings.sendrequestdeletionmail);
-          query.push(`sendrequestdeletionmail = $${values.indexOf(settings.sendrequestdeletionmail) + 1},`);
-        }
-
-        if (settings.smtp_passwd !== undefined) {
-          values.push(settings.smtp_passwd);
-          query.push(`smtp_passwd = $${values.indexOf(settings.smtp_passwd) + 1},`);
-        }
-
-        if (settings.smtp_user !== undefined) {
-          values.push(settings.smtp_user);
-          query.push(`smtp_user = $${values.indexOf(settings.smtp_user) + 1},`);
-        }
-
-        if (settings.smtp_host !== undefined) {
-          values.push(settings.smtp_host);
-          query.push(`smtp_host = $${values.indexOf(settings.smtp_host) + 1},`);
-        }
-
-        console.log({
-          name: 'update-settings',
-          text: query.join(' ').replace(/,$/, ''),
-          values: values
-        });
 
         DBquery(app, io, 'UPDATE', 'settings', {
           name: 'update-settings',
           text: query.join(' ').replace(/,$/, ''),
           values: values
         });
+
+        iSettings = 0;
       });
 
       io.on('update', async record => {
