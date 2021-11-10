@@ -82,8 +82,8 @@ module.exports = function(app, io) {
               u.type
             FROM tasks t
             LEFT JOIN users u ON t.user_fk = u.user_id
-            WHERE t.applicant_name ILIKE '%$1%' AND t.location_fk = $2 ORDER BY t.task_id`,
-                values: [data.applicant_name, data.location]
+            WHERE t.applicant_name ILIKE $1 AND t.location_fk = $2 ORDER BY t.task_id`,
+                values: [`%${data.applicant_name}%`, data.location]
               };
             }
           } else {
@@ -132,8 +132,8 @@ module.exports = function(app, io) {
               l.location_name
             FROM tasks t
             LEFT JOIN locations l ON t.location_fk = l.location_id
-            LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE '%$1%' ORDER BY t.task_id`,
-                values: [data.applicant_name]
+            LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE $1 ORDER BY t.task_id`,
+                values: [`%${data.applicant_name}%`]
               }
             }
           }

@@ -80,10 +80,20 @@
       <% if (status === 'wip' || status === 'done') { %>
           <% if (status === 'wip') { %>
             <% status = 'En cours'; %>
-            <p>La demande n°<%= id %> a été modifiée. 🙃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
+            <p>La demande n°<%= id %> a été modifiée. 🙃</p>
+            <% if (searchPageAccess) { %>
+              <span>Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
+            <% } else { %>
+              <span>Vous trouverez son récapitulatif dans le menu intitulé <em>Mes demandes</em> situé dans le bandeau de gauche de l'interface.</span>
+            <% } %>
           <% } else { %>
             <% status = 'Terminée'; %>
-            <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃 Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</p>
+            <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃</p>
+            <% if (searchPageAccess) { %>
+              <span>Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
+            <% } else { %>
+              <span>Vous trouverez son récapitulatif dans le menu intitulé <em>Mes demandes</em> situé dans le bandeau de gauche de l'interface.</span>
+            <% } %>
           <% } %>
       <% } %>
     <% } else if (type === 'deletion') { %>
