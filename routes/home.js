@@ -19,13 +19,15 @@ module.exports = function(app, io, connString) {
 
   const listUsers = async () => app.pool.query(`
     SELECT
+      u.user_id,
       u.name,
       u.firstname,
       u.email,
       u.location,
       u.gender,
       u.type,
-      u.user_id
+      l.location_id,
+      l.location_name
      FROM users u
      LEFT JOIN locations l
      ON u.location = l.location_id ORDER BY u.name`);
@@ -34,19 +36,8 @@ module.exports = function(app, io, connString) {
     let userSettings = await getSettings(app.pool);
     const users = await listUsers();
 
-    const response = await app.pool.query(`
-      SELECT
-        u.user_id,
-        u.name,
-        u.firstname,
-        u.gender,
-        u.email,
-        u.location,
-        u.type
-      FROM users u`);
-
     let isFirstUserConfigured = false;
-    if (response.rowCount) {
+    if (users.rowCount) {
       isFirstUserConfigured = true;
     }
 
@@ -186,7 +177,9 @@ module.exports = function(app, io, connString) {
                  t.location_fk,
                  t.user_fk,
                  t.comment,
-                 t.status
+                 t.status,
+                 u.name,
+                 u.firstname
                 FROM tasks t LEFT JOIN users u ON t.user_fk = u.user_id ORDER BY t.task_id`
             })
             .then(async res => {
