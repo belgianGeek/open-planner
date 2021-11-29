@@ -73,9 +73,6 @@
     <% } %>
     <% if (type === 'adding') { %>
       <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> concernant le site <strong><%= location %></strong>. En voici le détail :</p>
-      <blockquote class="quote">
-        <em><%= request %></em>
-      </blockquote>
     <% } else if (type === 'update') { %>
       <% if (status === 'wip' || status === 'done') { %>
           <% if (status === 'wip') { %>
