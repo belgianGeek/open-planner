@@ -8,6 +8,6 @@ module.exports = function(app) {
     ADD COLUMN IF NOT EXISTS allowsearchpageaccess BOOLEAN
     `)
     .then(() => app.pool.query(`UPDATE settings SET displaymyrequestsmenu = true, sendrequestdeletionmail = true, allowsearchpageaccess = true`))
-    .then(() => fs.renameSync('./update-db.js', './udate-db.js.bak'))
+    .then(() => fs.renameSync('./update-db.js', './update-db.js.bak'))
     .catch(err => console.error(`Error updating Open Planner : ${err}`));
 };
