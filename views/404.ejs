@@ -6,7 +6,7 @@
   <main class="wrapper blur">
     <div class="absolute zero blur backgroundColor"></div>
   </main>
-  <% if (route !== '/search') { %>
+  <% if (route !== '/search' && route !== '/download') { %>
     <img class="errorPage__img" src="/src/scss/404.png" alt="<%= __('errorPage.img_alt') %>">
     <div class="errorPage__comment flex">
       <p><%= msg %></p>

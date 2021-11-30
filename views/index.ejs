@@ -20,7 +20,7 @@
       <h2 class="home__title title"><%= __('home.call_to_action') %></h2>
       <span class="home__btnContainer flex">
         <button class="home__btnContainer__newRequest btn home-btn" type="button"><%= __('home.new_request') %></button>
-        <% if (allowsearchpageaccess) { %>
+          <% if (allowsearchpageaccess || user.type !== 'guest') { %>
           <button class="home__btnContainer__search btn home-btn" type="button" name="button">
             <a href="/search?lang=<%= __('lang') %>"><%= __('home.show_requests') %></a>
           </button>

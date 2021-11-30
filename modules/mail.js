@@ -29,6 +29,7 @@ const mail = (app, io) => {
         id: mailObject.id,
         location: applicant.location,
         request: receiver.request.replace(/\'\'/g, "'"),
+        searchPageAccess: res.rows[0].allowsearchpageaccess,
         sender: res.rows[0].sender,
         status: mailObject.status,
         type: mailObject.type
