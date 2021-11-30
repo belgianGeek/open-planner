@@ -70,7 +70,9 @@ const mail = (app, io) => {
               options.cc = cc.rows[0].email;
             }
 
-            mail.sendMail(options).catch(err => console.trace(err));
+            mail.sendMail(options)
+              .then(() => console.log(`Mail sent on ${new Date(Date.now()).toUTCString()} to ${options.to}. A copy was sent to ${options.cc}`))
+              .catch(err => console.trace(err));
           } else {
             console.trace('Il semble que les paramètres SMTP spécifiés soient incorrects : ' + err);
           }
