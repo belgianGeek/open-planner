@@ -8,7 +8,11 @@
         <select class="inRequests__form__applicantInfo__location input" required="true">
           <option value="default"><%= __('request.location_default') %></option>
           <% for(const [i, location] of locations.entries()) { %>
-          <option value="<%= location.location_id %>"><%= location.location_name %></option>
+          <option
+            value="<%= location.location_id %>"
+            <% if (user.location === location.location_id) { %> selected="true" <% } %>
+            ><%= location.location_name %>
+          </option>
           <% } %>
         </select>
       </label>
