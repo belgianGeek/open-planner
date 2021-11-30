@@ -35,7 +35,11 @@ const handleRequestModification = (parent, containerClass) => {
   else $('.inRequests.absolute .inRequests__form__requestInfo__row1__status').val('done');
 
   // The form submit is handled in the inRequests function !
-  $('.inRequests.absolute .inRequests__form__btnContainer__submit').click(function() {
+  $('.inRequests.absolute .inRequests__form__btnContainer__submit')
+    .unbind('click.modifyMyRequest')
+    .bind('click.modifyMyRequest', function(event) {
+    event.preventDefault();
+
     // Update the web interface with the changes
     $(`.${parent} ${containerClass}__container__row__item--name`).text($('.inRequests__form__applicantInfo__name').val().replace(/\'\'/g, "'"));
     $(`.${parent} ${containerClass}__container__row__item--firstname`).text($('.inRequests__form__applicantInfo__firstname').val().replace(/\'\'/g, "'"));
@@ -47,7 +51,7 @@ const handleRequestModification = (parent, containerClass) => {
       $(`.${parent} ${containerClass}__container__row__item--fileSrc`).text($('.inRequests img').attr('src'));
     } else {
       $('<span></span>')
-        .addClass(`.${parent} ${containerClass}__container__row__item--fileSrc`)
+        .addClass(`${parent} ${containerClass}__container__row__item--fileSrc`)
         .text($('.inRequests img').attr('src'))
         .appendTo(`.${parent} ${containerClass}`);
     }
