@@ -32,6 +32,7 @@ node_modules/
 backups/
 exports/
 tmp/
+tests/
 
 
 .passwd
