@@ -37,7 +37,9 @@ const inRequests = () => {
     }
   });
 
-  $('.inRequests__form__btnContainer__submit').click(event => {
+  $('.inRequests__form__btnContainer__submit')
+  .unbind('click.submitRequest')
+  .bind('click.submitRequest', function (event) {
     event.preventDefault();
     let applicantLocation = $('.inRequests__form__applicantInfo__location option:selected');
     let assignedWorker = $('.inRequests__form__requestInfo__row1__assignedWorker option:selected');
