@@ -1,22 +1,20 @@
 const notify = require('./notify');
 
-const DBquery = (app, io, action, table, query, displayNotification = true) => {
+const DBquery = (app, url, action, query, displayNotification = true) => {
   return new Promise((fullfill, reject) => {
     app.pool.query({
-      name: query.name,
-      text: query.text,
-      values: query.values
-    })
+        name: query.name,
+        text: query.text,
+        values: query.values
+      })
       .then(res => {
         if (res.rowCount === 0 || res.rowCount === null) {
-          if (io !== null && displayNotification) {
-            notify(io, 'info');
+          if (displayNotification) {
+            notify(url, 'info');
           }
         } else {
-          if (action !== 'SELECT' && action !== 'COPY' && table !== 'barcodes') {
-            if (io !== null && displayNotification) {
-              notify(io, 'success');
-            }
+          if (displayNotification) {
+            notify(url, 'success');
           }
         }
 
@@ -25,7 +23,7 @@ const DBquery = (app, io, action, table, query, displayNotification = true) => {
       })
       .catch(err => {
         if (action !== 'SELECT') {
-          notify(io, 'error');
+          notify(url, 'error');
         }
         console.trace(`DBquery error : ${err}`);
         reject(`Une erreur est survenue lors de l'action '${action}' dans la table '${table}' avec la requête "${query.text}" :\n${err}`);

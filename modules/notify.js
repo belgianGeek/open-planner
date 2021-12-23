@@ -1,8 +1,14 @@
-const notify = (io, type, isImport = false, usersNb) => {
-  io.emit('notification', {
-    isImport: isImport,
-    type: type,
-    usersNb: usersNb
+const axios = require('axios');
+
+const notify = (url, type, isImport = false, usersNb) => {
+  axios({
+    method: 'POST',
+    url: url,
+    data: {
+      isImport: isImport,
+      type: type,
+      usersNb: usersNb
+    }
   });
 }
 
