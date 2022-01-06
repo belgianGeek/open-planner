@@ -10,7 +10,7 @@ export default {
 
 <template>
 <span class="notification hidden">
-  <img class="notification__icon" src="@/assets/thumbs-up.svg" alt="Notification icon">
+  <img class="notification__icon" src="/img/thumbs-up.svg" alt="Notification icon">
   <p class="notification__msg"></p>
 </span>
 </template>
