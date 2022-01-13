@@ -15,8 +15,6 @@ const deleteData = (app, io, id, data, passport) => {
         .then(() => {
             getUsers(app, passport);
         });
-    } else if (data.table === 'tasks') {
-      mail(app, io);
     }
 
   } else {

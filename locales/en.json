@@ -147,12 +147,21 @@
   "search": {
 		"assignment": "Assignment",
     "attachment": "Attachment",
-    "container_title": "Perform a search",
+    "combination_label": "and the",
+    "container_title": "Choose a location :",
     "default": "All locations",
 		"display_error": "Display error...",
+    "reader_label": "applicant name :",
     "request_content": "Content",
     "request_number": "Request number",
     "results_title": "Search results",
+    "sort": {
+      "date_ascending": "Date ascending",
+      "date_descending": "Date descending",
+      "status_date_descending": "Status descending and date descending",
+      "status_date_ascending": "Status descending and date ascending",
+      "title": "Sort results by :"
+    },
     "status": "Status",
 		"status_title": {
 			"done": "Completed",

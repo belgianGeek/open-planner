@@ -16,6 +16,23 @@ const search = () => {
       searchData.location = $('.search__container__select').val();
     }
 
+    switch ($('.search__container__sort').val()) {
+      case 'default':
+        searchData.sortCriteria = 't.task_id, t.request_date';
+        break;
+      case 'date_descending':
+        searchData.sortCriteria = 't.task_id DESC, t.request_date DESC';
+        break;
+      case 'status_date_descending':
+        searchData.sortCriteria = "CASE WHEN t.status = 'waiting' THEN 'z' ELSE 'a' END DESC, t.task_id DESC, t.request_date DESC";
+        break;
+      case 'status_date_ascending':
+        searchData.sortCriteria = "CASE WHEN t.status = 'waiting' THEN 'z' ELSE 'a' END DESC, t.task_id ASC, t.request_date ASC";
+        break;
+      default:
+        searchData.sortCriteria = 't.task_id, t.request_date';
+    }
+
     if ($('.search__container__readerInput').val() !== '') {
       searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
       searchData.getApplicant = true;
