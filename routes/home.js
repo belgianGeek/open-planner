@@ -166,7 +166,7 @@ module.exports = function(app, io, connString) {
 
         if (format === 'csv') {
           const table = 'tasks';
-          const filename = table + '-' + new Date().toUTCString().replace(/[\s,]/g, '-') + '.csv';
+          const filename = table + '-' + new Date().toUTCString().replace(/[\s,]{1,}/g, '-') + '.csv';
           DBquery(app, io, 'SELECT', table, {
               text: `
                 SELECT
@@ -204,7 +204,7 @@ module.exports = function(app, io, connString) {
                   applicant = 'Aucun';
                 }
 
-                data2write += `${row.task_id},${row.applicant_firstname} ${row.applicant_name.toUpperCase()},${row.request_date.toLocaleDateString('fr-BE')},${location.rows[0].location_name},${applicant},${row.comment.replace(/\'\'/, "'")},${status}\n`;
+                data2write += `${row.task_id},${row.applicant_firstname} ${row.applicant_name.toUpperCase()},${row.request_date.toLocaleDateString('fr-BE')},${location.rows[0].location_name},${applicant},${row.comment.replace(/\'\'/gm, "'").replace(/\n\n/gm, '\n').replace(/\n/gm, ' ')},${status}\n`;
 
                 if (i === res.rows.length - 1) {
                   fs.writeFile(path.join(__dirname, '../exports/' + filename), data2write, (err) => {

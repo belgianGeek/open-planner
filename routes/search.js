@@ -60,7 +60,8 @@ module.exports = function(app, io) {
               u.type
             FROM tasks t
             LEFT JOIN users u ON t.user_fk = u.user_id
-            WHERE t.location_fk = $1 ORDER BY t.task_id`,
+            WHERE t.location_fk = $1
+            ORDER BY ${data.sortCriteria}`,
                 values: [data.location]
               };
             } else {
@@ -82,7 +83,8 @@ module.exports = function(app, io) {
               u.type
             FROM tasks t
             LEFT JOIN users u ON t.user_fk = u.user_id
-            WHERE t.applicant_name ILIKE $1 AND t.location_fk = $2 ORDER BY t.task_id`,
+            WHERE t.applicant_name ILIKE $1 AND t.location_fk = $2
+            ORDER BY ${data.sortCriteria}`,
                 values: [`%${data.applicant_name}%`, data.location]
               };
             }
@@ -109,7 +111,7 @@ module.exports = function(app, io) {
             FROM tasks t
             LEFT JOIN locations l ON t.location_fk = l.location_id
             LEFT JOIN users u ON t.user_fk = u.user_id
-            ORDER BY t.task_id`
+            ORDER BY ${data.sortCriteria}`
               };
             } else {
               query = {
@@ -132,7 +134,7 @@ module.exports = function(app, io) {
               l.location_name
             FROM tasks t
             LEFT JOIN locations l ON t.location_fk = l.location_id
-            LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE $1 ORDER BY t.task_id`,
+            LEFT JOIN users u ON t.user_fk = u.user_id WHERE t.applicant_name ILIKE $1 ORDER BY ${data.sortCriteria}`,
                 values: [`%${data.applicant_name}%`]
               }
             }
