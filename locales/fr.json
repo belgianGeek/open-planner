@@ -147,12 +147,21 @@
 	"search": {
 		"assignment": "Attribution",
 		"attachment": "Pièce jointe",
-		"container_title": "Effectuer une recherche",
+		"combination_label": "et le",
+		"container_title": "Sélectionner une implantation :",
 		"default": "Tous les sites",
 		"display_error": "Problème d'affichage...",
+		"reader_label": "nom du demandeur :",
 		"request_content": "Contenu de la demande",
 		"request_number": "N° de demande",
 		"results_title": "Résultats de recherche",
+		"sort": {
+			"date_ascending": "Date ascendante",
+			"date_descending": "Date descendante",
+			"status_date_descending": "Statut descendant et date descendante",
+			"status_date_ascending": "Statut descendant et date ascendante",
+			"title": "Trier les résultats par :"
+		},
 		"status": "Statut",
 		"status_title": {
 			"done": "Terminée",
