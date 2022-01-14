@@ -89,7 +89,7 @@ const appendHistoryRow = (i, data, classname) => {
     .appendTo(`.${classname}__container`);
 
   let id = $('<span></span>')
-    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--id`)
+    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--id flex05`)
     .append(data.task_id)
     .appendTo(row);
 
@@ -105,7 +105,7 @@ const appendHistoryRow = (i, data, classname) => {
       .appendTo(row);
   }
 
-  let date = $('<span></span>').addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--date`);
+  let date = $('<span></span>').addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--date flex05`);
   let timestamp = $('<span></span>').addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--timestamp hidden`);
 
   if (data.request_date !== null) {
@@ -119,7 +119,7 @@ const appendHistoryRow = (i, data, classname) => {
   date.appendTo(row);
 
   let assignedWorker = $('<span></span>')
-    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--aw`)
+    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--aw flex05`)
     .appendTo(row);
 
   let commentMatches = {
@@ -128,7 +128,7 @@ const appendHistoryRow = (i, data, classname) => {
   };
 
   let comment = $('<span></span>')
-    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--body`)
+    .addClass(`${classname}__container__row__item  rowItem ${classname}__container__row__item--body flex2`)
     .append(data.comment.replace(/\n|\'\'/g, matched => {
       return commentMatches[matched];
     }))
@@ -150,38 +150,30 @@ const appendHistoryRow = (i, data, classname) => {
     console.trace(`Assigned worker for task n°${data.task_id} : ${data.name.toUpperCase()}, ${data.firstname}`);
   }
 
-  let status = $('\
-<svg xmlns="http://www.w3.org/2000/svg">\
-  <circle cx="50%" cy="50%" r="5"/>\
-  <title class="status__title"></title>\
-</svg>\
-').addClass(`${classname}__container__row__item  ${classname}__container__row__item--status`)
-    .attr('viewBox', '0 0 75 10')
+  let status = $('<p></p>')
+    .addClass(`${classname}__container__row__item  ${classname}__container__row__item--status flex05`)
     .appendTo(row);
 
   if (data.status === 'waiting') {
     status
+      .text(locales.request.status_waiting)
       .removeClass('done wip')
       .addClass('waiting');
-
-    $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.waiting);
   } else if (data.status === 'done') {
     status
+      .text(locales.request.status_done)
       .removeClass('waiting wip')
       .addClass('done');
-
-    $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.done);
   } else {
     status
+      .text(locales.request.status_inProgress)
       .removeClass('done waiting')
       .addClass('wip');
-
-    $(`.${status.attr('class').split(' ').join('.')} .status__title`).text(locales.search.status_title.wip);
   }
 
   // Same comment as in the switch up ahead
   if (globalSettings.sendattachments) {
-    let attachment = $('<span></span>').addClass(`${classname}__container__row__item ${classname}__container__row__item--file`);
+    let attachment = $('<span></span>').addClass(`${classname}__container__row__item ${classname}__container__row__item--file flex05`);
     if (data.attachment) {
       attachment.append('📎');
 
