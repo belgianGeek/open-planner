@@ -117,18 +117,21 @@
 
       &--status {
         justify-content: center;
+        padding: .3em 0;
+        border-radius: 1em;
       }
 
-      &--status.done circle {
-        fill: $green;
+      &--status.done {
+        background-color: $green;
       }
 
-      &--status.wip circle {
-        fill: $orange;
+      &--status.wip {
+        background-color: $orange;
+        color: #000;
       }
 
-      &--status.waiting circle {
-        fill: $red;
+      &--status.waiting {
+        background-color: $red;
       }
     }
   }

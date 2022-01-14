@@ -71,6 +71,14 @@ body {
     @media(max-width: 1000px) {
       flex-wrap: wrap;
     }
+
+    &05 {
+      flex: 0.5;
+    }
+
+    &2 {
+      flex: 2;
+    }
   }
 
   .wrapper {
