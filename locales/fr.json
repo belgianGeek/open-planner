@@ -147,11 +147,10 @@
 	"search": {
 		"assignment": "Attribution",
 		"attachment": "Pièce jointe",
-		"combination_label": "et le",
 		"container_title": "Sélectionner une implantation :",
 		"default": "Tous les sites",
 		"display_error": "Problème d'affichage...",
-		"reader_label": "nom du demandeur :",
+		"reader_label": "Filtrer les résultats avec le nom du demandeur :",
 		"request_content": "Contenu de la demande",
 		"request_number": "N° de demande",
 		"results_title": "Résultats de recherche",
@@ -163,11 +162,6 @@
 			"title": "Trier les résultats par :"
 		},
 		"status": "Statut",
-		"status_title": {
-			"done": "Terminée",
-			"waiting": "En attente d'attribution",
-			"wip": "En cours de traitement"
-		},
 		"title": "Module de recherche"
 	},
 	"settings": {

@@ -147,11 +147,10 @@
   "search": {
 		"assignment": "Assignment",
     "attachment": "Attachment",
-    "combination_label": "and the",
     "container_title": "Choose a location :",
     "default": "All locations",
 		"display_error": "Display error...",
-    "reader_label": "applicant name :",
+    "reader_label": "Filter results with an applicant's name :",
     "request_content": "Content",
     "request_number": "Request number",
     "results_title": "Search results",
