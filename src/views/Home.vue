@@ -24,7 +24,7 @@ export default {
   <section class="home flex">
     <h1 class="home__mainTitle">instanceName</h1>
     <p class="greetings">greetings user.firstname user.name !</p>
-    <h2 class="home__title title">home.call_to_action</h2>
+    <h2 class="home__title title">{{ $t('home.call_to_action') }}</h2>
     <span class="home__btnContainer flex">
       <router-link to="/new-request" class="home__btnContainer__newRequest btn home-btn">home.new_request</router-link>
       <button class="home__btnContainer__search btn home-btn" type="button" name="button">
