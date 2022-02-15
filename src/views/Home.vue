@@ -23,12 +23,12 @@ export default {
 <main class="wrapper flex">
   <section class="home flex">
     <h1 class="home__mainTitle">instanceName</h1>
-    <p class="greetings">greetings user.firstname user.name !</p>
+    <p class="greetings">{{ $t('greetings') }} user.firstname user.name !</p>
     <h2 class="home__title title">{{ $t('home.call_to_action') }}</h2>
     <span class="home__btnContainer flex">
-      <router-link to="/new-request" class="home__btnContainer__newRequest btn home-btn">home.new_request</router-link>
+      <router-link to="/new-request" class="home__btnContainer__newRequest btn home-btn">{{ $t('home.new_request') }}</router-link>
       <button class="home__btnContainer__search btn home-btn" type="button" name="button">
-        <a href="/search">home.show_requests</a>
+        <a href="/search">{{ $t('home.show_requests') }}</a>
       </button>
     </span>
   </section>

@@ -2,14 +2,14 @@
   "name": "open-planner",
   "version": "0.2.1",
   "description": "A simple but powerful open source task manager",
-  "main": "index.js",
   "author": "Maxime Vanderwegen",
-  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
+  "main": "index.js",
   "dependencies": {
     "adm-zip": "^0.5.3",
     "axios": "^0.24.0",
@@ -44,6 +44,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@intlify/vue-i18n-loader": "^3.0.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-pwa": "~4.5.0",
@@ -55,6 +56,8 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "sass": "^1.26.5",
-    "sass-loader": "^8.0.2"
-  }
+    "sass-loader": "^8.0.2",
+    "vue-cli-plugin-i18n": "~2.3.1"
+  },
+  "license": "MIT"
 }
