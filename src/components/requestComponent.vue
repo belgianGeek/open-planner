@@ -14,14 +14,20 @@ export default {
         applicant_name: 'Vdw',
         attachment: false,
         attachment_src: '',
-        location: '',
-        request_body: 'Test',
+        location_fk: '',
+        comment: 'Test',
         request_date: '',
-        task_status: 'waiting'
-      }
+        status: 'waiting',
+        user_fk: ''
+      },
+      sendattachment: true,
+      users: this.getUsers()
     }
   },
   methods: {
+    async getUsers() {
+      this.users = await axios.get('http://localhost:8000/getusers');
+    },
     sendRequest() {
       axios({
         url: 'http://localhost:8000/new-request',
@@ -56,12 +62,13 @@ export default {
   },
   beforeMount() {
     this.setDate();
+    this.getUsers();
   }
 }
 </script>
 
 <template>
-<section class="inRequests inRequests__step1">
+<section class="inRequests inRequests__step1 flex">
   <span class="inRequests__id hidden">ID</span>
   <form class="inRequests__form flex" action="/new-request" method="post" enctype="multipart/form.data" @submit.prevent="sendRequest()">
     <h2 class="title">
@@ -71,7 +78,7 @@ export default {
       <!-- <label class="<% if (!isSearchPage) { %> flex <% } else { %> hidden <% } %>"> -->
       <label class="flex">
         request.location_title
-        <select class="inRequests__form__applicantInfo__location input" v-model="form.location" required="true">
+        <select class="inRequests__form__applicantInfo__location input" v-model="form.location_fk" required="true">
           <option value="default">request.location_default</option>
           <LocationOption />
         </select>
@@ -87,40 +94,39 @@ export default {
     </span>
     <span class="inRequests__form__requestInfo flex">
       <span class="inRequests__form__requestInfo__row1 flex">
-        <!-- <% if (isSearchPage) { %>
+        <!-- <% if (isSearchPage) { %> -->
         <label class="flex">
-          <%= __('request.status') %>
-          <select class="inRequests__form__requestInfo__row1__status input" type="text" placeholder="<%= __('request.status_placeholder') %>..." required="true">
-            <option value="waiting"><%= __('request.status_waiting') %></option>
-            <option value="wip"><%= __('request.status_inProgress') %></option>
-            <option value="done"><%= __('request.status_done') %></option>
+          request.status
+          <select class="inRequests__form__requestInfo__row1__status input" type="text" v-model="form.status" placeholder="<%= __('request.status_placeholder') %>..." required="true">
+            <option value="waiting">request.status_waiting</option>
+            <option value="wip">request.status_inProgress</option>
+            <option value="done">request.status_done</option>
           </select>
         </label>
         <label class="flex">
-          <%= __('request.assignedWorker') %>
-          <select class="inRequests__form__requestInfo__row1__assignedWorker input" required="true">
-            <option value="default"><%= __('request.assignedWorker_default') %></option>
-            <% for(const user of users) { %>
-            <option value="<%= user.user_id %>"><%= user.name.toUpperCase() %>, <%= user.firstname %></option>
-            <% } %>
+          request.assignedWorker
+          <select class="inRequests__form__requestInfo__row1__assignedWorker input" v-model="form.user_fk" required="true">
+            <option value="default">request.assignedWorker_default</option>
+            <option v-for="user in users.data" :key="user.user_id" :value="user.user_id">
+              {{ user.name.toUpperCase()  }}, {{ user.firstname }}
+            </option>
           </select>
         </label>
-        <% } %> -->
+        <!-- <% } %> -->
         <label class="flex">
           request.date
           <input class="inRequests__form__requestInfo__row1__requestDate input" v-model="form.request_date" type="date" required="true">
         </label>
-        <!-- <% if (!isSearchPage && sendAttachments) { %>
+        <!-- <% if (!isSearchPage && sendAttachments) { %> -->
         <label class="flex">
-          <%= __('request.attachment') %>
-          <input class="inRequests__form__requestInfo__row1__file input" type="file" accept="image/*">
+          request.attachment
+          <input class="inRequests__form__requestInfo__row1__file input" v-bind:src="form.attachment_src" type="file" accept="image/*">
         </label>
-        <% } %> -->
       </span>
       <h2 class="title">
         request.subject
       </h2>
-      <textarea class="inRequests__form__requestInfo__comment flex" v-model="form.request_body" rows="8" cols="80" placeholder="request.subject_placeholder"></textarea>
+      <textarea class="inRequests__form__requestInfo__comment flex" v-model="form.comment" rows="8" cols="80" placeholder="request.subject_placeholder"></textarea>
     </span>
     <span class="inRequests__form__btnContainer flex">
       <button class="inRequests__form__btnContainer__reset btn btn--reset" type="reset">form.reset_generic</button>
@@ -131,12 +137,7 @@ export default {
     </span>
   </form>
   <!-- Only hide the image tag to avoid errors when loading tasks containing attachments -->
-  <!-- <img <%
-         if
-         (!sendAttachments)
-         {
-         %> class="hidden" <% } %>src="/src/scss/icons/empty.svg" alt="
-      <%= __('request.attachment_alt') %>" width="100%" height="35%"> -->
+  <img v-if="sendattachment" :src="form.attachment_src || '/img/empty.svg'" alt="request.attachment_alt">
 </section>
 </template>
 
