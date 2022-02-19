@@ -22,12 +22,13 @@
     @media(max-width: 720px) {
       overflow-y: auto;
       width: 90%;
-      // .backgroundImageUploadForm__Btn,
-      // .backgroundImageUploadForm__InputUrl
+
       .toggleAttachments__Input,
       .toggleMailCc__Input,
       .toggleMail__input,
-      .toggleUserPasswordUpdate__Input {
+      .toggleMyRequests__Input,
+      .toggleUserPasswordUpdate__Input,
+      .toggleSearchPageUserAccess__Input {
         margin-top: 1.5em;
       }
     }
@@ -40,13 +41,13 @@
         font-size: 2em;
         width: 100%;
         text-align: center;
-        font-family: Lobster Two ;
+        font-family: Lobster Two;
         margin: 0;
       }
     }
 
     &__heading {
-      font-family: Lobster Two ;
+      font-family: Lobster Two;
     }
 
     &__heading2 {
@@ -116,14 +117,20 @@
 
     .toggleAttachments,
     .toggleMailCc,
-    .toggleUserPasswordUpdate {
+    .toggleMyRequests,
+    .toggleUserPasswordUpdate,
+    .toggleRequestDeletionMail,
+    .toggleSearchPageUserAccess {
       margin-top: 2em;
     }
 
     .toggleAttachments,
     .toggleMail,
     .toggleMailCc,
-    .toggleUserPasswordUpdate {
+    .toggleMyRequests,
+    .toggleUserPasswordUpdate,
+    .toggleRequestDeletionMail,
+    .toggleSearchPageUserAccess {
       justify-content: space-between;
       width: 100%;
       align-items: baseline;
@@ -132,7 +139,7 @@
       }
 
       &__Comment {
-        width: 100%;
+        width: 90%;
       }
 
       &__Switch {
@@ -175,7 +182,10 @@
         &:checked + .toggleAttachments__Slider,
         &:checked + .toggleMailCc__Slider,
         &:checked + .toggleMail__Slider,
-        &:checked + .toggleUserPasswordUpdate__Slider {
+        &:checked + .toggleMyRequests__Slider,
+        &:checked + .toggleUserPasswordUpdate__Slider,
+        &:checked + .toggleRequestDeletionMail__Slider,
+        &:checked + .toggleSearchPageUserAccess__Slider {
           &:before {
             left: 0;
             transform: translateX(22px);

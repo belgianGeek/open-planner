@@ -2,7 +2,6 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
   height: 10vh;
   @include align(space-between, center);
   z-index: 2;
@@ -33,6 +32,7 @@
     @include align(flex-start, center);
     @include box-shadow;
     overflow-y: auto;
+    overflow-x: clip;
 
     .hide {
       opacity: 0;
@@ -163,14 +163,15 @@
 
   &__container {
     align-items: center;
-    position: fixed;
-    top: 0.55rem;
+    position: sticky;
+    top: 0.55em;
     left: 7em;
-    font-size: 1.1em;
-    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 1em;
     padding: 0.5em;
     border-radius: 0.5em;
+    background-color: rgba(0, 0, 0, 0.8);
     @include box-shadow;
+    align-self: flex-start;
 
     &__icon {
       margin-right: 1.5em;

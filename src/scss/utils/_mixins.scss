@@ -51,7 +51,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    stroke: $electric-blue;
+    stroke: $input-border;
     opacity: 0;
     z-index: -1;
     transition: opacity 250ms;
@@ -91,7 +91,7 @@
       text-align: center;
       flex: 1;
       padding: 1em;
-      border: 2px solid $electric-blue;
+      border: 2px solid $input-border;
     }
   }
 
@@ -101,7 +101,7 @@
     align-items: center;
 
     &:hover {
-      background-color: transparentize($electric-blue, 0.3);
+      background-color: transparentize($input-border, 0.3);
       transition: background-color 500ms cubic-bezier(0,.43,.08,.92);
 
       .rowItem {
@@ -117,18 +117,21 @@
 
       &--status {
         justify-content: center;
+        padding: .3em 0;
+        border-radius: 1em;
       }
 
-      &--status.done circle {
-        fill: $green;
+      &--status.done {
+        background-color: $green;
       }
 
-      &--status.wip circle {
-        fill: $orange;
+      &--status.wip {
+        background-color: $orange;
+        color: #000;
       }
 
-      &--status.waiting circle {
-        fill: $red;
+      &--status.waiting {
+        background-color: $red;
       }
     }
   }
@@ -147,8 +150,7 @@
   color: red;
   font-style: italic;
   align-self: center;
-  margin-top: 1.5em;
-  font-size: 1.05em;
+  margin-top: 1em;
   padding: 1em;
   border-radius: 0.5em;
   background-color: $translucent-black;

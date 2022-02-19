@@ -6,26 +6,34 @@
 <body>
   <div class="backgroundColor"></div>
   <header class="header">
-    <span class="header__container flex">
-      <img class="header__container__icon returnIcon hidden" alt="<%= __('header_icon_alt') %>" title="<%= __('header_icon_alt') %>" src="src/scss/icons/return.svg">
-      <span class="header__container__msg hidden"><%= __('header_icon_alt') %></span>
-    </span>
     <%- include('sidebar'); %>
     </span>
   </header>
   <main class="wrapper flex">
+    <span class="header__container hidden">
+      <img class="header__container__icon returnIcon flex" alt="<%= __('header_icon_alt') %>" title="<%= __('header_icon_alt') %>" src="src/scss/icons/return.svg">
+      <span class="header__container__msg flex"><%= __('header_icon_alt') %></span>
+    </span>
     <section class="home flex">
       <h1 class="home__mainTitle"><%= instanceName %></h1>
       <p class="greetings"><%= __('greetings') %> <%= user.firstname %> <%= user.name %> !</p>
       <h2 class="home__title title"><%= __('home.call_to_action') %></h2>
       <span class="home__btnContainer flex">
         <button class="home__btnContainer__newRequest btn home-btn" type="button"><%= __('home.new_request') %></button>
-        <button class="home__btnContainer__search btn home-btn" type="button" name="button">
-          <a href="/search?lang=<%= __('lang') %>"><%= __('home.show_requests') %></a>
-        </button>
+          <% if (allowsearchpageaccess || user.type !== 'guest') { %>
+          <button class="home__btnContainer__search btn home-btn" type="button" name="button">
+            <a href="/search?lang=<%= __('lang') %>"><%= __('home.show_requests') %></a>
+          </button>
+        <% } %>
       </span>
     </section>
-    <%- include('in_requests01', {locations: locations}); %>
+    <%- include('in_requests01', {
+      locations: locations,
+      sendcc: sendcc,
+      sendmail: sendmail,
+      user: user,
+      users: users
+    }); %>
     <% if (user.type === 'admin') { %>
       <%- include('users', {
         classname: 'users',
@@ -41,6 +49,11 @@
         registerClass: 'hidden',
         locations: locations
       }); %>
+
+      <% if (displayMyRequestsMenu) { %>
+        <%- include('history'); %>
+      <% } %>
+
       <%- include('addLocation'); %>
     <% } %>
   </main>

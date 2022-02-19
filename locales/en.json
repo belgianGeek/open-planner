@@ -1,6 +1,4 @@
 {
-  "404_link": "Way to a more peaceful land",
-  "404_img_alt": "Picture illustrating a page not found",
   "about": {
 		"cover_picture_src_intro": "Cover photo by",
 	  "cover_picture_src_from": "on",
@@ -39,6 +37,11 @@
 		"delete": "Delete",
 	  "modify": "Modify"
 	},
+  "errorPage": {
+    "img_alt": "Picture illustrating a page not found",
+    "link": "Way to a more peaceful land",
+    "more_info": "Please get in touch with your system administrator for more information"
+  },
   "export": {
 		"btn": "Export",
 	  "csv": "CSV (Excel-friendly)",
@@ -69,6 +72,9 @@
 		"applicant_name": "You can fill in the field to filter your search with an applicant's name",
 	  "search_results": "You can act on requests by make a right-click to each one of them"
 	},
+  "history": {
+    "hide_btn": "Back to history"
+  },
   "home": {
 		"call_to_action": "What do you want to do ?",
 	  "new_request": "Make a new request",
@@ -125,7 +131,9 @@
 	  "assignedWorker_default": "Select the assigned worker",
 	  "attachment": "Attach a picture",
 	  "attachment_alt": "Picture attached to the request",
+    "attachment_removal": "Remove selected picture",
 	  "date": "Request date",
+    "email-confirmation-label": "Confirm by email ?",
 	  "location_default": "Select a location",
 	  "location_title": "Concerned location",
 	  "status": "Request status",
@@ -139,12 +147,20 @@
   "search": {
 		"assignment": "Assignment",
     "attachment": "Attachment",
-    "container_title": "Perform a search",
+    "container_title": "Choose a location :",
     "default": "All locations",
 		"display_error": "Display error...",
+    "reader_label": "Filter results with an applicant's name :",
     "request_content": "Content",
     "request_number": "Request number",
     "results_title": "Search results",
+    "sort": {
+      "date_ascending": "Date ascending",
+      "date_descending": "Date descending",
+      "status_date_descending": "Status descending and date descending",
+      "status_date_ascending": "Status descending and date ascending",
+      "title": "Sort results by :"
+    },
     "status": "Status",
 		"status_title": {
 			"done": "Completed",
@@ -157,11 +173,14 @@
     "allow_password_update": "Allow users to update their contact details and their password",
     "attachment_comment": "Allow users to join a picture to their request",
     "customization_title": "Customization",
+    "disable_search_page_access__comment": "Allow guests to access the search page",
     "emailing_title": "Emailing settings",
     "mail_address_passwd": "Mail address password",
     "mail_comment": "When a new request is submitted, send an email to the team in charge of the task",
     "mailcc_comment": "When a request is submitted or modified, send an email to the applicant",
+    "my_requests_comment": "Enable \"My requests\" menu allowing users to update or delete their own requests",
     "permissions_title": "Permissions and notifications",
+    "request_deletion_mail_comment": "When a request gets deleted, notify the users and the assigners workers via email",
     "sender_mail_address": "Sender mail address",
     "sender_name": "Sender name",
     "smtp_address": "SMTP server",
@@ -172,6 +191,7 @@
     "about": "About",
     "account": "My account",
     "export": "Export data",
+    "history": "My requests",
     "home": "Home",
     "import_users": "Import users",
     "lang_title": "Language",

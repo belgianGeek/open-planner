@@ -12,14 +12,18 @@
     <section class="search">
       <h1 class="search__title title"><%= __('search.title') %></h1>
       <form class="search__container flex" method="GET" action="/">
-        <label for="search__container__select"><%= __('search.container_title') %></label>
-        <select class="search__container__select input" name="search__select">
-          <option value="default"><%= __('search.default') %></option>
-          <% for (const [i, location] of locations.entries()) { %>
-          <option value="<%= location.location_id %>"><%= location.location_name %></option>
-          <% } %>
-        </select>
-        <input class="search__container__readerInput input" type="search" placeholder="<%= __('request.applicant_name') %>">
+        <label for="search__container__select"><%= __('search.container_title') %>
+          <select class="search__container__select input" name="search__select">
+            <option value="default"><%= __('search.default') %></option>
+            <% for (const [i, location] of locations.entries()) { %>
+            <option value="<%= location.location_id %>"><%= location.location_name %></option>
+            <% } %>
+          </select>
+        </label>
+        <label>
+          <%= __('search.reader_label') %>
+          <input class="search__container__readerInput input" type="search" placeholder="<%= __('request.applicant_name') %>">
+        </label>
         <svg class="search__container__help" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <title><%= __('help.applicant_name') %></title>
           <circle cx="12" cy="12" r="10"></circle>
@@ -32,6 +36,15 @@
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
         </svg>
+        <label for="search__container__sort">
+          <%= __('search.sort.title') %>
+          <select class="search__container__sort input" name="search__sort">
+            <option value="default"><%= __('search.sort.date_ascending') %></option>
+            <option value="date_descending"><%= __('search.sort.date_descending') %></option>
+            <option value="status_date_descending"><%= __('search.sort.status_date_descending') %></option>
+            <option value="status_date_ascending"><%= __('search.sort.status_date_ascending') %></option>
+          </select>
+        </label>
         <button class="search__container__submit" type="submit">
           <svg class="search__container__submit__svg" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="arcs">
             <circle cx="11" cy="11" r="8"></circle>
@@ -68,6 +81,8 @@
   <%- include('about'); %>
   <%- include('in_requests01', {
     locations: locations,
+    sendcc: sendcc,
+    sendmail: sendmail,
     users: users
   }); %>
   <%- include('confirmation'); %>
