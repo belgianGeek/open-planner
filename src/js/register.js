@@ -146,7 +146,7 @@ const register = () => {
           .addClass('warning')
           .text(locales.form.invalid)
           .appendTo('.register__form');
-      };
+      }
 
       validationErr = false;
       data2send.values = [];

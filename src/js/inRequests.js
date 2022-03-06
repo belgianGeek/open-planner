@@ -249,7 +249,7 @@ const inRequests = () => {
           .addClass('warning')
           .text(locales.form.invalid)
           .insertBefore('.inRequests__form__btnContainer');
-      };
+      }
 
       validationErr = false;
 

@@ -1,5 +1,7 @@
 <script>
+import axios from 'axios';
 import LocaleSwitcher from '@/components/localeSwitcher';
+import router from '../router';
 
 export default {
   name: 'Login',
@@ -7,9 +9,27 @@ export default {
     LocaleSwitcher
   },
   data() {
-    return {}
+    return {
+      email: '',
+      password: ''
+    }
   },
-  methods: {}
+  methods: {
+    login(event) {
+      event.preventDefault();
+      axios.post('http://localhost:8000/login', {
+        email: this.email,
+        password: this.password
+      })
+        .then(res => {
+          console.log(res.data);
+          router.push('/');
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  }
 }
 </script>
 
@@ -19,15 +39,15 @@ export default {
 </header>
 <main class="wrapper loginWrapper flex">
   <h1 class="title home__mainTitle">instanceName</h1>
-  <form class="login flex" action="/login" method="post">
+  <form class="login flex" @submit="login">
     <h1 class="title home__mainTitle">login.title</h1>
     <label class="flex">
       login.mail
-      <input class="input" type="email" name="email" placeholder="login.mail" required>
+      <input v-model="email" class="input" type="email" name="email" placeholder="login.mail" required>
     </label>
     <label class="flex">
       login.passwd
-      <input class="input" type="password" name="password" placeholder="form.passwd_generic" required>
+      <input v-model="password" class="input" type="password" name="password" placeholder="form.passwd_generic" required>
     </label>
     <button class="btn home-btn" type="submit">login.btn</button>
     <!-- if (typeof messages != 'undefined' && messages.error) {

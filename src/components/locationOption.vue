@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     async getLocations() {
-      this.locations = await axios.get('http://localhost:8000/');
+      this.locations = await axios.get('http://localhost:8000/locations');
       console.log(this.locations);
     }
   }

@@ -1,7 +1,9 @@
 <script>
+import axios from 'axios';
 import Export from '@/components/exportComponent';
 import Header from '@/components/header.vue';
 import Notification from '@/components/notification';
+// import router from '../router';
 
 export default {
   name: 'Home',
@@ -11,9 +13,26 @@ export default {
     Notification
   },
   data() {
-    return {}
+    return {
+      user: {}
+    }
   },
-  methods: {}
+  methods: {
+    getUserData() {
+      let self = this;
+      axios.get('http://localhost:8000/user')
+        .then(res => {
+          console.log(res.data);
+          self.$set(this, 'user', res.data.user);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  mounted() {
+    this.getUserData()
+  }
 }
 </script>
 
@@ -52,7 +71,7 @@ export default {
 </main>
 <Notification />
 <Export />
-    <!-- <%- include('settings'); %>
+<!-- <%- include('settings'); %>
     <% } %>
     <% if (user.type !== 'admin' && allowPasswordUpdate) { %>
       <%- include('register', {

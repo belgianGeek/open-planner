@@ -1,6 +1,6 @@
-module.exports = function(app, io) {
+module.exports = function(app) {
   app.delete('/logout', (req, res) => {
     req.logOut();
-    res.redirect('/login');
+    return res.send();
   });
 };

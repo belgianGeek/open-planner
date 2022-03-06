@@ -58,7 +58,7 @@ const manageLocations = () => {
           .addClass('warning')
           .text(locales.form.invalid)
           .appendTo('.addLocation__form');
-      };
+      }
 
       validationErr = false;
       data2send.values = [];

@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     async getUsers() {
-      this.users = await axios.get('http://localhost:8000/getusers');
+      this.users = await axios.get('http://localhost:8000/users');
     },
     sendRequest() {
       axios({

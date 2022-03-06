@@ -18,7 +18,7 @@ const updateSession = require('../modules/updateSession');
 const updateTask = require('../modules/updateTask');
 
 module.exports = function(app) {
-  app.get('/', cors(), async (req, res) => {
+  app.get('/locations', cors(), async (req, res) => {
       const locations = await app.pool.query('SELECT location_id,location_name FROM locations');
       res.send(locations.rows);
     });

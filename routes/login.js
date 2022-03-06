@@ -1,14 +1,19 @@
-module.exports = function(app) {
-  const appendData = require('../modules/appendData');
-  const checkNotAuth = require('../modules/checkNotAuth');
-  const createSettingsTable = require('../modules/createSettingsTable');
-  const DBquery = require('../modules/DBquery');
-  const getUsers = require('../modules/getUsers');
-  const passport = require('passport');
+const passport = require('passport');
 
-  app.post('/login', checkNotAuth, passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-  }));
+module.exports = function(app) {
+  app.post('/login', (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(400).send([user, "Cannot log in", info]);
+      }
+
+      req.login(user, err => {
+        res.send("Logged in");
+      });
+    })(req, res, next);
+  });
 };

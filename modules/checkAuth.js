@@ -1,7 +1,9 @@
-function checkAuth(req, res, next) {
-  if (req.isAuthenticated()) return next();
-
-  res.redirect('/login');
+const checkAuth = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).send('You are not authenticated');
+  } else {
+    return next();
+  }
 }
 
 module.exports = checkAuth;
