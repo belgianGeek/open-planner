@@ -16,6 +16,23 @@ const search = () => {
       searchData.location = $('.search__container__select').val();
     }
 
+    switch ($('.search__container__sort').val()) {
+      case 'default':
+        searchData.sortCriteria = 't.task_id, t.request_date';
+        break;
+      case 'date_descending':
+        searchData.sortCriteria = 't.task_id DESC, t.request_date DESC';
+        break;
+      case 'status_date_descending':
+        searchData.sortCriteria = "CASE WHEN t.status = 'waiting' THEN 'a' WHEN t.status = 'wip' THEN 'c' END ASC, t.task_id DESC, t.request_date DESC";
+        break;
+      case 'status_date_ascending':
+        searchData.sortCriteria = "CASE WHEN t.status = 'waiting' THEN 'a' WHEN t.status = 'wip' THEN 'c' END ASC, t.task_id ASC, t.request_date ASC";
+        break;
+      default:
+        searchData.sortCriteria = 't.task_id, t.request_date';
+    }
+
     if ($('.search__container__readerInput').val() !== '') {
       searchData.applicant_name = $('.search__container__readerInput').val().replace(/\'/g, "''");
       searchData.getApplicant = true;
@@ -55,36 +72,39 @@ const search = () => {
             break;
           case 'task_id':
             columnTitle = locales.search.request_number;
+            columnClass = 'flex05';
             break;
           case 'location_name':
             columnTitle = 'Implantation';
-            break;
-          case 'location_name':
-            columnTitle = 'Implantation';
-            break;
-          case 'location_name':
-            columnTitle = 'Implantation';
+            columnClass = undefined;
             break;
           case 'applicant_name':
             columnTitle = locales.request.applicant_name;
+            columnClass = undefined;
             break;
           case 'applicant_firstname':
             columnTitle = locales.request.applicant_firstname;
+            columnClass = undefined;
             break;
           case 'request_date':
             columnTitle = 'Date';
+            columnClass = 'flex05';
             break;
           case 'comment':
             columnTitle = locales.search.request_content;
+            columnClass = 'flex2';
             break;
           case 'status':
             columnTitle = locales.search.status;
+            columnClass = 'flex05';
             break;
           case 'user_fk':
             columnTitle = locales.search.assignment;
+            columnClass = 'flex05';
             break;
           default:
             columnTitle = '';
+            columnClass = undefined;
         }
 
         if (columnTitle !== '') {
@@ -92,6 +112,10 @@ const search = () => {
             .addClass('search__results__container__header__item')
             .text(columnTitle)
             .appendTo(header);
+
+          if (columnClass !== undefined) {
+            title.addClass(columnClass);
+          }
         }
       }
 

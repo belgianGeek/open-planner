@@ -9,7 +9,7 @@ module.exports = function(app, io) {
         });
       } else {
         const errorMessages = [
-          "Désolé jeune novice, l'accès à cette page t'est refusé",
+          "Désolé jeune novice, l'accès à cette page t'es refusé",
           "À cette page tu n'as pas accès, jeune Padawan",
           `Seuls les Chevaliers Jedi peuvent accéder à ce lieu, Padawan ${req.user.name}`
         ];
