@@ -9,12 +9,12 @@ module.exports = {
 
   pluginOptions: {
     i18n: {
-      locale: 'en',
-      fallbackLocale: 'fr',
+      locale: 'fr',
+      fallbackLocale: 'en',
       localeDir: 'locales',
-      enableLegacy: true,
+      enableLegacy: false,
       runtimeOnly: false,
-      compositionOnly: true,
+      compositionOnly: false,
       fullInstall: true
     }
   }

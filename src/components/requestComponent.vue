@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     async getUsers() {
-      this.users = await axios.get('http://localhost:8000/users');
+      this.users = await axios.get('http://localhost:8000/getusers');
     },
     sendRequest() {
       axios({
@@ -72,41 +72,41 @@ export default {
   <span class="inRequests__id hidden">ID</span>
   <form class="inRequests__form flex" action="/new-request" method="post" enctype="multipart/form.data" @submit.prevent="sendRequest()">
     <h2 class="title">
-      request.applicant_title
+      {{ $t('request.applicant_title') }}
     </h2>
     <span class="inRequests__form__applicantInfo flex">
       <!-- <label class="<% if (!isSearchPage) { %> flex <% } else { %> hidden <% } %>"> -->
       <label class="flex">
-        request.location_title
+        {{ $t('request.location_title') }}
         <select class="inRequests__form__applicantInfo__location input" v-model="form.location_fk" required="true">
-          <option value="default">request.location_default</option>
+          <option value="default">{{ $t('request.location_default') }}</option>
           <LocationOption />
         </select>
       </label>
       <label class="flex">
-        request.applicant_name
-        <input class="inRequests__form__applicantInfo__name input" type="text" v-model="form.applicant_name" placeholder="request.applicant_name..." required="true">
+        {{ $t('request.applicant_name') }}
+        <input class="inRequests__form__applicantInfo__name input" type="text" v-model="form.applicant_name" placeholder="{{ $t('request.applicant_name') }}..." required="true">
       </label>
       <label class="flex">
-        request.applicant_firstname
-        <input class="inRequests__form__applicantInfo__firstname input" type="text" v-model="form.applicant_firstname" placeholder="'request.applicant_firstname..." required="true">
+        {{ $t('request.applicant_firstname') }}
+        <input class="inRequests__form__applicantInfo__firstname input" type="text" v-model="form.applicant_firstname" placeholder="'{{ $t('request.applicant_firstname') }}..." required="true">
       </label>
     </span>
     <span class="inRequests__form__requestInfo flex">
       <span class="inRequests__form__requestInfo__row1 flex">
         <!-- <% if (isSearchPage) { %> -->
         <label class="flex">
-          request.status
-          <select class="inRequests__form__requestInfo__row1__status input" type="text" v-model="form.status" placeholder="<%= __('request.status_placeholder') %>..." required="true">
-            <option value="waiting">request.status_waiting</option>
-            <option value="wip">request.status_inProgress</option>
-            <option value="done">request.status_done</option>
+          {{ $t('request.status') }}
+          <select class="inRequests__form__requestInfo__row1__status input" type="text" v-model="form.status" placeholder="{{ $t('request.status_placeholder') }}..." required="true">
+            <option value="waiting">{{ $t('request.status_waiting') }}</option>
+            <option value="wip">{{ $t('request.status_inProgress') }}</option>
+            <option value="done">{{ $t('request.status_done') }}</option>
           </select>
         </label>
         <label class="flex">
-          request.assignedWorker
+          {{ $t('request.assignedWorker') }}
           <select class="inRequests__form__requestInfo__row1__assignedWorker input" v-model="form.user_fk" required="true">
-            <option value="default">request.assignedWorker_default</option>
+            <option value="default">{{ $t('request.assignedWorker_default') }}</option>
             <option v-for="user in users.data" :key="user.user_id" :value="user.user_id">
               {{ user.name.toUpperCase()  }}, {{ user.firstname }}
             </option>
@@ -114,30 +114,30 @@ export default {
         </label>
         <!-- <% } %> -->
         <label class="flex">
-          request.date
+          {{ $t('request.date') }}
           <input class="inRequests__form__requestInfo__row1__requestDate input" v-model="form.request_date" type="date" required="true">
         </label>
         <!-- <% if (!isSearchPage && sendAttachments) { %> -->
         <label class="flex">
-          request.attachment
+          {{ $t('request.attachment') }}
           <input class="inRequests__form__requestInfo__row1__file input" v-bind:src="form.attachment_src" type="file" accept="image/*">
         </label>
       </span>
       <h2 class="title">
-        request.subject
+        {{ $t('request.subject') }}
       </h2>
-      <textarea class="inRequests__form__requestInfo__comment flex" v-model="form.comment" rows="8" cols="80" placeholder="request.subject_placeholder"></textarea>
+      <textarea class="inRequests__form__requestInfo__comment flex" v-model="form.comment" rows="8" cols="80" placeholder="{{ $t('request.subject_placeholder') }}"></textarea>
     </span>
     <span class="inRequests__form__btnContainer flex">
-      <button class="inRequests__form__btnContainer__reset btn btn--reset" type="reset">form.reset_generic</button>
-      <button class="inRequests__form__btnContainer__submit inRequests__step1__btn btn btn--submit" type="submit">form.submit_generic')</button>
+      <button class="inRequests__form__btnContainer__reset btn btn--reset" type="reset">{{ $t('form.reset_generic') }}</button>
+      <button class="inRequests__form__btnContainer__submit inRequests__step1__btn btn btn--submit" type="submit">{{ $t('form.submit_generic') }}')</button>
       <!-- <% if (isSearchPage) { %>
-      <button class="inRequests__form__btnContainer__hide inRequests__step1__btn btn home-btn flex" type="button"><%= __('form.back_results') %></button>
+      <button class="inRequests__form__btnContainer__hide inRequests__step1__btn btn home-btn flex" type="button">{{ $t('form.back_results') </button>
       <% } %> -->
     </span>
   </form>
   <!-- Only hide the image tag to avoid errors when loading tasks containing attachments -->
-  <img v-if="sendattachment" :src="form.attachment_src || '/img/empty.svg'" alt="request.attachment_alt">
+  <img v-if="sendattachment" :src="form.attachment_src || '/img/empty.svg'" alt="{{ $t('request.attachment_alt') ">
 </section>
 </template>
 

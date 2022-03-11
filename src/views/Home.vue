@@ -100,6 +100,10 @@ export default {
     &__btnContainer {
         width: 100vw;
         justify-content: space-evenly;
+
+        a {
+          text-decoration: none;
+        }
     }
 
     &__mainTitle,
