@@ -1,9 +1,7 @@
 <script>
-import axios from 'axios';
 import Export from '@/components/exportComponent';
 import Header from '@/components/header.vue';
 import Notification from '@/components/notification';
-// import router from '../router';
 
 export default {
   name: 'Home',
@@ -13,26 +11,12 @@ export default {
     Notification
   },
   data() {
-    return {
-      user: {}
-    }
+    return {}
   },
   methods: {
-    getUserData() {
-      let self = this;
-      axios.get('http://localhost:8000/user')
-        .then(res => {
-          console.log(res.data);
-          self.$set(this, 'user', res.data.user);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+
   },
-  mounted() {
-    this.getUserData()
-  }
+  mounted() {}
 }
 </script>
 
@@ -42,7 +26,7 @@ export default {
 <main class="wrapper flex">
   <section class="home flex">
     <h1 class="home__mainTitle">instanceName</h1>
-    <p class="greetings">{{ $t('greetings') }} user.firstname user.name !</p>
+    <p class="greetings">{{ $t('greetings') }} {{ $store.connectedUser.firstname }} !</p>
     <h2 class="home__title title">{{ $t('home.call_to_action') }}</h2>
     <span class="home__btnContainer flex">
       <router-link to="/new-request" class="home__btnContainer__newRequest btn home-btn">{{ $t('home.new_request') }}</router-link>
@@ -102,7 +86,7 @@ export default {
         justify-content: space-evenly;
 
         a {
-          text-decoration: none;
+            text-decoration: none;
         }
     }
 

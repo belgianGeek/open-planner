@@ -23,6 +23,7 @@ export default {
       })
         .then(res => {
           console.log(res.data);
+          this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
           router.push('/');
         })
         .catch(err => {
