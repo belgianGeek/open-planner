@@ -1,7 +1,7 @@
 const cors = require('cors');
 
 module.exports = function(app) {
-  app.post('/new-request', cors(), (req, res) => {
+  app.post('/new-request', (req, res) => {
     let escapedValues = [];
     let queryValues = [];
     let iReq = 1;

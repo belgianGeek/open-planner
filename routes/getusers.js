@@ -1,7 +1,7 @@
 const cors = require('cors');
 
 module.exports = function(app) {
-  app.get('/users', cors(), async (req, res) => {
+  app.get('/users', async (req, res) => {
     const DBusers = await app.pool.query(`
       SELECT
         u.user_id,

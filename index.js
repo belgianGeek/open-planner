@@ -49,6 +49,12 @@ checkForPassword();
 
 const initClient = new Pool(config);
 
+const corsOptions = {
+  maxAge: 3600,
+  origin: /localhost$/,
+  optionsSuccessStatus: 200
+}
+
 const createDB = (config, DBname = 'planner') => {
   const createTables = () => {
     console.log(`${DBname} database successfully created, tables are being created...`);
@@ -178,6 +184,7 @@ app.set('view engine', 'ejs')
     return next();
   })
   .use(flash())
+  .use(cors(corsOptions))
   .use(session({
     store: new pgSession({
       pool: app.pool,
