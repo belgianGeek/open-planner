@@ -135,7 +135,7 @@ export default {
       <p class="menu__item__legend hide">{{ $t('sidebar.about') }}</p>
     </span>
     <span class="menu__item logoutLink flex">
-      <form class="logoutLink__form flex" action="http://localhost:8000/logout?_method=DELETE" method="post">
+      <form class="logoutLink__form flex" action="http://localhost:3000/logout" method="post">
         <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
         </svg>

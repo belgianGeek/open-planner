@@ -26,11 +26,11 @@ export default {
   },
   methods: {
     async getUsers() {
-      this.users = await axios.get('http://localhost:8000/getusers');
+      this.users = await axios.get('http://localhost:3000/getusers');
     },
     sendRequest() {
       axios({
-        url: 'http://localhost:8000/new-request',
+        url: 'http://localhost:3000/new-request',
         method: 'post',
         data: this.form,
         option: {

@@ -17,7 +17,7 @@ export default {
   methods: {
     login(event) {
       event.preventDefault();
-      axios.post('http://localhost:8000/login', {
+      axios.post('http://localhost:3000/login', {
         email: this.email,
         password: this.password
       })
@@ -28,6 +28,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
+          router.push('/login');
         })
     }
   }
