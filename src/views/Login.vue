@@ -11,20 +11,28 @@ export default {
   data() {
     return {
       email: '',
+      loginError: '',
       password: ''
     }
   },
   methods: {
     login(event) {
+      const displayLoginError = err => {
+        this.loginError = err;
+      };
+
       event.preventDefault();
       axios.post('http://localhost:3000/login', {
-        email: this.email,
-        password: this.password
-      })
+          email: this.email,
+          password: this.password
+        })
         .then(res => {
-          console.log(res.data);
-          this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
-          router.push('/');
+          if (res.data.user) {
+            this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
+            router.push('/');
+          } else {
+            displayLoginError(res.data.info.message);
+          }
         })
         .catch(err => {
           console.log(err);
@@ -52,9 +60,7 @@ export default {
       <input v-model="password" class="input" type="password" name="password" placeholder="form.passwd_generic" required>
     </label>
     <button class="btn home-btn" type="submit">login.btn</button>
-    <!-- if (typeof messages != 'undefined' && messages.error) {
-      <p class="warning">messages.error</p>
-      } -->
+    <p class="warning" v-if="loginError !== ''">{{ loginError }}</p>
   </form>
 </main>
 </template>
