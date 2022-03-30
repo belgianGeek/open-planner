@@ -1,10 +1,24 @@
 <script>
+import axios from 'axios';
 import LocaleSwitcher from '@/components/localeSwitcher.vue';
+import router from '../router';
 
 export default {
   name: 'Sidebar',
   components: {
     LocaleSwitcher
+  },
+  methods: {
+    logout() {
+      axios.delete('http://localhost:3000/logout')
+        .then(() => {
+          console.log('Bye !');
+          router.push('/login');
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>
@@ -135,7 +149,7 @@ export default {
       <p class="menu__item__legend hide">{{ $t('sidebar.about') }}</p>
     </span>
     <span class="menu__item logoutLink flex">
-      <form class="logoutLink__form flex" action="http://localhost:3000/logout" method="post">
+      <form class="logoutLink__form flex" action="http://localhost:3000/logout" method="post" @submit.prevent="logout()">
         <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
         </svg>
@@ -158,160 +172,160 @@ export default {
 
 <style lang="scss">
 .header {
-  svg {
-    cursor: pointer;
-  }
-
-  &__menu,
-  .menu {
-    position: absolute;
-    height: 100vh;
-    width: 4em;
-    top: 0;
-    left: 0;
-    z-index: 1;
-  }
-
-  &__menu {
-    cursor: pointer;
-  }
-
-  .menu {
-    background-color: opacify($translucent-black, 0.3);
-    background-color: black;
-    padding: 0 1em;
-    flex-direction: column;
-    box-sizing: content-box;
-    @include align(flex-start, center);
-    @include box-shadow;
-    overflow-y: auto;
-
-    .hide {
-      opacity: 0;
-      width: 0;
+    svg {
+        cursor: pointer;
     }
 
-    .lang {
-      flex-direction: column;
-      position: relative;
-      top: 2em;
+    &__menu,
+    .menu {
+        position: absolute;
+        height: 100vh;
+        width: 4em;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
 
-      &__container {
-        justify-content: space-between;
-        font-size: 3.5em;
+    &__menu {
+        cursor: pointer;
+    }
+
+    .menu {
+        background-color: opacify($translucent-black, 0.3);
+        background-color: black;
+        padding: 0 1em;
         flex-direction: column;
-      }
-    }
+        box-sizing: content-box;
+        @include align(flex-start, center);
+        @include box-shadow;
+        overflow-y: auto;
 
-    &:hover {
-      width: 22em;
-      transition: width 250ms ease-in-out;
-
-      ol {
-        display: flex;
-      }
-
-      .shown {
-        opacity: 0;
-        width: 0;
-      }
-
-      .hide {
-        opacity: 1;
-        transition: opacity 400ms ease-in-out;
-      }
-
-      button,
-      p.hide {
-        font-size: inherit;
-      }
-
-      p.hide {
-        width: 70%;
-      }
-
-      svg.hide {
-        width: 30%;
-      }
-
-      .lang__container {
-        flex-direction: row;
-        width: 50%;
-      }
-    }
-
-    form {
-      width: 100%;
-    }
-
-    hr {
-      width: 80%;
-    }
-
-    &__item {
-      .test {
-        opacity: 0;
-      }
-
-      padding: 0.5em 0;
-      margin: 0.5em;
-
-      button,
-      p {
-        width: 0;
-        font-size: 0;
-      }
-    }
-
-    &__item,
-    &__item a,
-    .lang {
-      text-decoration: none;
-      font-size: 1em;
-      width: 100%;
-      @include align(flex-start, center);
-      box-sizing: border-box;
-    }
-
-    &__item,
-    &__item li {
-      cursor: pointer;
-
-      &__icon {
-        width: 100%;
-      }
-
-      &__legend {
-        &.btn {
-          padding: 0;
-          background: none;
-          width: auto;
+        .hide {
+            opacity: 0;
+            width: 0;
         }
-      }
-    }
 
-    &__item.searchLink {
-      a {
-        font-size: 1em;
-        text-decoration: none;
-        padding: 0;
-        margin: 0;
-      }
-    }
+        .lang {
+            flex-direction: column;
+            position: relative;
+            top: 2em;
 
-    &__item.settingsLink {
-      &:hover {
-        svg {
-          transform: rotate(-360deg);
-          transition: transform 1500ms;
+            &__container {
+                justify-content: space-between;
+                font-size: 3.5em;
+                flex-direction: column;
+            }
         }
-      }
-    }
 
-    &__label {
-      padding-top: 1em;
-      font-size: 1em;
+        &:hover {
+            width: 22em;
+            transition: width 250ms ease-in-out;
+
+            ol {
+                display: flex;
+            }
+
+            .shown {
+                opacity: 0;
+                width: 0;
+            }
+
+            .hide {
+                opacity: 1;
+                transition: opacity 400ms ease-in-out;
+            }
+
+            button,
+            p.hide {
+                font-size: inherit;
+            }
+
+            p.hide {
+                width: 70%;
+            }
+
+            svg.hide {
+                width: 30%;
+            }
+
+            .lang__container {
+                flex-direction: row;
+                width: 50%;
+            }
+        }
+
+        form {
+            width: 100%;
+        }
+
+        hr {
+            width: 80%;
+        }
+
+        &__item {
+            .test {
+                opacity: 0;
+            }
+
+            padding: 0.5em 0;
+            margin: 0.5em;
+
+            button,
+            p {
+                width: 0;
+                font-size: 0;
+            }
+        }
+
+        &__item,
+        &__item a,
+        .lang {
+            text-decoration: none;
+            font-size: 1em;
+            width: 100%;
+            @include align(flex-start, center);
+            box-sizing: border-box;
+        }
+
+        &__item,
+        &__item li {
+            cursor: pointer;
+
+            &__icon {
+                width: 100%;
+            }
+
+            &__legend {
+                &.btn {
+                    padding: 0;
+                    background: none;
+                    width: auto;
+                }
+            }
+        }
+
+        &__item.searchLink {
+            a {
+                font-size: 1em;
+                text-decoration: none;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        &__item.settingsLink {
+            &:hover {
+                svg {
+                    transform: rotate(-360deg);
+                    transition: transform 1500ms;
+                }
+            }
+        }
+
+        &__label {
+            padding-top: 1em;
+            font-size: 1em;
+        }
     }
-  }
 }
 </style>

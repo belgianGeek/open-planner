@@ -205,6 +205,7 @@ app.set('view engine', 'ejs')
 require('./routes/getusers')(app);
 require('./routes/home')(app);
 require('./routes/login')(app);
+require('./routes/logout')(app);
 require('./routes/new-request')(app);
 require('./routes/user')(app);
 
