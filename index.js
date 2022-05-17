@@ -7,7 +7,71 @@ const cp = require('child_process').exec;
 const path = require('path');
 const os = require('os');
 
-const server = require('http').Server(app);
+const port = 8000;
+let username = os.userInfo().username;
+
+let server;
+const sendInstructions = protocol => {
+  if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
+    console.log(`Hey ${username} ! You can connect to the web interface with your local IP (${protocol}://${ip.address()}:${port}) or hostname (${protocol}://${os.hostname()}:${port}).`);
+  } else {
+    console.log(`Sorry Dude, I won't work properly if I don't have access to the Internet. Please fix your connection and try again.`);
+  }
+}
+
+const launchServer = () => {
+  const options = {
+    key: '',
+    cert: ''
+  };
+
+  if (fs.existsSync('./certs/certificate.crt') && fs.existsSync('./certs/private_key.pem')) {
+    options.key = fs.readFileSync('./certs/private_key.pem');
+    options.cert = fs.readFileSync('./certs/certificate.crt');
+
+    server = require('https').Server(options, app).listen(port);
+    sendInstructions('https');
+  } else {
+    console.log('SSL private key and certificate not found, please wait while they are being generated...');
+    cp('openssl genrsa -out ./certs/private_key.pem 2048', (err, stdout, stderr) => {
+      if (err) {
+        console.trace(err);
+      } else {
+        console.log(stdout);
+
+        if (stderr) console.log(stderr);
+        cp('openssl req -new -newkey rsa:2048 -nodes -keyout ./certs/private_key.pem ' +
+          '-out ./certs/certificate_signing_request.csr ' +
+          '-subj "/C=BE/ST=Liege/L=Liege/O=BelgianGeek"', (err, stdout, stderr) => {
+            if (err) {
+              console.trace(err);
+            } else {
+              console.log(stdout);
+
+              if (stderr) console.log(stderr);
+
+              cp('openssl x509 -req -days 365 -in ./certs/certificate_signing_request.csr -signkey ./certs/private_key.pem -out ./certs/certificate.crt', (err, stdout, stderr) => {
+                if (err) {
+                  console.trace(err);
+                } else {
+                  console.log(stdout);
+
+                  if (stderr) console.log(stderr);
+
+                  options.key = fs.readFileSync('./certs/private_key.pem');
+                  options.cert = fs.readFileSync('./certs/certificate.crt');
+
+                  server = require('https').Server(options, app).listen(port);
+                  sendInstructions('https');
+                }
+              });
+            }
+          });
+      }
+    });
+  }
+}
+
 const io = require('socket.io')(server);
 
 const bcrypt = require('bcrypt');
@@ -16,8 +80,6 @@ const flash = require('express-flash');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
-
-server.listen(8000);
 
 const Pool = require('pg').Pool;
 
@@ -91,7 +153,8 @@ const createDB = (config, DBname = 'planner') => {
                 createTasksTable(app.pool)
                   .then(res => {
                     console.log(res);
-                    console.log(`Tu peux te connecter à Open Planner ici : http://${ip.address()}:8000.`);
+                    launchServer();
+                    sendInstructions('https');
 
                       if (fs.existsSync('update-db.js')) {
                         const updatePlannerBackend = require('./update-db.js');
@@ -139,6 +202,7 @@ const createDB = (config, DBname = 'planner') => {
 existPath('./backups/');
 existPath('./exports/');
 existPath('./templates/');
+existPath('./certs/');
 
 // Export a copy of the database every twelve hours
 setInterval(() => {
