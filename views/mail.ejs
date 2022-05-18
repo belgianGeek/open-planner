@@ -72,14 +72,14 @@
       <p>Bonjour Madame/Monsieur,</p>
     <% } %>
     <% if (type === 'adding') { %>
-      <p>🔥 <%= applicant %> a introduit <a href="http://<%= host %>:8000/search">une nouvelle demande</a> concernant le site <strong><%= location %></strong>. En voici le détail :</p>
+      <p>🔥 <%= applicant %> a introduit <a href="https://<%= host %>:8000/search">une nouvelle demande</a> concernant le site <strong><%= location %></strong>. En voici le détail :</p>
     <% } else if (type === 'update') { %>
       <% if (status === 'wip' || status === 'done') { %>
           <% if (status === 'wip') { %>
             <% status = 'En cours'; %>
             <p>La demande n°<%= id %> a été modifiée. 🙃</p>
             <% if (searchPageAccess) { %>
-              <span>Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
+              <span>Vous trouverez son récapitulatif en suivant <a href="https://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
             <% } else { %>
               <span>Vous trouverez son récapitulatif dans le menu intitulé <em>Mes demandes</em> situé dans le bandeau de gauche de l'interface.</span>
             <% } %>
@@ -87,7 +87,7 @@
             <% status = 'Terminée'; %>
             <p>Bonne nouvelle ! La demande n°<%= id %> est désormais complétée. 🏁 😃</p>
             <% if (searchPageAccess) { %>
-              <span>Vous trouverez son récapitulatif en suivant <a href="http://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
+              <span>Vous trouverez son récapitulatif en suivant <a href="https://<%= host %>:8000/search">ce lien</a> et en sélectionnant le site <strong><%= location %></strong> dans la liste déroulante.</span>
             <% } else { %>
               <span>Vous trouverez son récapitulatif dans le menu intitulé <em>Mes demandes</em> situé dans le bandeau de gauche de l'interface.</span>
             <% } %>
@@ -125,7 +125,7 @@
       </tbody>
     </table>
     <% if (type === 'deletion') { %>
-      <p>Si cette demande a été supprimée par erreur, vous pouvez en soumettre une nouvelle via le lien suivant : <a href="http://<%= host %>:8000">http://<%= host %>:8000</a>.</p>
+      <p>Si cette demande a été supprimée par erreur, vous pouvez en soumettre une nouvelle via le lien suivant : <a href="https://<%= host %>:8000">https://<%= host %>:8000</a>.</p>
     <% } %>
     <p>Bonne journée,</p>
     <p>Bien à vous,</p>
