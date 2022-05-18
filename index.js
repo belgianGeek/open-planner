@@ -10,7 +10,7 @@ const os = require('os');
 const port = 8000;
 let username = os.userInfo().username;
 
-let server;
+let server, io;
 const sendInstructions = protocol => {
   if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
     console.log(`Hey ${username} ! You can connect to the web interface with your local IP (${protocol}://${ip.address()}:${port}) or hostname (${protocol}://${os.hostname()}:${port}).`);
@@ -70,9 +70,17 @@ const launchServer = () => {
       }
     });
   }
+  io = require('socket.io')(server);
+  require('./routes/createDB')(app, io);
+  require('./routes/download')(app, io);
+  require('./routes/home')(app, io, config.connectionString);
+  require('./routes/login')(app, io);
+  require('./routes/logout')(app, io);
+  require('./routes/search')(app, io);
+  require('./routes/template')(app, io);
+  require('./routes/upload')(app, io);
+  require('./routes/notFound')(app, io);
 }
-
-const io = require('socket.io')(server);
 
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -156,10 +164,10 @@ const createDB = (config, DBname = 'planner') => {
                     launchServer();
                     sendInstructions('https');
 
-                      if (fs.existsSync('update-db.js')) {
-                        const updatePlannerBackend = require('./update-db.js');
-                        updatePlannerBackend(app);
-                      }
+                    if (fs.existsSync('update-db.js')) {
+                      const updatePlannerBackend = require('./update-db.js');
+                      updatePlannerBackend(app);
+                    }
                   });
               })
               .catch(err => console.log(err));
@@ -213,9 +221,9 @@ setInterval(() => {
   const backups = fs.readdirSync(dir).sort();
 
   for (const [i, backup] of backups.entries()) {
-    if (i <= backups.length -3) {
+    if (i <= backups.length - 3) {
       fs.unlinkSync(`${dir}${backup}`);
-    } else if (i === backups.length -1) {
+    } else if (i === backups.length - 1) {
       console.log('backups folder is now empty !');
     }
   }
@@ -280,15 +288,5 @@ app.set('view engine', 'ejs')
   .use(passport.initialize())
   .use(passport.session())
   .use(methodOverride('_method'));
-
-require('./routes/createDB')(app, io);
-require('./routes/download')(app, io);
-require('./routes/home')(app, io, config.connectionString);
-require('./routes/login')(app, io);
-require('./routes/logout')(app, io);
-require('./routes/search')(app, io);
-require('./routes/template')(app, io);
-require('./routes/upload')(app, io);
-require('./routes/notFound')(app, io);
 
 module.exports = app;
