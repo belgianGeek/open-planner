@@ -30,8 +30,10 @@ node_modules/
 
 # Directories
 backups/
+certs/
 exports/
 tmp/
 
+*bak
 
 .passwd
