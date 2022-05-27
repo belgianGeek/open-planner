@@ -18,6 +18,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
+    path: '/locations',
+    name: 'locations.manage',
+    component: () => import('../views/LocationsManagement.vue'),
+    props: true
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login
@@ -26,6 +32,12 @@ const routes = [
     path: '/new-request',
     name: 'home.new_request',
     component: RequestVue
+  },
+  {
+    path: '/users',
+    name: 'users.manage',
+    component: () => import('../views/UsersManagement.vue'),
+    props: true
   }
 ]
 

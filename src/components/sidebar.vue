@@ -79,6 +79,7 @@ export default {
       <p class="menu__item__legend hide">{{ $t('sidebar.import_users') }}</p>
     </span>
     <span class="menu__item usersLink flex">
+      <router-link to="/users">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
         <circle cx="9" cy="7" r="4"></circle>
@@ -92,8 +93,10 @@ export default {
         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
       </svg>
       <p class="menu__item__legend hide">{{ $t('sidebar.manage_users') }}</p>
+      </router-link>
     </span>
     <span class="menu__item locationsLink flex">
+      <router-link to="/locations">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="10" r="3" />
         <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
@@ -103,6 +106,7 @@ export default {
         <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
       </svg>
       <p class="menu__item__legend hide">{{ $t('sidebar.manage_locations') }}</p>
+      </router-link>
     </span>
     <span class="menu__item settingsLink flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
