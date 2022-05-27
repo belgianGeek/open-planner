@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 import Header from '@/components/header.vue';
 import Notification from '@/components/notification';
 
@@ -8,10 +9,19 @@ export default {
     Header,
     Notification
   },
-  data() {
-    return {}
+  beforeMount() {
+    this.getLocations();
   },
-  methods: {}
+  data() {
+    return {
+      locations: []
+    }
+  },
+  methods: {
+    async getLocations() {
+      this.locations = await axios.get('http://localhost:3000/locations');
+    }
+  }
 }
 </script>
 
@@ -24,7 +34,21 @@ export default {
     <h2 class="title locations__header__title">{{ $t('locations.subject') }}</h2>
     <button class="btn home-btn locations__header__addBtn" type="button">{{ $t('locations.add_title') }}</button>
   </span>
-  <span class="locations__container"></span>
+  <span class="locations__container">
+    <span
+      v-for="(location, index) in locations.data"
+      :key="location.location_id"
+      class="locations__container__header__item"
+      :class="'locations__container__header__item__' + index + 1"
+    >
+    <span>
+      {{ location.location.id }}
+    </span>
+    <span>
+      {{ location.location.name }}
+    </span>
+  </span>
+  </span>
 </section>
 </template>
 
