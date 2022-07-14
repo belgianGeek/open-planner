@@ -25,6 +25,8 @@ const createUsersTable = require('./modules/createUsersTable');
 
 const Pool = require('pg').Pool;
 
+const ws = require('express-ws')(app);
+
 let config = {
   user: 'postgres',
   database: 'postgres',
@@ -204,7 +206,7 @@ app.set('view engine', 'ejs')
 
 require('./routes/getusers')(app);
 require('./routes/home')(app);
-require('./routes/login')(app);
+require('./routes/login')(app, ws);
 require('./routes/logout')(app);
 require('./routes/new-request')(app);
 require('./routes/user')(app);
