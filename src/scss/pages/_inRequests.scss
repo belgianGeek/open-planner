@@ -1,0 +1,121 @@
+.inRequests {
+  padding-left: 6em;
+  width: 100%;
+
+  &.absolute {
+    .inRequests__form {
+      font-size: 0.9em;
+      flex-direction: column;
+      width: 60%;
+      flex: 2;
+      align-self: baseline;
+
+      &__applicantInfo,
+      &__requestInfo__row1 {
+        justify-content: space-around;
+      }
+    }
+  }
+
+  &__step1 {
+    justify-content: space-around;
+    font-size: 1em;
+    width: 100%;
+    margin-top: 10vh;
+    align-self: flex-start;
+    margin: 0 auto;
+    height: 100vh;
+    align-items: center;
+    overflow: auto;
+
+    img {
+      object-fit: contain;
+      padding: 0 1.5em;
+      flex: 0.75;
+    }
+  }
+
+  &__title {
+    text-decoration: underline;
+    font-size: 1.3em;
+    width: 100vw;
+    text-align: center;
+  }
+
+  &__form {
+    font-size: 1em;
+    flex-direction: column;
+    width: 60%;
+    flex: 2;
+    overflow: auto;
+
+    label {
+      align-self: center;
+      align-items: center;
+      font-size: 1em;
+    }
+
+    .title {
+      padding: 0.5em 0;
+      font-size: 1em;
+    }
+
+    &__applicantInfo,
+    &__requestInfo,
+    &_btnContainer {
+      justify-content: space-between;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    &__btnContainer {
+      margin-top: 2em;
+      width: 100%;
+      align-self: center;
+      justify-content: space-evenly;
+      padding-bottom: 2em;
+
+      &__hide {
+        margin: 0;
+      }
+    }
+
+    &__applicantInfo {
+      align-items: center;
+
+      &__container {
+        flex-direction: column;
+
+        &__autocomplete {
+          @include autocomplete;
+        }
+      }
+    }
+
+    &__requestInfo {
+      flex-direction: column;
+
+      &__row1 {
+        justify-content: space-between;
+        margin-top: 1em;
+        align-items: baseline;
+
+        &__confirmationEmail {
+          margin-left: 1em;
+        }
+      }
+
+      &__comment {
+        @include textarea();
+      }
+    }
+
+    &__applicantInfo,
+    &__requestInfo {
+      &__container,
+      &__mail {
+        width: 45%;
+      }
+    }
+  }
+}

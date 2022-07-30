@@ -1,0 +1,94 @@
+<div class="settings__container hidden">
+  <div class="settings__child flex">
+    <span class="settings__child__header flex">
+      <h1><%= __('settings.title') %></h1>
+    </span>
+    <h2 class="settings__child__heading2 settings__child__heading"><%= __('settings.permissions_title') %></h2>
+    <span class="toggleMail flex">
+      <span class="toggleMail__Comment"><%= __('settings.mail_comment') %></span>
+      <label class="toggleMail__Switch">
+        <input class="toggleMail__Input" type="checkbox" name="toggleMailInput" value="">
+        <span class="toggleMail__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleMailCc flex">
+      <span class="toggleMailCc__Comment"><%= __('settings.mailcc_comment') %></span>
+      <label class="toggleMailCc__Switch">
+        <input class="toggleMailCc__Input" type="checkbox" name="toggleMailCcInput" value="">
+        <span class="toggleMailCc__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleAttachments flex">
+      <span class="toggleAttachments__Comment"><%= __('settings.attachment_comment') %></span>
+      <label class="toggleAttachments__Switch">
+        <input class="toggleAttachments__Input" type="checkbox" name="toggleAttachmentsInput" value="">
+        <span class="toggleAttachments__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleUserPasswordUpdate flex">
+      <span class="toggleUserPasswordUpdate__Comment"><%= __('settings.allow_password_update') %></span>
+      <label class="toggleUserPasswordUpdate__Switch">
+        <input class="toggleUserPasswordUpdate__Input" type="checkbox" name="toggleUserPasswordUpdateInput" value="">
+        <span class="toggleUserPasswordUpdate__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleMyRequests flex">
+      <span class="toggleMyRequests__Comment"><%= __('settings.my_requests_comment') %></span>
+      <label class="toggleMyRequests__Switch">
+        <input class="toggleMyRequests__Input" type="checkbox" name="toggleMyRequestsInput" value="">
+        <span class="toggleMyRequests__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleRequestDeletionMail flex">
+      <span class="toggleRequestDeletionMail__Comment"><%= __('settings.request_deletion_mail_comment') %></span>
+      <label class="toggleRequestDeletionMail__Switch">
+        <input class="toggleRequestDeletionMail__Input" type="checkbox" name="toggleRequestDeletionMailInput" value="">
+        <span class="toggleRequestDeletionMail__Slider"></span>
+      </label>
+    </span>
+    <span class="toggleSearchPageUserAccess flex">
+      <span class="toggleSearchPageUserAccess__Comment"><%= __('settings.disable_search_page_access__comment') %></span>
+      <label class="toggleSearchPageUserAccess__Switch">
+        <input class="toggleSearchPageUserAccess__Input" type="checkbox" name="toggleSearchPageUserAccessInput" value="">
+        <span class="toggleSearchPageUserAccess__Slider"></span>
+      </label>
+    </span>
+    <h2 class="settings__child__heading2 settings__child__heading"><%= __('settings.customization_title') %></h2>
+    <span class="settings__child__instanceNameContainer flex">
+      <label class="settings__child__instanceNameContainer__label flex">
+        <%= __('config.instance_name') %>
+        <input class="settings__child__instanceNameContainer__label__input input" type="text" placeholder="<%= __('config.instance_name_placeholder') %>">
+      </label>
+    </span>
+    <span class="protip protip--noMargin"><%= __('protip.instance_name') %></span>
+    <span class="settings__child__descriptionContainer flex">
+      <label class="settings__child__descriptionContainer__label flex">
+        <%= __('config.instance_purpose') %>
+        <input class="settings__child__descriptionContainer__label__textarea input" placeholder="<%= __('config.instance_purpose_placeholder') %>" />
+      </label>
+    </span>
+    <span class="protip protip--noMargin"><%= __('protip.description')%></span>
+    <h2 class="settings__child__heading2 settings__child__heading">Emailing</h2>
+    <span class="settings__child__senderContainer flex">
+      <label class="settings__child__senderContainer__senderLabel flex">
+        <%= __('settings.sender_name') %>
+        <input class="settings__child__senderContainer__senderLabel__input input" type="text" placeholder="<%= __('settings.sender_name') %>">
+      </label>
+      <span class="protip protip--noMargin"><%= __('protip.signature') %></span>
+    </span>
+    <span class="settings__child__mailContainer flex">
+      <label class="settings__child__mailContainer__smtpUserLabel flex">
+        <%= __('settings.sender_mail_address') %>
+        <input class="settings__child__mailContainer__smtpUserLabel__input input" type="email" placeholder="<%= __('form.mail_generic') %>">
+      </label>
+      <label class="settings__child__mailContainer__smtpHostLabel flex">
+        <%= __('settings.smtp_address') %>
+        <input class="settings__child__mailContainer__smtpHostLabel__input input" type="text" placeholder="<%= __('settings.smtp_address_placeholder') %>">
+      </label>
+      <label class="settings__child__mailContainer__smtpPasswdLabel flex">
+        <%= __('settings.mail_address_passwd') %>
+        <input class="settings__child__mailContainer__smtpPasswdLabel__input input" type="password" placeholder="<%= __('form.passwd_empty') %>">
+      </label>
+    </span>
+  </div>
+</div>

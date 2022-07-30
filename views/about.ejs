@@ -1,0 +1,44 @@
+<div class="about__container hidden">
+  <div class="about__container__child flex">
+    <h2 class="about__container__child__title"><%= instanceName %></h2>
+    <section class="about__container__child__section flex">
+      <img class="about__container__child__section__img" src="./src/scss/icons/apple-touch-icon-152x152.png" alt="'<%= instanceName %>' logo">
+      <section class="about__container__child__section__right flex">
+        <span class="about__container__child__section__right__item version flex">
+          <span>
+            <u>Version</u>:
+          </span>
+          <p class="currentVersion"><%= currentVersion %></p>
+          <% if (user.type === 'admin') { %>
+          <button class="updateBtn btn home-btn" type="button"><%= __('updateBtn_text') %></button>
+          <% } %>
+        </span>
+        <span class="about__container__child__section__right__item dev flex">
+          <span>
+            <u><%= __('about.developer_title') %></u>:
+          </span>
+          <p>Maxime Vanderwegen (belgianGeek)</p>
+        </span>
+        <span class="about__container__child__section__right__item license flex">
+          <span>
+            <u><%= __('about.license_title') %></u>:
+          </span>
+          <p>GNU GPL v3</p>
+        </span>
+        <p class="about__container__child__section__right__item text">
+          <%= __('about.description') %>
+        </p>
+        <span class="about__container__child__section__right__item links flex">
+          <a href="https://github.com/belgianGeek/node-planner" target="_blank" rel="noreferrer"><%= __('about.github_link') %></a>
+          <a href="https://github.com/belgianGeek/node-planner/issues" target="_blank" rel="noreferrer"><%= __('about.report_issue') %></a>
+          <span>
+            <%= __('about.cover_picture_src_intro') %>
+            <a href="https://unsplash.com/@steve_j?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Steve Johnson</a>
+            <%= __('about.cover_picture_src_from') %>
+            <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+          </span>
+        </span>
+      </section>
+    </section>
+  </div>
+</div>

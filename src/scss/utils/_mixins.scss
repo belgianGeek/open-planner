@@ -1,0 +1,157 @@
+@mixin align($justify: start, $align: start) {
+  justify-content: $justify;
+  align-items: $align;
+}
+@mixin autocomplete {
+  flex-direction: column;
+  @include input;
+  margin: 0 0 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  max-height: 10em;
+  overflow: auto;
+
+  p {
+    margin: 0;
+    padding: 0.5em;
+    text-overflow: ellipsis;
+    min-width: 0;
+    white-space: nowrap;
+
+    &:hover {
+      color: black;
+      background-color: $input-border;
+      cursor: pointer;
+    }
+  }
+}
+@mixin background-image($url: "/img/wallpaper.jpg") {
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+@mixin box-shadow {
+  box-shadow: 10px 10px 12px 2px $translucent-black;
+}
+@mixin help {
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    .help__hover {
+      opacity: 1;
+    }
+  }
+
+  .help__hover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    stroke: $input-border;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 250ms;
+  }
+}
+@mixin input {
+  border: 2px solid $input-border;
+  background-color: rgba(0,0,0,.4);
+  border-radius: 0.2em;
+  padding: 0.5em;
+  margin: 1em 0;
+}
+@mixin simple-step {
+  align-items: center;
+  font-size: 1.1em;
+  width: 100%;
+  height: 60vh;
+}
+@mixin tabContainer($width: 100%) {
+  width: $width;
+  height: 100%;
+  font-size: 1.05em;
+  align-self: center;
+  overflow: auto;
+  flex-direction: column;
+  background-color: $translucent-black;
+
+  &__header {
+    background-color: $translucent-black;
+    height: max-content;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    &__item {
+      text-align: center;
+      flex: 1;
+      padding: 1em;
+      border: 2px solid $input-border;
+    }
+  }
+
+  &__row {
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+
+    &:hover {
+      background-color: transparentize($input-border, 0.3);
+      transition: background-color 500ms cubic-bezier(0,.43,.08,.92);
+
+      .rowItem {
+        color: black;
+      }
+    }
+
+    &__item {
+      text-align: center;
+      flex: 1;
+      padding: 1em;
+      min-width: 0;
+
+      &--status {
+        justify-content: center;
+        padding: .3em 0;
+        border-radius: 1em;
+      }
+
+      &--status.done {
+        background-color: $green;
+      }
+
+      &--status.wip {
+        background-color: $orange;
+        color: #000;
+      }
+
+      &--status.waiting {
+        background-color: $red;
+      }
+    }
+  }
+}
+@mixin textarea($min-height: 10em, $max-height: 15em, $min-width: 100%, $max-width: 100%) {
+  min-width: $min-width;
+  max-width: $max-width;
+  min-height: $min-height;
+  max-height: $max-height;
+  padding: 0.5em;
+  border: 2px solid grey;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+}
+@mixin warning {
+  color: red;
+  font-style: italic;
+  align-self: center;
+  margin-top: 1em;
+  padding: 1em;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<%- include('head'); %>
+
+<body class="errorPage flex">
+  <main class="wrapper blur">
+    <div class="absolute zero blur backgroundColor"></div>
+  </main>
+  <% if (route !== '/search' && route !== '/download') { %>
+    <img class="errorPage__img" src="/src/scss/404.png" alt="<%= __('errorPage.img_alt') %>">
+    <div class="errorPage__comment flex">
+      <p><%= msg %></p>
+      <a href="/"><%= __('errorPage.link') %></a>
+      <p><%= __('errorPage.more_info') %></p>
+    </div>
+  <% } else { %>
+    <div class="errorPage__img__container absolute flex">
+      <img class="errorPage__img denied" src="/src/scss/icons/yoda.png" alt="<%= __('errorPage.img_alt') %>">
+      <div class="errorPage__comment denied flex">
+        <p><%= msg %></p>
+        <a href="/"><%= __('errorPage.link') %></a>
+        <p><%= __('errorPage.more_info') %></p>
+      </div>
+    </div>
+  <% } %>
+</body>
+
+</html>

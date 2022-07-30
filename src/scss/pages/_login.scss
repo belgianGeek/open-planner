@@ -1,0 +1,35 @@
+.login {
+  flex-direction: column;
+  border-radius: 0.5em;
+  background-color: $translucent-black;
+  padding: 2em;
+  width: 30%;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40vh;
+  @include box-shadow;
+
+  label {
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .input {
+      width: 60%;
+    }
+  }
+}
+
+.loginHeader {
+  position: absolute;
+  bottom: 0.7em;
+  right: 2vw;
+  font-size: 1em;
+  width: 12em;
+
+  .lang {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+}
