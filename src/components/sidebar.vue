@@ -42,8 +42,7 @@ export default {
         <p class="menu__item__legend hide">{{ $t('sidebar.search') }}</p>
       </a>
     </span>
-    <!-- <% if (allowPasswordUpdate && user.type !== 'admin') { %> -->
-    <span class="menu__item accountLink flex">
+    <span v-if="this.$store.state.connectedUser.type !== 'admin'" class="menu__item accountLink flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
         <circle cx="12" cy="7" r="4"></circle>
@@ -54,9 +53,7 @@ export default {
       </svg>
       <p class="menu__item__legend hide">{{ $t('sidebar.account') }}</p>
     </span>
-    <!-- <% } %>
-      <% if (user.type !== 'guest') { %> -->
-    <span class="menu__item exportsLink flex">
+    <span v-if="this.$store.state.connectedUser.type !== 'guest'" class="menu__item exportsLink flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.2-5.6-3-.3-5.9 1.3-7.3 4-1.2 2.5-1 6.5.5 8.8m8.7-1.6V21" />
         <path d="M16 16l-4-4-4 4" />
@@ -67,9 +64,7 @@ export default {
       </svg>
       <p class="menu__item__legend hide">{{ $t('sidebar.export') }}</p>
     </span>
-    <!-- <% } %>
-      <% if (user.type === 'admin') { %> -->
-    <span class="menu__item importLink flex">
+    <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item importLink flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-1.2c-.7-3-3.2-5.2-6.2-5.6-3-.3-5.9 1.3-7.3 4-1.2 2.5-1 6.5.5 8.8M12 19.8V12M16 17l-4 4-4-4" />
       </svg>
@@ -78,8 +73,8 @@ export default {
       </svg>
       <p class="menu__item__legend hide">{{ $t('sidebar.import_users') }}</p>
     </span>
-    <span class="menu__item usersLink flex">
-      <router-link to="/users">
+    <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item usersLink flex">
+      <router-link to="/users" class="flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
         <circle cx="9" cy="7" r="4"></circle>
@@ -95,8 +90,8 @@ export default {
       <p class="menu__item__legend hide">{{ $t('sidebar.manage_users') }}</p>
       </router-link>
     </span>
-    <span class="menu__item locationsLink flex">
-      <router-link to="/locations">
+    <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item locationsLink flex">
+      <router-link to="/locations" class="flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="10" r="3" />
         <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
@@ -108,7 +103,7 @@ export default {
       <p class="menu__item__legend hide">{{ $t('sidebar.manage_locations') }}</p>
       </router-link>
     </span>
-    <span class="menu__item settingsLink flex">
+    <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item settingsLink flex">
       <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f8f4f4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"></circle>
         <path

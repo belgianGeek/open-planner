@@ -1,7 +1,7 @@
 const passport = require('passport');
 
 module.exports = function(app) {
-  app.get('/login', async (req, res, next) => {
+  app.post('/login', async (req, res, next) => {
       passport.authenticate("local", (err, user, info) => {
         if (err) {
           return next(err);
@@ -12,8 +12,7 @@ module.exports = function(app) {
             user: user,
             info: info
           });
-
-          res.send('connection', {
+          console.log({
             user: user,
             info: info
           });
@@ -27,11 +26,6 @@ module.exports = function(app) {
               user: user,
               message: "Logged in"
             });
-
-            res.send('connection successfull', {
-              user: user,
-              message: "Logged in"
-            })
           } else {
             console.trace('The user variable is undefined...');
           }

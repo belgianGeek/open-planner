@@ -12,7 +12,7 @@ export default {
 <template>
 <header class="header">
   <span class="header__container flex">
-    <img class="header__container__icon returnIcon hidden" alt="header_icon_alt')" title="header_icon_alt" src="/public/img/return.svg">
+    <img class="header__container__icon returnIcon hidden" alt="header_icon_alt')" title="header_icon_alt" src="/img/return.svg">
     <span class="header__container__msg hidden">header_icon_alt</span>
   </span>
   <Sidebar />

@@ -25,17 +25,6 @@ const createUsersTable = require('./modules/createUsersTable');
 
 const Pool = require('pg').Pool;
 
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "http://localhost:8000",
-  },
-});
-
-io.on('connection', socket => {
-  console.log(socket.id);
-  io.emit('hello there', 'ping !');
-});
-
 let config = {
   user: 'postgres',
   database: 'postgres',
@@ -62,7 +51,10 @@ const initClient = new Pool(config);
 
 const corsOptions = {
   maxAge: 3600,
-  origin: /localhost$/,
+  origin: [
+    /localhost$/,
+    '192.168.1.*'
+  ],
   optionsSuccessStatus: 200
 }
 
@@ -219,6 +211,5 @@ require('./routes/login')(app);
 require('./routes/logout')(app);
 require('./routes/new-request')(app);
 require('./routes/user')(app);
-require('./routes/ws')(app, io);
 
 app.listen(3000);

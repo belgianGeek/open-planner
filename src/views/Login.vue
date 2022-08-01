@@ -1,8 +1,7 @@
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import LocaleSwitcher from '@/components/localeSwitcher.vue';
-// import router from '../router';
-import socket from '../socket';
+import router from '../router';
 
 export default {
   name: 'Login',
@@ -18,35 +17,30 @@ export default {
   },
   methods: {
     login(event) {
-      // const displayLoginError = err => {
-      //   this.loginError = err;
-      // };
+      const displayLoginError = err => {
+        this.loginError = err;
+      };
 
       event.preventDefault();
-      // axios.post('http://localhost:3000/login', {
-      //     email: this.email,
-      //     password: this.password
-      //   })
-      //   .then(res => {
-      //     if (res.data.user) {
-      //       this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
-      //       router.push('/');
-      //     } else {
-      //       displayLoginError(res.data.info.message);
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //     router.push('/login');
-      //   })
+      axios.post(`http://${window.location.hostname}:3000/login`, {
+           email: this.email,
+           password: this.password
+         })
+         .then(res => {
+           if (res.data.user) {
+             this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
+             router.push('/');
+           } else {
+             displayLoginError(res.data.info.message);
+           }
+         })
+         .catch(err => {
+           console.log(err);
+           router.push('/login');
+         });
     },
   },
-  mounted() {
-    socket.connect();
-    socket.on('hello there', msg => {
-      console.log(msg, 'pong !');
-    });
-  }
+  mounted() {}
 }
 </script>
 
