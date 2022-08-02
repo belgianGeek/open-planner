@@ -82,7 +82,7 @@ export default {
     <span class="users__container__header flex">
       <span
         v-for="header in userContainerHeaders"
-        :class="[header.match('mail') ? 'flex2' : '']"
+        :class="[header.match(/mail/i) ? 'flex2' : '']"
         class="users__container__header__item">{{ $t(header) }}</span>
     </span>
     <span v-for="(user, index) in users.data" class="flex users__container__row" :class="'users__container__row--' + index">
