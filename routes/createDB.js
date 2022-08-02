@@ -1,7 +1,7 @@
 module.exports = function(app, io) {
   const createSettingsTable = require('../modules/createSettingsTable');
 
-  const getUsers = require('../modules/getUsers');
+  const initUsers = require('../modules/initUsers');
   const notify = require('../modules/notify');
 
   app.post('/createdb', (req, res) => {

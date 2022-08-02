@@ -1,6 +1,6 @@
 const deleteData = (app, io, id, data, passport) => {
   const DBquery = require('./DBquery');
-  const getUsers = require('./getUsers');
+  const initUsers = require('./initUsers');
   const mail = require('../modules/mail');
   const notify = require('./notify');
 
@@ -13,7 +13,7 @@ const deleteData = (app, io, id, data, passport) => {
     if (data.table !== 'tasks') {
       DBquery(app, io, 'DELETE FROM', data.table, query)
         .then(() => {
-            getUsers(app, passport);
+            initUsers(app, passport);
         });
     }
 

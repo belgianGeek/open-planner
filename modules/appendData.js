@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const DBquery = require('../modules/DBquery');
-const getUsers = require('../modules/getUsers');
+const initUsers = require('../modules/initUsers');
 const notify = require('../modules/notify');
 const passport = require('passport');
 
@@ -25,7 +25,7 @@ const appendData = async (app, data, io) => {
         values: data.values
       }).then(async res => {
         if (data.table === 'users') {
-          getUsers(app, passport);
+          initUsers(app, passport);
 
           const users = await app.pool.query(`SELECT * FROM users LEFT JOIN locations ON users.location = locations.location_id ORDER BY name`);
           io.emit('users retrieved', users.rows);

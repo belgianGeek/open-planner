@@ -16,7 +16,7 @@ const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
 
 const exportDB = require('./modules/exportDB');
-const getUsers = require('./modules/getUsers');
+const initUsers = require('./modules/initUsers');
 const existPath = require('./modules/existPath');
 const createLocationsTable = require('./modules/createLocationsTable');
 const createSessionTable = require('./modules/createSessionTable');
@@ -74,7 +74,7 @@ const createDB = (config, DBname = 'planner') => {
               .then(res => {
                 console.log(res);
 
-                getUsers(app, passport);
+                initUsers(app, passport);
 
                 createTasksTable(app.pool)
                   .then(res => {
@@ -205,11 +205,11 @@ app.set('view engine', 'ejs')
   .use(methodOverride('_method'))
   .use(express.json());
 
-require('./routes/getusers')(app);
 require('./routes/home')(app);
 require('./routes/login')(app);
 require('./routes/logout')(app);
 require('./routes/new-request')(app);
 require('./routes/user')(app);
+require('./routes/users')(app);
 
 app.listen(3000);

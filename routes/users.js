@@ -2,17 +2,21 @@ const cors = require('cors');
 
 module.exports = function(app) {
   app.get('/users', async (req, res) => {
-    const DBusers = await app.pool.query(`
+    const listUsers = await app.pool.query(`
       SELECT
         u.user_id,
         u.name,
         u.firstname,
-        u.gender,
         u.email,
         u.location,
-        u.type
-      FROM users u`);
+        u.gender,
+        u.type,
+        l.location_id,
+        l.location_name
+       FROM users u
+       LEFT JOIN locations l
+       ON u.location = l.location_id ORDER BY u.name`);
 
-    res.send(DBusers.rows);
+    res.send(listUsers.rows);
   });
 }

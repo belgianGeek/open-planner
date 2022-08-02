@@ -1,7 +1,7 @@
 module.exports = function(app, io) {
   const bcrypt = require('bcrypt');
   const fs = require('fs-extra');
-  const getUsers = require('../modules/getUsers');
+  const initUsers = require('../modules/initUsers');
   const multer = require('multer');
   const notify = require('../modules/notify');
   const passport = require('passport');
@@ -37,7 +37,7 @@ module.exports = function(app, io) {
                   .then(async res => {
                     usersNb++;
                     notify(io, 'success', true, usersNb);
-                    getUsers(app, passport);
+                    initUsers(app, passport);
 
                     const users = await app.pool.query(`
                       SELECT
