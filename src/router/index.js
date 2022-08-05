@@ -36,6 +36,11 @@ const router = createRouter({
       component: RequestVue
     },
     {
+      path: '/request-success',
+      name: 'request-success',
+      component: () => import('../views/RequestSuccess.vue')
+    },
+    {
       path: '/users',
       name: 'users.manage',
       component: () => import('../views/UsersManagement.vue'),

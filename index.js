@@ -205,7 +205,7 @@ app.set('view engine', 'ejs')
   .use(methodOverride('_method'))
   .use(express.json());
 
-require('./routes/home')(app);
+require('./routes/locations')(app);
 require('./routes/login')(app);
 require('./routes/logout')(app);
 require('./routes/new-request')(app);

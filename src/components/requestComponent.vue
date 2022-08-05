@@ -1,44 +1,52 @@
 <script>
 import LocationOption from './locationOption.vue';
 import axios from 'axios';
+import router from '../router';
 
 export default {
   name: 'RequestComponent',
+  props: {
+    isSearchPage: Boolean
+  },
   components: {
     LocationOption
   },
   data() {
     return {
       form: {
-        applicant_firstname: 'Max',
-        applicant_name: 'Vdw',
+        applicant_firstname: this.$store.state.connectedUser.firstname,
+        applicant_name: this.$store.state.connectedUser.name,
         attachment: false,
         attachment_src: '',
-        location_fk: '',
-        comment: 'Test',
+        location_fk: this.$store.state.connectedUser.location_fk,
+        comment: '',
         request_date: '',
-        status: 'waiting',
-        user_fk: ''
+        status: '',
+        user_fk: Number
       },
       sendattachment: true,
-      users: this.getUsers()
+      users: []
     }
   },
   methods: {
     async getUsers() {
-      this.users = await axios.get('http://localhost:3000/getusers');
+      this.users = await axios.get(`http://${window.location.hostname}:3000/users`);
     },
     sendRequest() {
-      axios({
-        url: 'http://localhost:3000/new-request',
-        method: 'post',
-        data: this.form,
-        option: {
-          headers: {
-            'content-type': 'text/json'
-          }
+      // Check if the request is made from th search page
+      if (!this.isSearchPage) {
+        delete this.form.user_fk;
+      }
+
+      axios.post(`http://${window.location.hostname}:3000/new-request`, this.form)
+      .then(res => {
+        if (res.status === 200) {
+          router.push('/request-success');
+        } else {
+          console.error('POST request error :-(( : ', err);
         }
-      });
+      })
+      .catch(err => console.error(err));
     },
     setDate() {
       const setDay = date => {
@@ -103,7 +111,7 @@ export default {
             <option value="done">{{ $t('request.status_done') }}</option>
           </select>
         </label>
-        <label class="flex">
+        <label class="flex" v-if="this.isSearchPage">
           {{ $t('request.assignedWorker') }}
           <select class="inRequests__form__requestInfo__row1__assignedWorker input" v-model="form.user_fk" required="true">
             <option value="default">{{ $t('request.assignedWorker_default') }}</option>

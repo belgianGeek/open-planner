@@ -1,5 +1,3 @@
-const cors = require('cors');
-
 module.exports = function(app) {
   app.get('/users', async (req, res) => {
     const listUsers = await app.pool.query(`

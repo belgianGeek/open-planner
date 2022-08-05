@@ -20,7 +20,7 @@ export default {
 <template>
     <div class="backgroundColor"></div>
     <Header />
-    <RequestComponent />
+    <RequestComponent :isSearchPage="false"/>
     <Notification />
 </template>
 

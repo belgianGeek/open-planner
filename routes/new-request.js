@@ -21,7 +21,9 @@ module.exports = function(app) {
     };
 
     app.pool.query(query)
-      .then(res => console.log(res.rows))
+      .then(() => {
+        res.send('Request successfull');
+      })
       .catch(err => console.log(err));
   });
 }
