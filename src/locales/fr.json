@@ -190,6 +190,7 @@
 		"log_out": "Déconnexion",
 		"manage_locations": "Gestion des implantations",
 		"manage_users": "Gestion des utilisateurs",
+		"new_request": "Nouvelle demande",
 		"search": "Recherche"
 	},
 	"updateBtn_text": "Mettre à jour",

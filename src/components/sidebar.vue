@@ -28,6 +28,19 @@ export default {
   <nav class="menu flex">
     <label class="menu__label">Menu</label>
     <hr>
+    <span class="menu__item newRequestLink flex">
+      <a class="flex" href="/new-request" rel="noreferrer">
+        <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 11.08V8l-6-6H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h6" />
+          <path d="M14 3v5h5M18 21v-6M15 18h6" />
+        </svg>
+        <svg class="menu__item__icon hide" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 11.08V8l-6-6H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h6" />
+          <path d="M14 3v5h5M18 21v-6M15 18h6" />
+        </svg>
+        <p class="menu__item__legend hide">{{ $t('sidebar.new_request') }}</p>
+      </a>
+    </span>
     <!-- <% if (!isSearchPage) { %> -->
     <span class="menu__item searchLink flex">
       <a class="flex" href="/search?lang=lang" rel="noreferrer">
@@ -75,32 +88,32 @@ export default {
     </span>
     <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item usersLink flex">
       <router-link to="/users" class="flex">
-      <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-        <circle cx="9" cy="7" r="4"></circle>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-      </svg>
-      <svg class="menu__item__icon hide" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-        <circle cx="9" cy="7" r="4"></circle>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-      </svg>
-      <p class="menu__item__legend hide">{{ $t('sidebar.manage_users') }}</p>
+        <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <svg class="menu__item__icon hide" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <p class="menu__item__legend hide">{{ $t('sidebar.manage_users') }}</p>
       </router-link>
     </span>
     <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item locationsLink flex">
       <router-link to="/locations" class="flex">
-      <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="10" r="3" />
-        <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
-      </svg>
-      <svg class="menu__item__icon hide" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="10" r="3" />
-        <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
-      </svg>
-      <p class="menu__item__legend hide">{{ $t('sidebar.manage_locations') }}</p>
+        <svg class="menu__item__icon shown" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="10" r="3" />
+          <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
+        </svg>
+        <svg class="menu__item__icon hide" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="10" r="3" />
+          <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
+        </svg>
+        <p class="menu__item__legend hide">{{ $t('sidebar.manage_locations') }}</p>
       </router-link>
     </span>
     <span v-if="this.$store.state.connectedUser.type === 'admin'" class="menu__item settingsLink flex">
