@@ -36,6 +36,7 @@
     "pg": "^8.7.3",
     "pg-native": "^3.0.0",
     "pg-simple": "^0.2.2",
+    "pinia": "^2.0.23",
     "register-service-worker": "^1.7.1",
     "vue": "^3.2.37",
     "vue-cookies": "^1.8.1",

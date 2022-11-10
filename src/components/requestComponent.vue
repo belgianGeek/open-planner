@@ -2,6 +2,11 @@
 import LocationOption from './locationOption.vue';
 import axios from 'axios';
 import router from '../router';
+import {
+  mapStores
+} from 'pinia';
+import useUserStore from '@/stores/userStore';
+import useMainStore from '@/stores/mainStore';
 
 export default {
   name: 'RequestComponent',
@@ -14,11 +19,11 @@ export default {
   data() {
     return {
       form: {
-        applicant_firstname: this.$store.state.connectedUser.firstname,
-        applicant_name: this.$store.state.connectedUser.name,
+        applicant_firstname: '',
+        applicant_name: '',
         attachment: false,
         attachment_src: '',
-        location_fk: this.$store.state.connectedUser.location_fk,
+        location_fk: '',
         comment: '',
         request_date: '',
         status: '',
@@ -33,7 +38,7 @@ export default {
       this.users = await axios.get(`http://${window.location.hostname}:3000/users`);
     },
     sendRequest() {
-      // Check if the request is made from th search page
+      // Check if the request is made from the search page
       if (!this.isSearchPage) {
         delete this.form.user_fk;
       }
@@ -71,6 +76,14 @@ export default {
   beforeMount() {
     this.setDate();
     this.getUsers();
+
+    this.applicant_firstname = this.userStore.connectedUser.firstname;
+    this.applicant_name = this.userStore.connectedUser.name;
+    this.location_fk = this.userStore.connectedUser.location_fk;
+    this.request_date = this.mainStore.date;
+  },
+  computed: {
+    ...mapStores(useMainStore, useUserStore)
   }
 }
 </script>
@@ -143,9 +156,9 @@ export default {
   <!-- Only hide the image tag to avoid errors when loading tasks containing attachments -->
   <section class="inRequests__picture flex" name="inRequests__picture">
     <img v-if="sendattachment" :src="form.attachment_src || '/img/empty.svg'" alt="{{ $t('request.attachment_alt') ">
-    <label class="flex" for="inRequests__picture">
+    <label class="flex" for="inRequests__picture" @click="">
       {{ $t('request.attachment') }}
-      <input class="inRequests__picture__file hidden" v-bind:src="form.attachment_src" type="file" accept="image/*">
+      <input class=" inRequests__picture__file hidden" v-bind:src="form.attachment_src" type="file" accept="image/*">
     </label>
   </section>
 </section>
@@ -159,9 +172,8 @@ export default {
     &.absolute {
         .inRequests__form {
             flex-direction: column;
-            width: 60%;
+            flex: 1;
             max-height: 80vh;
-            flex: 2;
             overflow: auto;
             align-self: baseline;
 
@@ -170,6 +182,14 @@ export default {
                 justify-content: space-around;
             }
         }
+    }
+
+    &__picture {
+        flex: 0.5;
+        align-items: center;
+        justify-content: space-evenly;
+        flex-direction: column;
+        padding: 1.5rem;
     }
 
     &__step1 {
@@ -191,10 +211,11 @@ export default {
 
     &__form {
         flex-direction: column;
-        width: 60%;
+        flex: 1;
         max-height: 80vh;
-        flex: 2;
-        margin-top: 2em;
+        overflow: auto;
+        align-self: baseline;
+        margin-top: 1rem;
 
         label {
             align-self: center;
@@ -243,7 +264,7 @@ export default {
             }
 
             .title {
-              padding: 0;
+                padding: 0;
             }
 
             span {

@@ -3,6 +3,8 @@ import Export from '@/components/exportComponent.vue';
 import Header from '@/components/header.vue';
 import Notification from '@/components/notification.vue';
 import router from '../router';
+import { mapStores } from 'pinia';
+import useUserStore from '@/stores/userStore';
 
 export default {
   name: 'Home',
@@ -12,11 +14,13 @@ export default {
     Notification
   },
   beforeMount() {
-    if (this.$store.state.connectedUser.user_id === undefined) {
+    if (this.userStore.connectedUser.user_id === undefined) {
       router.push('/login');
     }
   },
-  computed: {},
+  computed: {
+    ...mapStores(useUserStore)
+  },
   data() {
     return {}
   },
@@ -31,7 +35,7 @@ export default {
 <main class="wrapper flex">
   <section class="home flex">
     <h1 class="home__mainTitle">instanceName</h1>
-    <p class="greetings">{{ $t('greetings') }} {{ this.$store.state.connectedUser.firstname }} !</p>
+    <p class="greetings">{{ $t('greetings') }} {{ this.userStore.connectedUser.firstname }} !</p>
     <h2 class="home__title title">{{ $t('home.call_to_action') }}</h2>
     <span class="home__btnContainer flex">
       <router-link to="/new-request" class="home__btnContainer__newRequest btn home-btn">{{ $t('home.new_request') }}</router-link>

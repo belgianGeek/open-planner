@@ -2,6 +2,8 @@
 import axios from 'axios';
 import LocaleSwitcher from '@/components/localeSwitcher.vue';
 import router from '../router';
+import { mapStores } from 'pinia';
+import useUserStore from '@/stores/userStore';
 
 export default {
   name: 'Login',
@@ -28,7 +30,8 @@ export default {
          })
          .then(res => {
            if (res.data.user) {
-             this.$store.commit('RETRIEVE_USER_DATA', res.data.user);
+             this.userStore.connectedUser = res.data.user;
+             console.log(this.userStore);
              router.push('/');
            } else {
              displayLoginError(res.data.info.message);
@@ -39,6 +42,9 @@ export default {
            router.push('/login');
          });
     },
+  },
+  computed: {
+    ...mapStores(useUserStore)
   },
   mounted() {}
 }
