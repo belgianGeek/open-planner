@@ -26,6 +26,8 @@ Le logiciel _Open Planner_ peut être téléchargé et installé en quelques cli
 
 Pour télécharger le programme, vous pouvez soit cloner ce dépôt dans un dossier sur votre ordinateur (attention, cela nécessite d'avoir installé [Git](https://git-scm.com/) au préalable !) via la commande `git clone https://github.com/belgianGeek/open-planner.git /home/$user/Documents/open-planner` ou simplement télécharger l'ensemble des fichiers au format `.zip` et les déplacer ensuite dans le dossier de votre choix sur votre ordinateur.
 
+Vous devrez ensuite configurer le serveur de base de données. Vous devez pour ce faire vous connecter avec l'utilisateur Postgres dans un terminal, en éxecutant la commande `sudo -i -u postgres` puis en lançant l'instruction `su - postgres -c "initdb --locale en_US.UTF-8 -D '/var/lib/postgres/data'"` pour créer le jeu de données de base du serveur PostgreSQL.
+
 Le serveur de base de données PostgreSQL doit être actif pour assurer le bon fonctionnement du logiciel. Pour démarrer le service, vous pouvez donc entrer la commande `sudo systemctl start postgresql` dans un terminal. Afin que le service soit démarré à chaque allumage de votre ordinateur, vous devez exécutez la commande `sudo systemctl enable postgresql`.
 
 Pour finaliser l'installation, vous n'avez plus qu'à démarrer le programme en ouvrant une fenêtre de terminal, en vous rendant dans le dossier où vous avez placé les fichiers du programme (au moyen de la commande `cd dossier-d'open-planner`) et exécuter la commande `npm run start`. Cette comande aura pour effet d'afficher plusieurs lignes, y compris un lien vous permettant de vous connecter à l'interface et de terminer la configuration grâce à un menu d'introduction qui vous guidera étape par étape.
