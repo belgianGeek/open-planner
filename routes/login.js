@@ -138,8 +138,9 @@ module.exports = function(app, io) {
                             location_id: res.rows[0].location_id
                           });
                         });
+                    }
 
-                      createSettingsTable(app.pool, settings)
+                    createSettingsTable(app.pool, settings)
                         .then(settings => {
                           app.open_planner_instance_name = settings.instance_name;
                           app.open_planner_instance_description = settings.instance_description;
@@ -150,7 +151,7 @@ module.exports = function(app, io) {
                         .catch(() => {
                           io.emit('settings import', false);
                         });
-                    }
+
                   } catch (e) {
                     console.trace(`Error appending settings : ${e}`);
                   }
