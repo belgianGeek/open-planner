@@ -31,7 +31,7 @@ export default {
          .then(res => {
            if (res.data.user) {
              this.userStore.connectedUser = res.data.user;
-             console.log(this.userStore);
+             // this
              router.push('/');
            } else {
              displayLoginError(res.data.info.message);

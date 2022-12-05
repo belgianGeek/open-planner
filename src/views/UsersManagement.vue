@@ -85,7 +85,7 @@ export default {
         :class="[header.match(/mail/i) ? 'flex2' : '']"
         class="users__container__header__item">{{ $t(header) }}</span>
     </span>
-    <span v-for="(user, index) in users.data" class="flex users__container__row" :class="'users__container__row--' + index">
+    <a v-for="(user, index) in users.data" :href="'/user/' + user.user_id" class="flex users__container__row" :class="'users__container__row--' + index">
       <span class="users__container__row__item users__container__row__item--id hidden">{{ user.user_id }}</span>
       <span class="users__container__row__item users__container__row__item--name">{{ user.name.replace(/\'\'/g, "'") }}</span>
       <span class="users__container__row__item users__container__row__item--firstname"> {{ user.firstname.replace(/\'\'/g, "'") }}</span>
@@ -94,7 +94,7 @@ export default {
         class="users__container__row__item users__container__row__item--email flex2">{{ user.email }}</a>
       <span class="users__container__row__item users__container__row__item--location">{{ user.location_name !== null ? user.location_name : 'Aucune' }}</span>
       <span class="users__container__row__item users__container__row__item--type">{{ user.type }}</span>
-    </span>
+    </a>
   </span>
 </section>
 </template>
