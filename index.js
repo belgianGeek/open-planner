@@ -210,6 +210,7 @@ require('./routes/login')(app);
 require('./routes/logout')(app);
 require('./routes/new-request')(app);
 require('./routes/user')(app);
+require('./routes/userDetail')(app);
 require('./routes/users')(app);
 
 app.listen(3000);

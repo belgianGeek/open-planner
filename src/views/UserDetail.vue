@@ -1,9 +1,11 @@
 <script>
+import axios from 'axios';
+
   export default {
-    name 'UserDetail',
+    name: 'UserDetail',
     data() {
       return {
-        user_id: '',
+        user_id: this.$route.params.id,
         username: '',
         userFirstname: '',
         userGender: '',
@@ -14,14 +16,14 @@
     methods: {
       getUserDetails() {
         // TODO: Add user ID variable
-        axios.get(`http://${window.location.hostname}:3000/user/3`)
+        axios.get(`http://${window.location.hostname}:3000/user/${this.user_id}`)
           .then(userDetails => {
-            this.user_id = userDetails.user_id;
-            this.userName = userDetails.name;
-            this.userFirstname = userDetails.firstname;
-            this.userGender = userDetails.gender;
-            this.userType = userDetails.type;
-            this.userMail = userDetails.mail;
+            console.log(userDetails);
+            this.userName = userDetails.data[0].name;
+            this.userFirstname = userDetails.data[0].firstname;
+            this.userGender = userDetails.data[0].gender;
+            this.userType = userDetails.data[0].type;
+            this.userMail = userDetails.data[0].email;
           })
           .catch(err => console.trace(err));
       }
