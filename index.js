@@ -14,6 +14,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
 
 const exportDB = require('./modules/exportDB');
 const initUsers = require('./modules/initUsers');
@@ -187,6 +188,7 @@ app.set('view engine', 'ejs')
     return next();
   })
   .use(flash())
+  .use(cookieParser)
   .use(cors(corsOptions))
   .use(session({
     store: new pgSession({
