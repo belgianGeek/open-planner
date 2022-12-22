@@ -28,7 +28,11 @@ function passportInit(passport, getUserByEmail, getUserById) {
     usernameField: 'email'
   }, authenticatedUser));
 
-  passport.serializeUser((user, done) => done(null, user.user_id));
+  passport.serializeUser((user, done) => {
+    process.nextTick(() => {
+      done(null, user.user_id);
+    });
+  });
 
   passport.deserializeUser((id, done) => done(null, getUserById(id)));
 }
