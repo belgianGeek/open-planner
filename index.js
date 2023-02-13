@@ -2,7 +2,6 @@ const fs = require("fs-extra");
 const randomBytes = require("crypto").randomBytes;
 const express = require("express");
 const app = express();
-const ip = require("ip");
 const cp = require("child_process").exec;
 const path = require("path");
 const os = require("os");
@@ -10,22 +9,15 @@ const cors = require("cors");
 const server = require("http").Server(app);
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const flash = require("express-flash");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const methodOverride = require("method-override");
-const cookieParser = require('cookie-parser');
 
+const checkForPassword = require("./modules/checkDbPassword");
+const createDB = require("./modules/createDB");
 const exportDB = require("./modules/exportDB");
-const initUsers = require("./modules/initUsers");
 const existPath = require("./modules/existPath");
-const createLocationsTable = require("./modules/createLocationsTable");
-const createSessionTable = require("./modules/createSessionTable");
-const createTasksTable = require("./modules/createTasksTable");
-const createUsersTable = require("./modules/createUsersTable");
 const createJWTServerPrivateKey = require("./modules/createJWTServerPrivateKey");
-
-const Pool = require("pg").Pool;
 
 let config = {
   user: "postgres",
@@ -33,23 +25,10 @@ let config = {
   host: "localhost",
 };
 
-const checkForPassword = () => {
-  if (fs.existsSync(".passwd")) {
-    config.password = fs.readFileSync(".passwd", {
-      encoding: "utf-8",
-    });
+const Pool = require("pg").Pool;
+const initClient = new Pool(app.pool, config);
 
-    config.password = config.password.replace(/[\n\r\s]/g, "");
-
-    config.connectionString = `postgresql://${config.user}:${config.password}@${config.host}:5432/${config.database}`;
-  } else {
-    config.connectionString = `postgresql://${config.user}@${config.host}:5432/${config.database}`;
-  }
-};
-
-checkForPassword();
-
-const initClient = new Pool(config);
+config = checkForPassword(config);
 
 const corsOptions = {
   maxAge: 3600,
@@ -57,122 +36,11 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-const createDB = (config, DBname = "planner") => {
-  const createTables = () => {
-    console.log(
-      `${DBname} database successfully created, tables are being created...`
-    );
-    app.pool = new Pool(config);
-
-    // Tables have to be created in this exact order to avoid errors when assigning foreign key constraints
-    app.pool
-      .connect()
-      .then(() => {
-        createLocationsTable(app.pool)
-          .then((res) => {
-            console.log(res);
-
-            createUsersTable(app.pool)
-              .then((res) => {
-                console.log(res);
-
-                initUsers(app, passport);
-
-                createTasksTable(app.pool).then((res) => {
-                  console.log(res);
-                  console.log(
-                    `You can log in to Open Planner using the follwoing link : http:${ip.address()}:8000.`
-                  );
-
-                  if (fs.existsSync("update-db.js")) {
-                    const updatePlannerBackend = require("./update-db.js");
-                    updatePlannerBackend(app);
-                  }
-
-                  require("./routes/locations")(app);
-                  require("./routes/login")(app);
-                  require("./routes/logout")(app);
-                  require("./routes/new-request")(app);
-                  require("./routes/user")(app);
-                  require("./routes/userDetail")(app);
-                  require("./routes/users")(app);
-                });
-              })
-              .catch((err) => console.log(err));
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => {
-        console.trace(`Pool connection error : ${err}`);
-      });
-  };
-
-  const reconnect = () => {
-    // Disconnect from the 'postgres' DB and connect to the newly created 'node-planner' DB
-    config.database = "planner";
-    checkForPassword();
-
-    initClient
-      .end()
-      .catch((err) =>
-        console.error(
-          "Une erreur est survenue lors de la tentative de reconnexion à la base de données",
-          err
-        )
-      );
-  };
-
-  console.log(`Création de la base de données ${DBname}...`);
-  initClient
-    .query(`CREATE DATABASE ${DBname} WITH ENCODING = 'UTF-8'`)
-    .then((res) => {
-      reconnect();
-
-      createTables();
-    })
-    .catch((err) => {
-      if (!err.message.match("exist")) {
-        console.error(
-          `Erreur lors de la création de la base de données ${DBname} : ${err}`
-        );
-      } else {
-        console.log(`La base de données ${DBname} existe déjà !`);
-        reconnect();
-        createTables();
-      }
-    });
-};
-
-initClient
-  .connect()
-  .then(() => {
-    if (!ip.address().match(/169.254/) || !ip.address().match(/127.0/)) {
-      // Check if the 'session' table exist before doing anything else
-      createSessionTable(initClient);
-
-      createDB(config);
-    } else {
-      console.log(
-        `Désolé, il semble que tu n'aies pas accès à Internet... Rétablis ta connexion et réessaie :-)`
-      );
-    }
-  })
-  .catch((err) => {
-    console.log(`Initial Pool connection error : ${err}`);
-    if (err.code === "ECONNREFUSED") {
-      console.log(
-        "Désolé, la connexion à la base de données n'a pas pu être établie...\n" +
-          "Vérifie que le service PostgreSQL est bien démarré et relance Node Planner."
-      );
-    }
-    return;
-  });
+createDB(app.pool, initClient, config);
 
 existPath("./backups/");
 existPath("./exports/");
 existPath("./templates/");
-
-createJWTServerPrivateKey();
 
 // Export a copy of the database every twelve hours
 setInterval(() => {
@@ -194,7 +62,6 @@ setInterval(() => {
 }, 12 * 60 * 60 * 1000);
 
 app
-  .set("view engine", "ejs")
   .use("/locales", express.static(__dirname + "/locales"))
   .use("/src", express.static(__dirname + "/src"))
   .use(
@@ -223,8 +90,6 @@ app
     );
     return next();
   })
-  .use(flash())
-  .use(cookieParser)
   .use(cors(corsOptions))
   .use(
     session({
@@ -246,3 +111,23 @@ app
   .use(express.json());
 
 app.listen(3000);
+
+createJWTServerPrivateKey()
+  .then(async (res) => {
+    console.log(res);
+
+    require("./routes/locations")(app);
+    require("./routes/login")(app);
+    require("./routes/logout")(app);
+    require("./routes/new-request")(app);
+    require("./routes/user")(app);
+    require("./routes/userDetail")(app);
+    require("./routes/users")(app);
+  })
+  .catch((err) => console.log(err));
+
+app.get('/hello', (req, res, next) => {
+  res.send('hello there !');
+});
+
+module.exports = app;

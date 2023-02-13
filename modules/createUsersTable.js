@@ -1,9 +1,8 @@
 const path = require('path');
 
-const createUsersTable = pool => {
-  let table = 'users';
+const createUsersTable = (tableName, dbPool) => {
   return new Promise(function(resolve, reject) {
-    pool.query(`CREATE TABLE IF NOT EXISTS ${table} (
+    dbPool.query(`CREATE TABLE IF NOT EXISTS ${tableName} (
     user_id SERIAL PRIMARY KEY,
     name TEXT,
     firstname TEXT,
@@ -18,9 +17,9 @@ const createUsersTable = pool => {
         ON DELETE CASCADE
   )`, (err, res) => {
       if (err) {
-        reject(`Une erreur est survenue lors de la création de la table ${table} : ${err}`);
+        reject(`Une erreur est survenue lors de la création de la table ${tableName} : ${err}`);
       } else {
-        resolve(`La table ${table} existe déjà...`);
+        resolve(`La table ${tableName} existe déjà...`);
       }
     });
   });

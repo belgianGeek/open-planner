@@ -1,7 +1,7 @@
-const createSessionTable = pool => {
+const createSessionTable = dbPool => {
   let msg;
   return new Promise(function(resolve, reject) {
-    pool.query(`CREATE TABLE IF NOT EXISTS public.session (
+    dbPool.query(`CREATE TABLE IF NOT EXISTS public.session (
       sid character varying PRIMARY KEY NOT NULL,
       sess json NOT NULL,
       expire timestamp(6) without time zone NOT NULL

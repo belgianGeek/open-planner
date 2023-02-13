@@ -3,7 +3,8 @@ const fs = require("fs-extra");
 const existPath = require("./existPath.js");
 
 const createJWTServerPrivateKey = () => {
-  const privateKey = randomBytes(100).toString("hex");
+  return new Promise((resolve, reject) => {
+    const privateKey = randomBytes(100).toString("hex");
 
   existPath("./config/", () => {
     fs.writeFile(
@@ -15,16 +16,17 @@ const createJWTServerPrivateKey = () => {
     `,
       (err) => {
         if (err) {
-          console.trace(
+          reject(
             `An error occurred while creating the server JWT private key : ${err}`
           );
         } else {
-          console.log(
+          resolve(
             "The server's JWT private key was successfully created. Please see the auth.config.js config file for details."
           );
         }
       }
     );
+  });
   });
 };
 

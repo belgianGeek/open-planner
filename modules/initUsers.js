@@ -1,12 +1,8 @@
 const passport = require('passport');
 const passportInit = require('./passport');
 
-const initUsers = async (app, passport) => {
-<<<<<<< Updated upstream
-  const users = await app.pool.query('SELECT email, firstname, gender, location, name, password, type, user_id FROM users');
-=======
-  const users = await app.pool.query('SELECT email, firstname, gender, location, name, password, type FROM users');
->>>>>>> Stashed changes
+const initUsers = async (dbPool, passport) => {
+  const users = await dbPool.query('SELECT email, firstname, gender, location, name, password, type, user_id FROM users');
 
   passportInit(
     passport,
