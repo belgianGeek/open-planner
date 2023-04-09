@@ -33,7 +33,7 @@ config = checkForPassword(config);
 const corsOptions = {
   maxAge: 3600,
   origin: [/localhost$/, "192.168.1.*"],
-  optionsSuccessStatus: 200,
+  optionsSuccessStatus: 200
 };
 
 createDB(app.pool, initClient, config);
@@ -112,22 +112,12 @@ app
 
 app.listen(3000);
 
-createJWTServerPrivateKey()
-  .then(async (res) => {
-    console.log(res);
-
-    require("./routes/locations")(app);
-    require("./routes/login")(app);
-    require("./routes/logout")(app);
-    require("./routes/new-request")(app);
-    require("./routes/user")(app);
-    require("./routes/userDetail")(app);
-    require("./routes/users")(app);
-  })
-  .catch((err) => console.log(err));
-
-app.get('/hello', (req, res, next) => {
-  res.send('hello there !');
-});
+require("./routes/locations")(app);
+require("./routes/login")(app);
+require("./routes/logout")(app);
+require("./routes/new-request")(app);
+require("./routes/user")(app);
+require("./routes/userDetail")(app);
+require("./routes/users")(app);
 
 module.exports = app;

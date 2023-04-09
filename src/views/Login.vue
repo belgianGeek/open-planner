@@ -31,6 +31,8 @@ export default {
          .then(res => {
            if (res.data.user) {
              this.userStore.connectedUser = res.data.user;
+             localStorage.setItem('planner_loginDateTime', Date.now());
+             localStorage.setItem('planner_authToken', res.data.token);
              router.push('/');
            } else {
              displayLoginError(res.data.info.message);
