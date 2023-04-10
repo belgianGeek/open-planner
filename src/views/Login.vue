@@ -35,7 +35,7 @@ export default {
              localStorage.setItem('planner_authToken', res.data.token);
              router.push('/');
            } else {
-             displayLoginError(res.data.info.message);
+             displayLoginError(res.data);
            }
          })
          .catch(err => {

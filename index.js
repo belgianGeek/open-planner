@@ -15,6 +15,7 @@ const methodOverride = require("method-override");
 
 const checkForPassword = require("./modules/checkDbPassword");
 const createDB = require("./modules/createDB");
+let pgClient;
 const exportDB = require("./modules/exportDB");
 const existPath = require("./modules/existPath");
 const createJWTServerPrivateKey = require("./modules/createJWTServerPrivateKey");
@@ -25,18 +26,25 @@ let config = {
   host: "localhost",
 };
 
-const Pool = require("pg").Pool;
-const initClient = new Pool(app.pool, config);
-
 config = checkForPassword(config);
 
 const corsOptions = {
   maxAge: 3600,
   origin: [/localhost$/, "192.168.1.*"],
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
-createDB(app.pool, initClient, config);
+(async function () {
+  pgClient = await createDB(config);
+
+  require("./routes/locations")(app);
+  require("./routes/login")(app, pgClient);
+  require("./routes/logout")(app);
+  require("./routes/new-request")(app);
+  require("./routes/user")(app);
+  require("./routes/userDetail")(app);
+  require("./routes/users")(app);
+})();
 
 existPath("./backups/");
 existPath("./exports/");
@@ -111,13 +119,5 @@ app
   .use(express.json());
 
 app.listen(3000);
-
-require("./routes/locations")(app);
-require("./routes/login")(app);
-require("./routes/logout")(app);
-require("./routes/new-request")(app);
-require("./routes/user")(app);
-require("./routes/userDetail")(app);
-require("./routes/users")(app);
 
 module.exports = app;
