@@ -1,0 +1,27 @@
+name: Yarn upgrade
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master, vite, vite-session ]
+  schedule:
+  - cron: "0 10 * 1-12 6"
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+      - run: 'npm -i -g yarn'
+      - run: 'yarn upgrade'
+  
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - run: "gh pr create -B master -H update/yarn-upgrade --title 'Dependencies upgrade :arrow_up:' --body 'Created by Github action'"
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
