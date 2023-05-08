@@ -9,24 +9,24 @@ on:
   - cron: '0 10 * 1-12 6'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  dependencies-upgrade:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 'latest'
-      - run: 'npm i -g yarn'
-      - run: 'yarn upgrade'
-  
-  commit-changes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: 'git config --global user.name "GitHub Actions Bot"'
-      - run: 'git config --global user.email "<>"'
-      - run: 'git add package.json yarn.lock'
-      - run: 'git commit -m "Dependencies upgrade :arrow_up:"'
-      - run: 'git push origin master'
+      - name: 'Install Yarn'
+        run: 'npm i -g yarn'
+      - name: 'Dependencies upgrade'    
+        run: 'yarn upgrade'
+      - name: 'Git setup'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
+      - name: 'Stage changes'
+        run: 'git add package.json yarn.lock'
+      - name: 'Commit changes'
+        run: 'git commit -m "Dependencies upgrade :arrow_up:"'
+      - name: 'Push changes'
+        run: 'git push origin master'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
