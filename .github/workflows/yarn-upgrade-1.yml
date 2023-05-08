@@ -22,12 +22,14 @@ jobs:
   git-setup:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - run: 'git config user.name "GitHub Actions Bot"'
       - run: 'git config user.email "<>"'
   
   commit-changes:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - run: 'git add package.json yarn.lock'
       - run: 'git commit -m "Dependencies upgrade :arrow_up:"'
       - run: 'git push origin master'
