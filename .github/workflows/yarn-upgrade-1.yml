@@ -6,7 +6,7 @@ on:
   push:
     branches: [ master, vite, vite-session ]
   schedule:
-  - cron: "0 10 * 1-12 6"
+  - cron: '0 10 * 1-12 6'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
@@ -19,9 +19,17 @@ jobs:
       - run: 'npm i -g yarn'
       - run: 'yarn upgrade'
   
-  create-pull-request:
+  git-setup:
     runs-on: ubuntu-latest
     steps:
-    - run: "gh pr create -B master -H update/yarn-upgrade --title 'Dependencies upgrade :arrow_up:' --body 'Created by Github action'"
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: 'git config user.name "GitHub Actions Bot"'
+      - run: 'git config user.email "<>"'
+  
+  commit-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'git add package.json yarn.lock'
+      - run: 'git commit -m "Dependencies upgrade :arrow_up:"'
+      - run: 'git push origin master'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
