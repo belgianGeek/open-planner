@@ -19,17 +19,12 @@ jobs:
       - run: 'npm i -g yarn'
       - run: 'yarn upgrade'
   
-  git-setup:
+  commit-changes:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: 'git config --global user.name "GitHub Actions Bot"'
       - run: 'git config --global user.email "<>"'
-  
-  commit-changes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       - run: 'git add package.json yarn.lock'
       - run: 'git commit -m "Dependencies upgrade :arrow_up:"'
       - run: 'git push origin master'
