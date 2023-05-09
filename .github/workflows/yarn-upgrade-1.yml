@@ -30,10 +30,15 @@ jobs:
         run: 'git commit -m "Dependencies upgrade :arrow_up:"'
       - name: 'Push changes'
         run: 'git push origin update/yarn-upgrade'
-      - name: 'Checkout branch "master"'
-        run: 'git checkout master'
-      - name: 'Pull changes'
-        run: 'git pull origin master'
+ 
+  merge-master-branch:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: 'Git setup'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
       - name: 'Merge "update/yarn-upgrade" onto "master"'
         run: 'git merge update/yarn-upgrade'
     env:
