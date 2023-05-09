@@ -45,6 +45,6 @@ jobs:
       - name: 'Git setup'
         run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
       - name: 'Merge "update/yarn-upgrade" onto "master"'
-        run: 'git merge update/yarn-upgrade'
+        run: 'git merge origin/update/yarn-upgrade'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
