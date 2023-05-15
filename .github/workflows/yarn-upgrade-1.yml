@@ -48,3 +48,45 @@ jobs:
         run: 'git merge origin/update/yarn-upgrade'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-release:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: 'Git setup'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
+      - name: 'Create release'
+        run: |
+              LATEST_TAG=`git describe --abbrev=0 --tags`
+              LATEST_TAG_ARRAY=(${LATEST_TAG//./ })
+              
+              VNUM1=${LATEST_TAG_ARRAY[0]}
+              VNUM2=${LATEST_TAG_ARRAY[1]}
+              VNUM3=${LATEST_TAG_ARRAY[2]}
+              VNUM3=$((VNUM3+1))
+              NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
+              
+              echo "Updating $LATEST_TAG to $NEW_TAG"
+              
+              GIT_COMMIT=`git rev-parse HEAD`
+              NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
+              
+              if [ -z "$NEEDS_TAG" ]; then
+                git tag $NEW_TAG -a "Dependencies upgrade"
+                echo "Tagged with $NEW_TAG"
+                git push --tags
+
+              curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN"\
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/belgianGeek/open-planner/releases \
+              -d '{"tag_name":"$NEW_TAG","target_commitish":"master","name":"$NEW_TAG - Dependencies upgrade :arrow_up:","body":"Dependencies upgrade :arrow_up:","draft":false,"prerelease":false,"generate_release_notes":false}'
+              else
+                echo "Already a tag on this commit"
+              fi            
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
