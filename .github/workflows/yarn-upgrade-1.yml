@@ -7,6 +7,12 @@ on:
     branches: [ master, vite, vite-session ]
   schedule:
   - cron: '0 10 * 1-12 6'
+  workflow_dispatch:
+    inputs:
+      log:
+        description: "Workflow run description"
+        required: false
+        default: "Upgrade dependencies"
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   dependencies-upgrade:
