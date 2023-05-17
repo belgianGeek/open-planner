@@ -83,7 +83,7 @@ jobs:
               if [ -z "$NEEDS_TAG" ]; then
                 git tag -a $NEW_TAG -m "Dependencies upgrade"
                 echo "Tagged with $NEW_TAG"
-                git push --tags
+                git push origin master --tags
 
                 curl -L \
                 -X POST \
