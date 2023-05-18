@@ -38,6 +38,7 @@ const corsOptions = {
   pgClient = await createDB(config);
 
   require("./routes/locations")(app);
+  require("./routes/auth")(app);
   require("./routes/login")(app, pgClient);
   require("./routes/logout")(app);
   require("./routes/new-request")(app);
