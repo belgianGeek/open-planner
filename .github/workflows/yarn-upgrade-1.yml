@@ -78,9 +78,9 @@ jobs:
               echo "Updating $LATEST_TAG to $NEW_TAG"
               
               GIT_COMMIT=`git rev-parse HEAD`
-              NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
+              # NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
               
-              if [ -z "$NEEDS_TAG" ]; then
+              # if [ -z "$NEEDS_TAG" ]; then
                 git tag -a $NEW_TAG -m "Dependencies upgrade"
                 echo "Tagged with $NEW_TAG"
                 git push origin master --tags
@@ -91,8 +91,8 @@ jobs:
                 --generate-notes
                 -t "v$NEW_TAG - Dependencies upgrade"
                 
-              else
-                echo "Already a tag on this commit"
-              fi            
+              # else
+              #   echo "Already a tag on this commit"
+              # fi            
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
