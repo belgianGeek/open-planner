@@ -85,18 +85,12 @@ jobs:
                 echo "Tagged with $NEW_TAG"
                 git push origin master --tags
                 
-                gh api \
-                --method POST \
-                -H "Accept: application/vnd.github+json" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                /repos/belgianGeek/open-planner/releases \
-                -f tag_name='$NEW_TAG' \
-                -f target_commitish='master' \
-                -f name='v$NEW_TAG - Dependencies upgrade :arrow_up:' \
-                -f body='Dependencies upgrade :arrow_up:' \
-                -F draft=false \
-                -F prerelease=false \
-                -F generate_release_notes=false
+                gh release create v$NEW_TAG \
+                --latest \
+                --target=master \
+                --generate-notes
+                -t "v$NEW_TAG - Dependencies upgrade"
+                
               else
                 echo "Already a tag on this commit"
               fi            
