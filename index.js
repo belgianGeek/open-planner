@@ -118,7 +118,8 @@ const initClient = new Pool(config);
 // Define a variable to store the settings retrieved from the DB
 let settings = {};
 
-app.tag = '0.4.2';
+const projectMetadata = JSON.parse(fs.readFileSync('./package.json'));
+app.tag = projectMetadata.version;
 
 const exportDB = require('./modules/exportDB');
 const getUsers = require('./modules/getUsers');
@@ -139,6 +140,7 @@ const createLocationsTable = require('./modules/createLocationsTable');
 const createSessionTable = require('./modules/createSessionTable');
 const createTasksTable = require('./modules/createTasksTable');
 const createUsersTable = require('./modules/createUsersTable');
+const { log } = require('console');
 
 const createDB = (config, DBname = 'planner') => {
   const createTables = () => {
