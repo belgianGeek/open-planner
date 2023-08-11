@@ -1,40 +1,105 @@
 name: Yarn upgrade
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ master, vite, vite-session ]
   schedule:
-  - cron: "0 10 * 1-12 6"
-
-  # Allows you to run this workflow manually from the Actions tab
+  - cron: '0 10 * 1-12 6'
   workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+    inputs:
+      log:
+        description: "Upgrade dependencies and create a new release to merge changes"
+        required: false
 jobs:
-  build:
+  dependencies-upgrade:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-  
-    # Read node version from `.nvmrc` file
-    - id: nvmrc
-      uses: browniebroke/read-nvmrc-action@v1
+      - uses: actions/checkout@v3
+        with:
+          ref: 'update/yarn-upgrade'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+      - name: 'Install Yarn'
+        run: 'npm i -g yarn'
+      - name: 'Dependencies upgrade'
+        id: upgrade    
+        run: 'yarn upgrade'
+      - name: 'Install jq'
+        run: 'sudo apt install jq'
+      - name: 'Update project version number'
+        run: |
+              "export NEW_PACKAGE_JSON_VERSION=$(jq '.version |= "0.4.3"' package.json)
+              echo $NEW_PACKAGE_JSON_VERSION > package.json 
+              "
+      - name: 'Git setup'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
+      - name: 'Stage changes'
+        run: 'git add package.json yarn.lock'
+      - name: 'Commit changes'
+        run: 'git commit -m "Dependencies upgrade :arrow_up:"'
+      - name: 'Push changes'
+        run: 'git push origin update/yarn-upgrade'
+      - outputs:
+          result: steps.upgrade.conclusion 
+ 
+  merge-master-branch:
+    runs-on: 'ubuntu-latest'
+    needs: dependencies-upgrade
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'update/yarn-upgrade'
+          fetch-depth: 0
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+          fetch-depth: 0
+      - name: 'Git setup'
+        if: needs.dependencies-upgrade.outputs.result == 'success'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
+      - name: 'Merge "update/yarn-upgrade" onto "master"'
+        if: needs.dependencies-upgrade.outputs.result == 'success'
+        run: 'git merge origin/update/yarn-upgrade'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions/setup-node@v1
-      with:
-        # use the output from the action
-        node-version: '${{ steps.nvmrc.outputs.node_version }}'
-
-    # Run `yarn upgrade`
-    - uses: browniebroke/yarn-upgrade-action@v1
-
-    # Open a pull request if there are any changes
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: update/yarn-upgrade
-        title: Dependencies upgrade
-        commit-message: "chore(deps): Dependencies upgrade"
+  create-release:
+    runs-on: 'ubuntu-latest'
+    needs: merge-master-branch
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+          fetch-depth: 0
+      - name: 'Git setup'
+        if: needs.dependencies-upgrade.outputs.result == 'success'
+        run: 'git config --global user.name "GitHub Actions Bot" && git config --global user.email "<>"'
+      - name: 'Create release'
+        if: needs.dependencies-upgrade.outputs.result == 'success'
+        run: |
+              LATEST_TAG=`git describe --abbrev=0 --tags`
+              LATEST_TAG_ARRAY=(${LATEST_TAG//./ })
+              
+              VNUM1=${LATEST_TAG_ARRAY[0]}
+              VNUM2=${LATEST_TAG_ARRAY[1]}
+              VNUM3=${LATEST_TAG_ARRAY[2]}
+              VNUM3=$((VNUM3+1))
+              NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
+              
+              echo "Updating $LATEST_TAG to $NEW_TAG"
+              
+              GIT_COMMIT=`git rev-parse HEAD`
+              
+              git tag -a $NEW_TAG -m "Dependencies upgrade"
+              echo "Tagged with $NEW_TAG"
+              git push origin master --tags
+                
+              gh release create v$NEW_TAG \
+              --latest \
+              --target=master \
+              --generate-notes \
+              -t "v$NEW_TAG - Dependencies upgrade"
+              
+              echo "Tag $NEW_TAG has been created !"
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
