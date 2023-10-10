@@ -1,7 +1,7 @@
 name: Yarn upgrade
 on:
   push:
-    branches: [ master, vite, vite-session ]
+    branches: [ master, vite, vite-session, yarn-upgrade ]
   schedule:
   - cron: '0 10 * 1-12 6'
   workflow_dispatch:
